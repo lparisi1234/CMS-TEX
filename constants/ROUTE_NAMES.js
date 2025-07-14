@@ -3,4 +3,5 @@ export const ROUTE_NAMES = {
     LOGIN: '/login',
     // CMS
     HOME: '/',
+    TABLAS: '/tablas',
 }

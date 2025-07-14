@@ -1,3 +1,5 @@
 <template>
-    <h1>Home</h1>
+    <DefaultSection>
+        <HeadingH1>Home</HeadingH1>
+    </DefaultSection>
 </template>

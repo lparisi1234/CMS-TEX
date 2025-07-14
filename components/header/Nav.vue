@@ -27,8 +27,8 @@
                                     Configuración
                                 </p>
                                 <ul>
-                                    <li v-for="item in menuConfiguracion" :key="item.name">
-                                        <NuxtLink to="#"
+                                    <li v-for="item in tablas.configuracion" :key="item.name">
+                                        <NuxtLink :to="`${ROUTE_NAMES.TABLAS}/${item.slug}`"
                                             class="flex items-center gap-3 text-light font-light py-[0.625rem] px-3"
                                             @click="closeMenu">
                                             <Icon :name="`tabler:${item.icon}`" class="w-5 h-5" />
@@ -43,8 +43,8 @@
                                     Administración
                                 </p>
                                 <ul>
-                                    <li v-for="item in menuAdministracion" :key="item.name">
-                                        <NuxtLink to="#"
+                                    <li v-for="item in tablas.administracion" :key="item.name">
+                                        <NuxtLink :to="`${ROUTE_NAMES.TABLAS}/${item.slug}`"
                                             class="flex items-center gap-3 text-light font-light py-[0.625rem] px-3"
                                             @click="closeMenu">
                                             <Icon :name="`tabler:${item.icon}`" class="w-5 h-5" />
@@ -69,65 +69,11 @@
 
 <script setup>
 import { ROUTE_NAMES } from '~/constants/ROUTE_NAMES'
+import tablas from '~/shared/tablas.js'
 
 const router = useRouter()
 
 const isMenuOpen = ref(false)
-
-const menuConfiguracion = [
-    {
-        name: 'Segmentos',
-        icon: 'cards'
-    },
-    {
-        name: 'Monedas',
-        icon: 'world-dollar'
-    },
-    {
-        name: 'Operadores',
-        icon: 'map-pin'
-    },
-    {
-        name: 'Teléfonos',
-        icon: 'phone'
-    },
-    {
-        name: 'Número de WhatsApp',
-        icon: 'brand-whatsapp'
-    },
-    {
-        name: 'Destinos',
-        icon: 'location'
-    },
-    {
-        name: 'Categorías',
-        icon: 'bookmark'
-    },
-    {
-        name: 'Descuentos',
-        icon: 'discount'
-    },
-    {
-        name: 'Grupos de Oferta',
-        icon: 'rosette-discount-check'
-    }
-]
-
-const menuAdministracion = [
-    {
-        name: 'Productos',
-        icon: 'aerial-lift'
-    },
-    {
-        name: 'Notas de Prensa',
-        icon: 'notes'
-    },
-    {
-        name: 'Notas de Blog',
-        icon: 'writing'
-    }
-]
-
 const toggleMenu = () => {
     isMenuOpen.value = !isMenuOpen.value
 }
