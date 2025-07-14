@@ -1,5 +1,5 @@
 <template>
-    <main class="flex justify-center items-center">
+    <main class="bg-light p-8">
         <slot />
     </main>
 </template>

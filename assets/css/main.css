@@ -34,3 +34,7 @@ main {
 footer {
     grid-area: footer;
 }
+
+.shadow-1 {
+    box-shadow: 0px 4px 4px 0px #00000040;
+}

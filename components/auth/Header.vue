@@ -1,8 +1,7 @@
 <template>
-    <header class="flex justify-center">
+    <header class="flex justify-center bg-secondary p-6">
         <NuxtLink :to="ROUTE_NAMES.LOGIN">
-            <NuxtImg src="/images/Logo-Tour-Experto.svg" alt="Logo Tour Experto" />
-            Auth
+            <NuxtImg src="/images/Logo-Tour-Experto.svg" alt="Logo Tour Experto" class="h-12" />
         </NuxtLink>
     </header>
 </template>
