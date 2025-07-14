@@ -2,7 +2,7 @@
     <DefaultSection>
         <HeadingH1>Iniciar sesión</HeadingH1>
 
-        <FormLayout class="gap-7">
+        <FormLayout class="gap-4 lg:gap-7">
             <FormFieldsContainer>
                 <FormTextField v-model="formData.email" label="Correo electrónico" id="correo-electronico" type="email"
                     placeholder="stevejobs" autocomplete="username" :error="errors.email" required
@@ -17,7 +17,7 @@
                 ¿Olvidaste tu contraseña?
             </NuxtLink>
 
-            <ButtonPrimary class="!px-48" :disabled="!isFormValid || isLoading" @click="handleSubmit">
+            <ButtonPrimary class="lg:!px-48" :disabled="!isFormValid || isLoading" @click="handleSubmit">
                 <span v-if="!isLoading">Ingresar</span>
                 <span v-else class="flex items-center gap-2">
                     <Icon name="tabler:loader-2" class="animate-spin" />

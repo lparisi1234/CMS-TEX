@@ -1,7 +1,7 @@
 <template>
     <header class="flex justify-center bg-secondary p-6">
         <NuxtLink :to="ROUTE_NAMES.HOME">
-            <NuxtImg src="/images/Logo-Tour-Experto.svg" alt="Logo Tour Experto" class="h-12" />
+            <NuxtImg src="/images/Logo-Tour-Experto.svg" alt="Logo Tour Experto" class="h-8 lg:h-12" />
         </NuxtLink>
     </header>
 </template>

@@ -1,5 +1,5 @@
 <template>
-    <label class="text-dark font-light text-xl">
+    <label class="text-dark font-light lg:text-xl">
         <slot />
     </label>
 </template>
