@@ -1,12 +1,12 @@
 <template>
     <div class="w-full flex flex-col gap-2">
-        <FormLabel v-if="label">{{ label }}</FormLabel>
+        <FormLabel :id="id" v-if="label">{{ label }}</FormLabel>
 
         <div
             class="relative bg-light border border-dark rounded-[5px] lg:text-xl font-light text-dark lg:placeholder:text-xl placeholder:font-light placeholder:text-gray py-3 px-[0.875rem]">
             <input :id="inputId" :type="showPassword ? 'text' : 'password'" :placeholder="placeholder"
                 :value="modelValue" :required="required" @input="handleInput" @blur="handleBlur" @focus="handleFocus"
-                autocomplete="current-password" class="bg-light outline-none" />
+                autocomplete="current-password" class="w-full bg-light outline-none" />
 
             <button type="button"
                 class="flex justify-center itemsce absolute right-3 top-1/2 transform -translate-y-1/2 text-dark"

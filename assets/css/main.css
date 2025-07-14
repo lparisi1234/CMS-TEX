@@ -17,7 +17,7 @@ body {
     scroll-behavior: smooth;
 }
 
-body>div:first-of-type {
+body>#__nuxt {
     height: 100%;
     display: grid;
     grid: "header" auto "main" 1fr "footer" auto / 1fr;
@@ -37,4 +37,8 @@ footer {
 
 .shadow-1 {
     box-shadow: 0px 4px 4px 0px #00000040;
+}
+
+.shadow-menu {
+    box-shadow: 8px 0px 12px 0px #00000040;
 }

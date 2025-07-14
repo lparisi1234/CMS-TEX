@@ -13,11 +13,11 @@
                     @toggle-visibility="onPasswordToggle" />
             </FormFieldsContainer>
 
-            <NuxtLink to="#" class="text-dark font-light underline hover:text-blue-600 transition-colors duration-200">
+            <NuxtLink to="#" class="text-dark font-light underline">
                 ¿Olvidaste tu contraseña?
             </NuxtLink>
 
-            <ButtonPrimary class="lg:!px-48" :disabled="!isFormValid || isLoading" @click="handleSubmit">
+            <ButtonPrimary class="lg:!px-48" :disabled="isLoading" @click="handleSubmit">
                 <span v-if="!isLoading">Ingresar</span>
                 <span v-else class="flex items-center gap-2">
                     <Icon name="tabler:loader-2" class="animate-spin" />
@@ -29,9 +29,13 @@
 </template>
 
 <script setup>
+import { ROUTE_NAMES } from '~/constants/ROUTE_NAMES.js'
+
 definePageMeta({
     layout: "auth",
 });
+
+const router = useRouter()
 
 const formData = reactive({
     email: '',
@@ -65,8 +69,6 @@ const validateEmail = () => {
 const validatePassword = () => {
     if (!formData.password) {
         errors.password = 'La contraseña es requerida'
-    } else if (formData.password.length < 6) {
-        errors.password = 'La contraseña debe tener al menos 6 caracteres'
     } else {
         errors.password = ''
     }
@@ -85,16 +87,21 @@ watch(() => formData.password, () => {
 })
 
 const handleSubmit = async () => {
+    isLoading.value = true
+
     validateEmail()
     validatePassword()
 
     if (errors.email || errors.password) {
+        isLoading.value = false
         return
     }
 
     try {
         console.log("Iniciar sesion");
+        // Logica login
 
+        await router.push(ROUTE_NAMES.HOME)
 
     } catch (error) {
         console.error('Error en login:', error)
@@ -105,7 +112,7 @@ const handleSubmit = async () => {
 }
 
 const handleEnterKey = () => {
-    if (isFormValid.value && !isLoading.value) {
+    if (!isLoading.value) {
         handleSubmit()
     }
 }
