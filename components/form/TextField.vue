@@ -3,7 +3,7 @@
         <FormLabel :id="id" v-if="label">{{ label }}</FormLabel>
 
         <input :id="inputId" :type="type" :placeholder="placeholder" :value="modelValue" :required="required"
-            @input="handleInput" @blur="handleBlur" @focus="handleFocus" :autocomplete="autocomplete" class="bg-light border border-dark rounded-[5px] outline-none lg:text-xl font-light text-dark lg:placeholder:text-xl placeholder:font-light placeholder:text-gray py-3 px-[0.875rem]" />
+            @input="handleInput" @blur="handleBlur" @focus="handleFocus" :autocomplete="autocomplete" class="bg-light border border-dark rounded-[5px] outline-none lg:text-xl font-light text-dark lg:placeholder:text-xl placeholder:font-light placeholder:text-gray-dark py-3 px-[0.875rem]" />
 
         <FormError v-if="error && showError">{{ error }}</FormError>
     </div>

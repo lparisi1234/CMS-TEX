@@ -14,7 +14,11 @@ export default {
                 secondary: '#2E0049',
                 terciary: '#E580A0',
                 dark: '#131313',
-                gray: '#A4A7A9',
+                gray: {
+                    light: '#E8E9E9',
+                    mid: '#DDDDDD',
+                    dark: '#A4A7A9',
+                },
                 light: '#FBF9F9',
                 error: "#DE5E5E"
             },

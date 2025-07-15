@@ -4,4 +4,6 @@ export const ROUTE_NAMES = {
     // CMS
     HOME: '/',
     TABLAS: '/tablas',
+    CREAR: '/crear',
+    EDITAR: '/editar',
 }

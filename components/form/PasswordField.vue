@@ -3,7 +3,7 @@
         <FormLabel :id="id" v-if="label">{{ label }}</FormLabel>
 
         <div
-            class="relative bg-light border border-dark rounded-[5px] lg:text-xl font-light text-dark lg:placeholder:text-xl placeholder:font-light placeholder:text-gray py-3 px-[0.875rem]">
+            class="relative bg-light border border-dark rounded-[5px] lg:text-xl font-light text-dark lg:placeholder:text-xl placeholder:font-light placeholder:text-gray-dark py-3 px-[0.875rem]">
             <input :id="inputId" :type="showPassword ? 'text' : 'password'" :placeholder="placeholder"
                 :value="modelValue" :required="required" @input="handleInput" @blur="handleBlur" @focus="handleFocus"
                 autocomplete="current-password" class="w-full bg-light outline-none" />
