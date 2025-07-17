@@ -79,8 +79,6 @@ const handleDelete = async (item) => {
         try {
             // Delete item
 
-            await refresh()
-
             console.log(`Item de ${tabla.name} eliminado correctamente`)
         } catch (error) {
             console.error('Error al eliminar:', error)
