@@ -33,23 +33,36 @@ if (!tabla) {
     })
 }
 
-// const { data: tableData, refresh } = await useFetch(`/api/${tabla.endpoint}`)
+// Endpoint
+// const tableData = await fetch(`/api/${tabla.endpoint}`)
+//     .then(res => res.ok ? res.json() : [])
+//     .catch(err => {
+//         console.error('Error cargando datos:', err)
+//         return []
+//     })
 
+// Data hardcodeada
 const getDataForEndpoint = async () => {
     try {
-        const module = await import(`~/shared/${tabla.endpoint}.js`)
-        return module.default || []
+        const modules = import.meta.glob('~/shared/**/*.js', { eager: false })
+        const modulePath = `/shared/${tabla.endpoint}.js`
+
+        const moduleImporter = modules[modulePath]
+        if (moduleImporter) {
+            const module = await moduleImporter()
+            return module.default || []
+        }
+
+        console.warn(`No se encontró archivo para endpoint: ${tabla.endpoint}`)
+        return []
     } catch (error) {
-        console.warn(`No se encontró el archivo ~/shared/${tabla.endpoint}.js, usando array vacío`)
+        console.warn(`Error cargando datos para endpoint: ${tabla.endpoint}`)
+        console.error('Error detallado:', error)
         return []
     }
 }
 
 const tableData = ref(await getDataForEndpoint())
-
-const refresh = async () => {
-    tableData.value = await getDataForEndpoint()
-}
 
 const displayData = computed(() => tableData.value || [])
 

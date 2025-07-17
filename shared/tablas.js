@@ -337,7 +337,7 @@ const tablas = {
             name: 'Notas de Prensa',
             slug: 'notas-de-prensa',
             icon: 'notes',
-            endpoint: 'press-notes',
+            endpoint: 'notas-prensa',
             botonTexto: 'Crear nueva nota de prensa',
             columns: [
                 {
@@ -371,7 +371,7 @@ const tablas = {
             name: 'Notas de Blog',
             slug: 'notas-de-blog',
             icon: 'writing',
-            endpoint: 'blogs',
+            endpoint: 'blogs/blogs',
             botonTexto: 'Crear nueva nota de blog',
             columns: [
                 {
