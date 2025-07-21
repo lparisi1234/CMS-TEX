@@ -1,5 +1,9 @@
 <template>
-    <form class="w-full max-w-[50rem] flex flex-col items-center">
+    <FormContainer @submit.prevent="$emit('submit')">
         <slot />
-    </form>
+    </FormContainer>
 </template>
+
+<script setup>
+defineEmits(['submit'])
+</script>

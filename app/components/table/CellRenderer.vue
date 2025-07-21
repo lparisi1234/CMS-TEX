@@ -1,11 +1,6 @@
 <template>
     <div v-if="column.type === 'image'" class="flex items-center justify-center">
-        <img 
-            :src="value" 
-            :alt="column.label" 
-            class="w-16 h-16 object-cover rounded-lg"
-            @error="handleImageError"
-        />
+        <img :src="value" :alt="column.label" class="w-16 h-16 object-cover rounded-lg" />
     </div>
     <span v-else>{{ formatValue(value, column) }}</span>
 </template>
@@ -27,34 +22,33 @@ const formatValue = (value, column) => {
 
     switch (column.type) {
         case 'currency':
-            return new Intl.NumberFormat('es-ES', {
+            return new Intl.NumberFormat('es-AR', {
                 style: 'currency',
-                currency: column.currency || 'EUR'
+                currency: column.currency || 'ARS'
             }).format(value)
 
         case 'date':
-            return new Date(value).toLocaleDateString('es-ES')
+            if (!value) return '-'
+            return value.toString().split('T')[0].split('-').reverse().join('/')
 
         case 'datetime':
-            return new Date(value).toLocaleString('es-ES')
+            if (!value) return '-'
+            const [datePart, timePart] = value.toString().split('T')
+            const formattedDate = datePart.split('-').reverse().join('/')
+            const formattedTime = timePart ? timePart.substring(0, 5) : ''
+            return timePart ? `${formattedDate} ${formattedTime}` : formattedDate
 
         case 'number':
-            return new Intl.NumberFormat('es-ES').format(value)
+            return new Intl.NumberFormat('es-AR').format(value)
 
         case 'boolean':
             return value ? 'Sí' : 'No'
 
         case 'image':
-            return value // Para imágenes, devolvemos el valor tal como está
+            return value
 
         default:
             return value
     }
-}
-
-const handleImageError = (event) => {
-    // Si la imagen no se puede cargar, mostrar una imagen placeholder
-    event.target.src = '/images/placeholder.png'
-    event.target.alt = 'Imagen no disponible'
 }
 </script>

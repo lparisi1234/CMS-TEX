@@ -3,7 +3,8 @@
         <HeadingH1>{{ tabla.name || 'Tabla no encontrada' }}</HeadingH1>
         <ButtonPrimary @click="handleCreate" class="!px-4 sm:!px-12">{{ tabla.botonTexto }}</ButtonPrimary>
         <TableLayout :data="displayData" :columns="tabla.columns"
-            :empty-state-text="`No hay items en ${tabla.name} creados`" @edit="handleEdit" @delete="handleDelete" />
+            :empty-state-text="`No hay items en ${tabla.name} creados`" :table-name="tabla.name" @edit="handleEdit"
+            @delete="handleDelete" />
     </DefaultSection>
 </template>
 
@@ -67,22 +68,21 @@ const tableData = ref(await getDataForEndpoint())
 const displayData = computed(() => tableData.value || [])
 
 const handleCreate = () => {
-    navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.CREAR}`)
+    navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.CREAR}?tabla=${nombreSlug}`)
 }
 
 const handleEdit = (item) => {
-    navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.EDITAR}/${item.id}`)
+    navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.EDITAR}/${item.id}?tabla=${nombreSlug}`)
 }
 
 const handleDelete = async (item) => {
-    if (confirm(`¿Estás seguro de que deseas eliminar este item de ${tabla.name}?`)) {
-        try {
-            // Delete item
+    try {
+        // Aquí puedes implementar tu lógica de eliminación
+        console.log(`Item de ${tabla.name} eliminado correctamente`)
 
-            console.log(`Item de ${tabla.name} eliminado correctamente`)
-        } catch (error) {
-            console.error('Error al eliminar:', error)
-        }
+        // Actualizar los datos después de eliminar
+    } catch (error) {
+        console.error('Error al eliminar:', error)
     }
 }
 </script>

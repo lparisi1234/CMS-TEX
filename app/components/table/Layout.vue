@@ -14,8 +14,10 @@
             </thead>
 
             <tbody>
-                <tr v-for="(item, index) in data" :key="getRowKey(item, index)" class="h-20 odd:bg-gray-light even:bg-gray-mid border-b border-gray-dark last:border-none">
-                    <td v-for="column in columns" :key="column.key" class="border-r border-gray-dark text-dark font-light whitespace-nowrap p-3">
+                <tr v-for="(item, index) in data" :key="getRowKey(item, index)"
+                    class="h-20 odd:bg-gray-light even:bg-gray-mid border-b border-gray-dark last:border-none">
+                    <td v-for="column in columns" :key="column.key"
+                        class="border-r border-gray-dark text-dark font-light whitespace-nowrap p-3">
                         <slot :name="`cell-${column.key}`" :item="item" :value="getNestedValue(item, column.key)"
                             :column="column" :index="index">
                             <TableCellRenderer :value="getNestedValue(item, column.key)" :column="column" />
@@ -25,13 +27,11 @@
                     <td v-if="showActions" class="text-dark font-light whitespace-nowrap p-3">
                         <slot name="row-actions" :item="item" :index="index">
                             <div class="flex justify-center items-center gap-2">
-                                <button @click="$emit('edit', item, index)"
-                                    title="Editar">
-                                    <Icon name="tabler:edit" />
+                                <button @click="$emit('edit', item, index)" title="Editar">
+                                    <Icon name="tabler:edit" class="w-6 h-6 text-violet" />
                                 </button>
-                                <button @click="$emit('delete', item, index)"
-                                    title="Eliminar">
-                                    <Icon name="tabler:trash" />
+                                <button @click="openDeleteModal(item, index)" title="Eliminar">
+                                    <Icon name="tabler:trash" class="w-6 h-6 text-primary" />
                                 </button>
                             </div>
                         </slot>
@@ -45,6 +45,9 @@
                 <p>{{ emptyStateText }}</p>
             </slot>
         </div>
+
+        <ModalDelete :is-open="deleteModal.isOpen" :item-name="deleteModal.itemName" :table-name="deleteModal.tableName"
+            @cancel="closeDeleteModal" @confirm="confirmDelete" />
     </div>
 </template>
 
@@ -70,10 +73,22 @@ const props = defineProps({
     rowKey: {
         type: String,
         default: 'id'
+    },
+    tableName: {
+        type: String,
+        default: 'tabla'
     }
 })
 
 const emit = defineEmits(['edit', 'delete'])
+
+const deleteModal = ref({
+    isOpen: false,
+    item: null,
+    index: null,
+    itemName: '',
+    tableName: ''
+})
 
 const getNestedValue = (obj, path) => {
     return path.split('.').reduce((current, key) => current?.[key], obj)
@@ -81,5 +96,30 @@ const getNestedValue = (obj, path) => {
 
 const getRowKey = (item, index) => {
     return getNestedValue(item, props.rowKey) || index
+}
+
+const openDeleteModal = (item, index) => {
+    deleteModal.value = {
+        isOpen: true,
+        item: item,
+        index: index,
+        itemName: item.name || item.titulo || item.id || 'este elemento',
+        tableName: props.tableName
+    }
+}
+
+const closeDeleteModal = () => {
+    deleteModal.value = {
+        isOpen: false,
+        item: null,
+        index: null,
+        itemName: '',
+        tableName: ''
+    }
+}
+
+const confirmDelete = () => {
+    emit('delete', deleteModal.value.item, deleteModal.value.index)
+    closeDeleteModal()
 }
 </script>

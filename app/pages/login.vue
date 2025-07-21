@@ -2,7 +2,7 @@
     <DefaultSection>
         <HeadingH1>Iniciar sesión</HeadingH1>
 
-        <FormLayout class="gap-4 lg:gap-7">
+        <FormContainer class="gap-4 lg:gap-7">
             <FormFieldsContainer>
                 <FormTextField v-model="formData.email" label="Correo electrónico" id="correo-electronico" type="email"
                     placeholder="stevejobs" autocomplete="username" :error="errors.email" required
@@ -24,7 +24,7 @@
                     Iniciando sesión...
                 </span>
             </ButtonPrimary>
-        </FormLayout>
+        </FormContainer>
     </DefaultSection>
 </template>
 

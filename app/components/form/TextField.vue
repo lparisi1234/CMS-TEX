@@ -1,6 +1,6 @@
 <template>
     <div class="w-full flex flex-col gap-2">
-        <FormLabel :id="id" v-if="label">{{ label }}</FormLabel>
+        <FormLabel :id="id" :required="required" v-if="label">{{ label }}</FormLabel>
 
         <input :id="inputId" :type="type" :placeholder="placeholder" :value="modelValue" :required="required"
             @input="handleInput" @blur="handleBlur" @focus="handleFocus" :autocomplete="autocomplete"

@@ -4,7 +4,7 @@ const tablas = {
             name: 'Segmentos',
             slug: 'segmentos',
             icon: 'cards',
-            endpoint: 'segmentos',
+            endpoint: 'segmentos/segmentos',
             botonTexto: 'Crear nuevo segmento',
             columns: [
                 {
@@ -13,19 +13,9 @@ const tablas = {
                     type: 'text'
                 },
                 {
-                    key: 'txt_header',
+                    key: 'texto_header',
                     label: 'Texto Header',
                     type: 'text'
-                },
-                {
-                    key: 'txt_footer',
-                    label: 'Texto Footer',
-                    type: 'text'
-                },
-                {
-                    key: 'vencimiento_header',
-                    label: 'Vencimiento Header',
-                    type: 'datetime'
                 },
                 {
                     key: 'estado',
@@ -33,15 +23,14 @@ const tablas = {
                     type: 'badge'
                 },
                 {
-                    key: 'codigo_newton',
+                    key: 'cod_newton',
                     label: 'Código Newton',
                     type: 'number'
                 },
                 {
-                    key: 'monedaId',
+                    key: 'moneda',
                     label: 'Moneda',
-                    type: 'select',
-                    relatedTable: 'monedas'
+                    type: 'text'
                 }
             ]
         },
@@ -124,6 +113,20 @@ const tablas = {
             ]
         },
         {
+            name: 'Número de WhatsApp',
+            slug: 'whatsapp',
+            icon: 'brand-whatsapp',
+            endpoint: 'whatsapp',
+            botonTexto: 'Crear nuevo número de WhatsApp',
+            columns: [
+                {
+                    key: 'whatsapp',
+                    label: 'Whatsapp',
+                    type: 'text'
+                },
+            ]
+        },
+        {
             name: 'Países Operativos',
             slug: 'paises-operativos',
             icon: 'flag',
@@ -151,7 +154,7 @@ const tablas = {
             name: 'Destinos',
             slug: 'destinos',
             icon: 'location',
-            endpoint: 'destinos',
+            endpoint: 'destinos/destinos',
             botonTexto: 'Crear nuevo destino',
             columns: [
                 {
@@ -246,7 +249,7 @@ const tablas = {
             name: 'Categorías',
             slug: 'categorias',
             icon: 'bookmark',
-            endpoint: 'categorias',
+            endpoint: 'categorias/categorias',
             botonTexto: 'Crear nueva categoría',
             columns: [
                 {
@@ -338,7 +341,7 @@ const tablas = {
                     key: 'idExperto',
                     label: 'Experto',
                     type: 'select',
-                    relatedTable: 'expertos'
+                    relatedTable: 'expertos/expertos'
                 },
                 {
                     key: 'consejo_experto',
@@ -381,50 +384,6 @@ const tablas = {
                 }
             ]
         },
-        {
-            name: 'Grupos de oferta',
-            slug: 'grupos-de-oferta',
-            icon: 'rosette-discount-check',
-            endpoint: 'offer-groups',
-            botonTexto: 'Crear nuevo grupo de oferta',
-            columns: [
-                {
-                    key: 'descripcion',
-                    label: 'Descripción',
-                    type: 'text'
-                },
-                {
-                    key: 'segundaDescripcion',
-                    label: 'Segunda Descripción',
-                    type: 'text'
-                },
-                {
-                    key: 'img',
-                    label: 'Imagen',
-                    type: 'image'
-                },
-                {
-                    key: 'nro_orden',
-                    label: 'Número de Orden',
-                    type: 'number'
-                },
-                {
-                    key: 'url',
-                    label: 'URL',
-                    type: 'text'
-                },
-                {
-                    key: 'estado',
-                    label: 'Estado',
-                    type: 'badge'
-                },
-                {
-                    key: 'segmentosExcluidos',
-                    label: 'Segmentos Excluidos',
-                    type: 'text'
-                }
-            ]
-        }
     ],
     administracion: [
         {
@@ -597,6 +556,41 @@ const tablas = {
             ]
         },
         {
+            name: 'Destinos destacados Home',
+            slug: 'destinos-destacados-home',
+            icon: 'world-star',
+            endpoint: 'destinos-destacados-home',
+            botonTexto: 'Crear nuevo Destino Destacado Home',
+            columns: [
+                {
+                    key: 'destino_id',
+                    label: 'Destino',
+                    type: 'select',
+                    relatedTable: 'destinos',
+                    required: true
+                },
+                {
+                    key: 'segmentos_id',
+                    label: 'Segmento',
+                    type: 'select',
+                    relatedTable: 'segmentos',
+                    required: true
+                },
+                {
+                    key: 'nro_orden',
+                    label: 'Número de Orden',
+                    type: 'number',
+                    required: true
+                },
+                {
+                    key: 'precio_desde',
+                    label: 'Precio Desde',
+                    type: 'currency',
+                    required: true
+                }
+            ]
+        },
+        {
             name: 'Opiniones',
             slug: 'opiniones',
             icon: 'message-chatbot',
@@ -720,29 +714,34 @@ const tablas = {
             botonTexto: 'Crear nueva nota de blog',
             columns: [
                 {
-                    key: 'autor',
-                    label: 'Autor',
-                    type: 'text'
+                    key: 'titulo',
+                    label: 'Título',
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'img',
                     label: 'Imagen',
-                    type: 'image'
+                    type: 'image',
+                    required: true
+                },
+                {
+                    key: 'autor',
+                    label: 'Autor',
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'fecha',
                     label: 'Fecha',
-                    type: 'date'
+                    type: 'date',
+                    required: true
                 },
                 {
                     key: 'estado',
                     label: 'Estado',
-                    type: 'badge'
-                },
-                {
-                    key: 'titulo',
-                    label: 'Título',
-                    type: 'text'
+                    type: 'badge',
+                    required: true
                 },
                 {
                     key: 'destacado_home',
@@ -750,24 +749,24 @@ const tablas = {
                     type: 'boolean'
                 },
                 {
+                    key: 'destino_id',
+                    label: 'Destino',
+                    type: 'select',
+                    relatedTable: 'destinos'
+                },
+                {
                     key: 'categoria_id',
                     label: 'Categoría',
                     type: 'select',
                     relatedTable: 'categorias'
                 },
-                {
-                    key: 'destino_id',
-                    label: 'Destino',
-                    type: 'select',
-                    relatedTable: 'destinos'
-                }
             ]
         },
         {
             name: 'Expertos',
             slug: 'expertos',
             icon: 'users-group',
-            endpoint: 'expertos',
+            endpoint: 'expertos/expertos',
             botonTexto: 'Crear nuevo experto',
             columns: [
                 {
