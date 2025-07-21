@@ -4,41 +4,41 @@ export default defineEventHandler(async (event) => {
     try {
     const {
       descripcion,
-      codigo,
-      importe,
+      img,
+      url,
       estado
     } = await readBody(event)
 
     if (
       descripcion === undefined ||
-      codigo === undefined ||
-      importe === undefined ||
+      img === undefined ||
+      url === undefined ||
       estado === undefined
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
     const query = `
-      INSERT INTO "Moneda" (
+      INSERT INTO "NotaDePrensa" (
         descripcion,
-        codigo,
-        importe,
+        img,
+        url,
         estado
       ) VALUES ($1, $2, $3, $4)
       RETURNING *;
     `;
 
     const values = [
-      descripcion,
-      codigo,
-      importe,
+     descripcion,
+      img,
+      url,
       estado
     ];
 
     const result = await pool.query(query, values)
-    return { success: true, message: 'Monedas creado correctamente', moneda: result.rows[0] }
+    return { success: true, message: 'Nota de Prensa creado correctamente', blog: result.rows[0] }
   } catch (error) {
-    console.error('Error creando Monedas:', error)
-    return { success: false, message: 'Error creando Monedas' }
+    console.error('Error creando Nota de Prensa:', error)
+    return { success: false, message: 'Error creando Nota de Prensa' }
   }
 })
