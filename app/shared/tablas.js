@@ -13,24 +13,35 @@ const tablas = {
                     type: 'text'
                 },
                 {
+                    key: 'txt_header',
+                    label: 'Texto Header',
+                    type: 'text'
+                },
+                {
+                    key: 'txt_footer',
+                    label: 'Texto Footer',
+                    type: 'text'
+                },
+                {
+                    key: 'vencimiento_header',
+                    label: 'Vencimiento Header',
+                    type: 'datetime'
+                },
+                {
                     key: 'estado',
                     label: 'Estado',
                     type: 'badge'
                 },
                 {
-                    key: 'moneda',
-                    label: 'Moneda',
-                    type: 'text'
-                },
-                {
-                    key: 'codNewton',
-                    label: 'Cód. Newton',
+                    key: 'codigo_newton',
+                    label: 'Código Newton',
                     type: 'number'
                 },
                 {
-                    key: 'textoHeader',
-                    label: 'Texto Header',
-                    type: 'text'
+                    key: 'monedaId',
+                    label: 'Moneda',
+                    type: 'select',
+                    relatedTable: 'monedas'
                 }
             ]
         },
@@ -42,8 +53,8 @@ const tablas = {
             botonTexto: 'Crear nueva moneda',
             columns: [
                 {
-                    key: 'nombre',
-                    label: 'Nombre',
+                    key: 'descripcion',
+                    label: 'Descripción',
                     type: 'text'
                 },
                 {
@@ -52,19 +63,14 @@ const tablas = {
                     type: 'text'
                 },
                 {
-                    key: 'simbolo',
-                    label: 'Símbolo',
-                    type: 'text'
-                },
-                {
-                    key: 'tasaCambio',
-                    label: 'Tasa de Cambio',
+                    key: 'importe',
+                    label: 'Importe',
                     type: 'currency'
                 },
                 {
-                    key: 'activa',
-                    label: 'Activa',
-                    type: 'boolean'
+                    key: 'estado',
+                    label: 'Estado',
+                    type: 'badge'
                 }
             ]
         },
@@ -81,82 +87,63 @@ const tablas = {
                     type: 'text'
                 },
                 {
-                    key: 'pais',
-                    label: 'País',
-                    type: 'text'
-                },
-                {
-                    key: 'telefono',
-                    label: 'Teléfono',
-                    type: 'text'
-                },
-                {
-                    key: 'email',
-                    label: 'Email',
-                    type: 'text'
-                },
-                {
                     key: 'estado',
                     label: 'Estado',
                     type: 'badge'
+                },
+                {
+                    key: 'certificado',
+                    label: 'Certificado',
+                    type: 'text'
+                },
+                {
+                    key: 'codigo',
+                    label: 'Código',
+                    type: 'text'
+                },
+                {
+                    key: 'nro_orden',
+                    label: 'Número de Orden',
+                    type: 'number'
+                },
+                {
+                    key: 'img',
+                    label: 'Imagen',
+                    type: 'image'
+                },
+                {
+                    key: 'txt_contacto',
+                    label: 'Texto Contacto',
+                    type: 'text'
+                },
+                {
+                    key: 'txt_cancelaciones',
+                    label: 'Texto Cancelaciones',
+                    type: 'text'
                 }
             ]
         },
         {
-            name: 'Teléfonos',
-            slug: 'telefonos',
-            icon: 'phone',
-            endpoint: 'telefonos',
-            botonTexto: 'Crear nuevo teléfono',
+            name: 'Países Operativos',
+            slug: 'paises-operativos',
+            icon: 'flag',
+            endpoint: 'paises-operativos',
+            botonTexto: 'Crear nuevo país operativo',
             columns: [
                 {
                     key: 'numero',
                     label: 'Número',
+                    type: 'number'
+                },
+                {
+                    key: 'img',
+                    label: 'Imagen',
+                    type: 'image'
+                },
+                {
+                    key: 'pais_apertura',
+                    label: 'País Apertura',
                     type: 'text'
-                },
-                {
-                    key: 'pais',
-                    label: 'País',
-                    type: 'text'
-                },
-                {
-                    key: 'tipo',
-                    label: 'Tipo',
-                    type: 'badge'
-                },
-                {
-                    key: 'activo',
-                    label: 'Activo',
-                    type: 'boolean'
-                }
-            ]
-        },
-        {
-            name: 'Número de WhatsApp',
-            slug: 'numero-de-whatsapp',
-            icon: 'brand-whatsapp',
-            endpoint: 'whatsapp-numbers',
-            botonTexto: 'Crear nuevo número de WhatsApp',
-            columns: [
-                {
-                    key: 'numero',
-                    label: 'Número',
-                    type: 'text'
-                },
-                {
-                    key: 'nombre',
-                    label: 'Nombre',
-                    type: 'text'
-                },
-                {
-                    key: 'segmento',
-                    label: 'Segmento',
-                    type: 'text'
-                },
-                {
-                    key: 'activo',
-                    label: 'Activo',
-                    type: 'boolean'
                 }
             ]
         },
@@ -168,29 +155,90 @@ const tablas = {
             botonTexto: 'Crear nuevo destino',
             columns: [
                 {
+                    key: 'url',
+                    label: 'URL',
+                    type: 'text'
+                },
+                {
                     key: 'nombre',
                     label: 'Nombre',
                     type: 'text'
                 },
                 {
-                    key: 'pais',
-                    label: 'País',
+                    key: 'h1',
+                    label: 'H1',
                     type: 'text'
                 },
                 {
-                    key: 'codigo',
-                    label: 'Código',
+                    key: 'h2',
+                    label: 'H2',
                     type: 'text'
                 },
                 {
-                    key: 'categoria',
-                    label: 'Categoría',
+                    key: 'video_mobile',
+                    label: 'Video Mobile',
+                    type: 'text'
+                },
+                {
+                    key: 'video_desktop',
+                    label: 'Video Desktop',
+                    type: 'text'
+                },
+                {
+                    key: 'experto_id',
+                    label: 'Experto',
+                    type: 'select',
+                    relatedTable: 'expertos'
+                },
+                {
+                    key: 'consejo_experto',
+                    label: 'Consejo Experto',
+                    type: 'text'
+                },
+                {
+                    key: 'img',
+                    label: 'Imagen',
+                    type: 'image'
+                },
+                {
+                    key: 'txt_search',
+                    label: 'Texto Search',
+                    type: 'text'
+                },
+                {
+                    key: 'meta_titulo',
+                    label: 'Meta Título',
+                    type: 'text'
+                },
+                {
+                    key: 'meta_descripcion',
+                    label: 'Meta Descripción',
+                    type: 'text'
+                },
+                {
+                    key: 'meta_keywords',
+                    label: 'Meta Keywords',
+                    type: 'text'
+                },
+                {
+                    key: 'mapa',
+                    label: 'Coordenadas del Mapa',
+                    type: 'text'
+                },
+                {
+                    key: 'estado',
+                    label: 'Estado',
                     type: 'badge'
                 },
                 {
-                    key: 'popular',
-                    label: 'Popular',
-                    type: 'boolean'
+                    key: 'nro_orden',
+                    label: 'Número de Orden',
+                    type: 'number'
+                },
+                {
+                    key: 'desde_precio',
+                    label: 'Precio Desde',
+                    type: 'currency'
                 }
             ]
         },
@@ -212,19 +260,95 @@ const tablas = {
                     type: 'text'
                 },
                 {
-                    key: 'color',
-                    label: 'Color',
+                    key: 'h1',
+                    label: 'H1',
                     type: 'text'
                 },
                 {
-                    key: 'orden',
-                    label: 'Orden',
+                    key: 'h2',
+                    label: 'H2',
+                    type: 'text'
+                },
+                {
+                    key: 'meta_titulo',
+                    label: 'Meta Título',
+                    type: 'text'
+                },
+                {
+                    key: 'meta_descripcion',
+                    label: 'Meta Descripción',
+                    type: 'text'
+                },
+                {
+                    key: 'meta_keywords',
+                    label: 'Meta Keywords',
+                    type: 'text'
+                },
+                {
+                    key: 'icono',
+                    label: 'Ícono',
+                    type: 'text'
+                },
+                {
+                    key: 'coordenadas_icono',
+                    label: 'Coordenadas Ícono',
+                    type: 'text'
+                },
+                {
+                    key: 'coordenadas_icono_hover',
+                    label: 'Coordenadas Ícono Hover',
+                    type: 'text'
+                },
+                {
+                    key: 'nro_orden',
+                    label: 'Número de Orden',
                     type: 'number'
                 },
                 {
-                    key: 'activa',
-                    label: 'Activa',
-                    type: 'boolean'
+                    key: 'img_carousel',
+                    label: 'Imagen Carousel',
+                    type: 'image'
+                },
+                {
+                    key: 'img_search',
+                    label: 'Imagen Search',
+                    type: 'image'
+                },
+                {
+                    key: 'video_mobile',
+                    label: 'Video Mobile',
+                    type: 'text'
+                },
+                {
+                    key: 'video_desktop',
+                    label: 'Video Desktop',
+                    type: 'text'
+                },
+                {
+                    key: 'estado',
+                    label: 'Estado',
+                    type: 'badge'
+                },
+                {
+                    key: 'codigo_newton',
+                    label: 'Código Newton',
+                    type: 'number'
+                },
+                {
+                    key: 'idExperto',
+                    label: 'Experto',
+                    type: 'select',
+                    relatedTable: 'expertos'
+                },
+                {
+                    key: 'consejo_experto',
+                    label: 'Consejo Experto',
+                    type: 'text'
+                },
+                {
+                    key: 'url',
+                    label: 'URL',
+                    type: 'text'
                 }
             ]
         },
@@ -241,24 +365,19 @@ const tablas = {
                     type: 'text'
                 },
                 {
-                    key: 'porcentaje',
-                    label: 'Porcentaje',
-                    type: 'number'
-                },
-                {
-                    key: 'fechaInicio',
-                    label: 'Fecha Inicio',
-                    type: 'date'
-                },
-                {
-                    key: 'fechaFin',
-                    label: 'Fecha Fin',
-                    type: 'date'
+                    key: 'img',
+                    label: 'Imagen',
+                    type: 'image'
                 },
                 {
                     key: 'estado',
                     label: 'Estado',
                     type: 'badge'
+                },
+                {
+                    key: 'codigo_newton',
+                    label: 'Código Newton',
+                    type: 'number'
                 }
             ]
         },
@@ -270,29 +389,39 @@ const tablas = {
             botonTexto: 'Crear nuevo grupo de oferta',
             columns: [
                 {
-                    key: 'nombre',
-                    label: 'Nombre',
-                    type: 'text'
-                },
-                {
                     key: 'descripcion',
                     label: 'Descripción',
                     type: 'text'
                 },
                 {
-                    key: 'cantidadOfertas',
-                    label: 'Ofertas',
+                    key: 'segundaDescripcion',
+                    label: 'Segunda Descripción',
+                    type: 'text'
+                },
+                {
+                    key: 'img',
+                    label: 'Imagen',
+                    type: 'image'
+                },
+                {
+                    key: 'nro_orden',
+                    label: 'Número de Orden',
                     type: 'number'
                 },
                 {
-                    key: 'fechaCreacion',
-                    label: 'Fecha Creación',
-                    type: 'date'
+                    key: 'url',
+                    label: 'URL',
+                    type: 'text'
                 },
                 {
-                    key: 'activo',
-                    label: 'Activo',
-                    type: 'boolean'
+                    key: 'estado',
+                    label: 'Estado',
+                    type: 'badge'
+                },
+                {
+                    key: 'segmentosExcluidos',
+                    label: 'Segmentos Excluidos',
+                    type: 'text'
                 }
             ]
         }
@@ -306,30 +435,251 @@ const tablas = {
             botonTexto: 'Crear nuevo producto',
             columns: [
                 {
+                    key: 'nombreprod',
+                    label: 'Nombre Producto',
+                    type: 'text'
+                },
+                {
+                    key: 'h1',
+                    label: 'H1',
+                    type: 'text'
+                },
+                {
+                    key: 'img',
+                    label: 'Imagen',
+                    type: 'image'
+                },
+                {
+                    key: 'img_mobile',
+                    label: 'Imagen Mobile',
+                    type: 'image'
+                },
+                {
+                    key: 'video_mapa_mobile',
+                    label: 'Video Mapa Mobile',
+                    type: 'text'
+                },
+                {
+                    key: 'video_mapa_desktop',
+                    label: 'Video Mapa Desktop',
+                    type: 'text'
+                },
+                {
+                    key: 'podcast',
+                    label: 'Podcast',
+                    type: 'text'
+                },
+                {
+                    key: 'codigo_newton',
+                    label: 'Código Newton',
+                    type: 'number'
+                },
+                {
+                    key: 'url',
+                    label: 'URL',
+                    type: 'text'
+                },
+                {
+                    key: 'cantidad_estrellas',
+                    label: 'Cantidad Estrellas',
+                    type: 'number'
+                },
+                {
+                    key: 'cantidadAport',
+                    label: 'Cantidad Aportaciones',
+                    type: 'number'
+                },
+                {
+                    key: 'consejo_experto',
+                    label: 'Consejo Experto',
+                    type: 'text'
+                },
+                {
+                    key: 'expertoId',
+                    label: 'Experto',
+                    type: 'select',
+                    relatedTable: 'expertos'
+                },
+                {
+                    key: 'meta_titulo',
+                    label: 'Meta Título',
+                    type: 'text'
+                },
+                {
+                    key: 'meta_descripcion',
+                    label: 'Meta Descripción',
+                    type: 'text'
+                },
+                {
+                    key: 'estado',
+                    label: 'Estado',
+                    type: 'badge'
+                }
+            ]
+        },
+        {
+            name: 'Grupos de Oferta',
+            slug: 'grupos-de-oferta',
+            icon: 'rosette-discount-check',
+            endpoint: 'grupos-de-oferta',
+            botonTexto: 'Crear nuevo grupo de oferta',
+            columns: [
+                {
+                    key: 'descripcion',
+                    label: 'Descripción',
+                    type: 'text'
+                },
+                {
+                    key: 'segundaDescripcion',
+                    label: 'Segunda Descripción',
+                    type: 'text'
+                },
+                {
+                    key: 'img',
+                    label: 'Imagen',
+                    type: 'image'
+                },
+                {
+                    key: 'nro_orden',
+                    label: 'Número de Orden',
+                    type: 'number'
+                },
+                {
+                    key: 'url',
+                    label: 'URL',
+                    type: 'text'
+                },
+                {
+                    key: 'estado',
+                    label: 'Estado',
+                    type: 'badge'
+                },
+                {
+                    key: 'segmentosExcluidos',
+                    label: 'Segmentos Excluidos',
+                    type: 'text'
+                }
+            ]
+        },
+        {
+            name: 'Qué esperar Categorías',
+            slug: 'que-esperar-categorias',
+            icon: 'star',
+            endpoint: 'que-esperar-categorias',
+            botonTexto: 'Crear nuevo Que Esperar',
+            columns: [
+                {
+                    key: 'titulo',
+                    label: 'Título',
+                    type: 'text'
+                },
+                {
+                    key: 'texto',
+                    label: 'Texto',
+                    type: 'text'
+                },
+                {
+                    key: 'img',
+                    label: 'Imagen',
+                    type: 'image'
+                },
+                {
+                    key: 'nro_orden',
+                    label: 'Número de Orden',
+                    type: 'number'
+                },
+                {
+                    key: 'categoriaId',
+                    label: 'Categoría',
+                    type: 'select',
+                    relatedTable: 'categorias'
+                }
+            ]
+        },
+        {
+            name: 'Opiniones',
+            slug: 'opiniones',
+            icon: 'message-chatbot',
+            endpoint: 'opiniones',
+            botonTexto: 'Crear nueva Opinión',
+            columns: [
+                {
                     key: 'nombre',
                     label: 'Nombre',
                     type: 'text'
                 },
                 {
-                    key: 'precio',
-                    label: 'Precio',
-                    type: 'currency',
-                    currency: 'EUR'
-                },
-                {
-                    key: 'categoria',
-                    label: 'Categoría',
+                    key: 'tour',
+                    label: 'Tour',
                     type: 'text'
                 },
                 {
-                    key: 'fechaCreacion',
-                    label: 'Fecha Creación',
-                    type: 'date'
+                    key: 'img',
+                    label: 'Imagen',
+                    type: 'image'
                 },
                 {
-                    key: 'activo',
-                    label: 'Activo',
+                    key: 'rating',
+                    label: 'Rating',
+                    type: 'number'
+                },
+                {
+                    key: 'comentario',
+                    label: 'Comentario',
+                    type: 'text'
+                },
+                {
+                    key: 'estado',
+                    label: 'Estado',
+                    type: 'badge'
+                },
+                {
+                    key: 'destacado',
+                    label: 'Destacado',
                     type: 'boolean'
+                },
+                {
+                    key: 'producto_Id',
+                    label: 'Producto',
+                    type: 'select',
+                    relatedTable: 'productos'
+                },
+                {
+                    key: 'categoria_id',
+                    label: 'Categoría',
+                    type: 'select',
+                    relatedTable: 'categorias'
+                },
+                {
+                    key: 'destino_id',
+                    label: 'Destino',
+                    type: 'select',
+                    relatedTable: 'destinos'
+                }
+            ]
+        },
+        {
+            name: 'Preguntas Frecuentes',
+            slug: 'preguntas-frecuentes',
+            icon: 'zoom-question',
+            endpoint: 'preguntas-frecuentes',
+            botonTexto: 'Crear nueva Pregunta Frecuente',
+            columns: [
+                {
+                    key: 'pregunta',
+                    label: 'Pregunta',
+                    type: 'text'
+                },
+                {
+                    key: 'respuesta',
+                    label: 'Respuesta',
+                    type: 'text'
+                },
+                {
+                    key: 'destino_id',
+                    label: 'Destino',
+                    type: 'select',
+                    relatedTable: 'destinos'
                 }
             ]
         },
@@ -341,29 +691,24 @@ const tablas = {
             botonTexto: 'Crear nueva nota de prensa',
             columns: [
                 {
-                    key: 'titulo',
-                    label: 'Título',
+                    key: 'descripcion',
+                    label: 'Descripción',
                     type: 'text'
                 },
                 {
-                    key: 'autor',
-                    label: 'Autor',
-                    type: 'text'
+                    key: 'img',
+                    label: 'Imagen',
+                    type: 'image'
                 },
                 {
-                    key: 'fechaPublicacion',
-                    label: 'Fecha Publicación',
-                    type: 'date'
+                    key: 'url',
+                    label: 'URL',
+                    type: 'text'
                 },
                 {
                     key: 'estado',
                     label: 'Estado',
                     type: 'badge'
-                },
-                {
-                    key: 'destacada',
-                    label: 'Destacada',
-                    type: 'boolean'
                 }
             ]
         },
@@ -375,9 +720,24 @@ const tablas = {
             botonTexto: 'Crear nueva nota de blog',
             columns: [
                 {
+                    key: 'autor',
+                    label: 'Autor',
+                    type: 'text'
+                },
+                {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image'
+                },
+                {
+                    key: 'fecha',
+                    label: 'Fecha',
+                    type: 'date'
+                },
+                {
+                    key: 'estado',
+                    label: 'Estado',
+                    type: 'badge'
                 },
                 {
                     key: 'titulo',
@@ -385,13 +745,39 @@ const tablas = {
                     type: 'text'
                 },
                 {
-                    key: 'autor',
-                    label: 'Autor',
-                    type: 'text'
+                    key: 'destacado_home',
+                    label: 'Destacado Home',
+                    type: 'boolean'
                 },
                 {
-                    key: 'fecha',
-                    label: 'Fecha',
+                    key: 'categoria_id',
+                    label: 'Categoría',
+                    type: 'select',
+                    relatedTable: 'categorias'
+                },
+                {
+                    key: 'destino_id',
+                    label: 'Destino',
+                    type: 'select',
+                    relatedTable: 'destinos'
+                }
+            ]
+        },
+        {
+            name: 'Expertos',
+            slug: 'expertos',
+            icon: 'users-group',
+            endpoint: 'expertos',
+            botonTexto: 'Crear nuevo experto',
+            columns: [
+                {
+                    key: 'img',
+                    label: 'Imagen',
+                    type: 'image'
+                },
+                {
+                    key: 'nombre',
+                    label: 'Nombre',
                     type: 'text'
                 }
             ]

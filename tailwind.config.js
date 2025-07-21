@@ -13,6 +13,7 @@ export default {
                 primary: '#D3245C',
                 secondary: '#2E0049',
                 terciary: '#E580A0',
+                violet: '#63198F',
                 dark: '#131313',
                 gray: {
                     light: '#E8E9E9',

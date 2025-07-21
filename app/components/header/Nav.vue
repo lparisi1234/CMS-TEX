@@ -11,8 +11,8 @@
                 enter-from-class="opacity-0 -translate-x-full" enter-to-class="opacity-100 translate-x-0"
                 leave-active-class="transition-all duration-200 ease-in" leave-from-class="opacity-100 translate-x-0"
                 leave-to-class="opacity-0 -translate-x-full">
-                <div v-if="isMenuOpen" class="h-full flex fixed inset-0 z-40" @click="closeMenu">
-                    <nav class="w-full max-w-[17.25rem] h-full relative flex flex-col justify-between bg-secondary shadow-menu p-3 pt-6"
+                <div v-if="isMenuOpen" class="flex fixed inset-0 z-40" @click="closeMenu">
+                    <nav class="w-full max-w-[17.25rem] relative flex flex-col gap-4 justify-between bg-secondary shadow-menu p-3 pt-6 overflow-auto"
                         @click.stop>
                         <div class="flex flex-col gap-4">
                             <div class="flex items-center justify-between pl-3">
@@ -56,7 +56,7 @@
                         </div>
 
                         <button @click="logout"
-                            class="flex items-center gap-3 text-light font-light py-[0.625rem] px-3">
+                            class="flex items-center gap-3 bg-violet rounded-[12px] text-light font-light py-[0.625rem] px-6">
                             <Icon name="tabler:logout" class="w-5 h-5" />
                             <span>Cerrar sesión</span>
                         </button>
