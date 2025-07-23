@@ -1,55 +1,37 @@
 <template>
     <DefaultSection class="lg:!gap-8">
         <HeadingH1>Número de WhatsApp</HeadingH1>
-        
-        <div class="bg-white rounded-lg shadow-sm border p-6 max-w-2xl">
-            <div class="flex items-center justify-between">
-                <div class="flex-1 mr-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Número de WhatsApp:
-                    </label>
-                    
-                    <!-- Modo visualización -->
-                    <div v-if="!isEditing" class="text-lg font-semibold text-gray-900">
-                        {{ currentWhatsapp || 'No configurado' }}
-                    </div>
-                    
-                    <!-- Modo edición -->
-                    <div v-else class="flex items-center gap-3">
-                        <input
-                            v-model="editedWhatsapp"
-                            type="text"
-                            placeholder="+54 9 11 1234-5678"
-                            class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
-                            @keyup.enter="handleSave"
-                            @keyup.escape="handleCancel"
-                            ref="whatsappInput"
-                        />
-                    </div>
+
+        <div class="flex items-center flex-wrap gap-6">
+            <div class="flex items-center flex-wrap gap-2">
+                <FormLabel id="whatsapp" class="font-medium">
+                    Teléfono actual publicado:
+                </FormLabel>
+                <div class="w-64">
+                    <p v-if="!isEditing" class="w-full text-xl font-light">{{ currentWhatsapp || 'No configurado' }}</p>
+                    <FormTextField v-else id="whatsapp" v-model="editedWhatsapp" type="text"
+                        placeholder="+54 9 11 1234-5678" @keyup.enter="handleSave" @keyup.escape="handleCancel"
+                        ref="whatsappInput" class="w-full" />
                 </div>
-                
-                <!-- Botones de acción -->
-                <div class="flex items-center gap-2">
-                    <ButtonPrimary v-if="!isEditing" @click="startEditing" class="!px-4">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                        </svg>
-                        Editar
-                    </ButtonPrimary>
-                    
-                    <template v-else>
-                        <button @click="handleSave" class="p-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                        </button>
-                        <button @click="handleCancel" class="p-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 flex items-center">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
-                    </template>
-                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button v-if="!isEditing" @click="startEditing"
+                    class="w-10 h-10 flex justify-center items-center bg-gray-mid rounded-[5px]"
+                    aria-label="Editar WhatsApp">
+                    <Icon name="tabler:edit" class="w-5 h-5 text-primary" />
+                </button>
+
+                <template v-else>
+                    <button @click="handleSave"
+                        class="flex items-center bg-primary text-white rounded-lg p-2">
+                        <Icon name="tabler:check" class="w-5 h-5" />
+                    </button>
+                    <button @click="handleCancel"
+                        class="flex items-center bg-gray-dark text-white rounded-lg p-2">
+                        <Icon name="tabler:x" class="w-5 h-5" />
+                    </button>
+                </template>
             </div>
         </div>
     </DefaultSection>
@@ -63,7 +45,6 @@ const currentWhatsapp = ref('')
 const editedWhatsapp = ref('')
 const whatsappInput = ref(null)
 
-// Cargar el primer número de WhatsApp (asumimos que solo hay uno)
 onMounted(() => {
     if (whatsappData.length > 0) {
         currentWhatsapp.value = whatsappData[0].whatsapp
@@ -85,17 +66,13 @@ const handleSave = async () => {
         alert('Por favor, ingresa un número de WhatsApp válido')
         return
     }
-    
+
     try {
-        // Aquí harías la llamada a la API para guardar
-        // await fetch('/api/whatsapp/update', { 
-        //     method: 'PUT', 
-        //     body: JSON.stringify({ whatsapp: editedWhatsapp.value })
-        // })
-        
+        // PUT
+
         currentWhatsapp.value = editedWhatsapp.value
         isEditing.value = false
-        
+
         console.log('WhatsApp actualizado:', editedWhatsapp.value)
     } catch (error) {
         console.error('Error al actualizar WhatsApp:', error)

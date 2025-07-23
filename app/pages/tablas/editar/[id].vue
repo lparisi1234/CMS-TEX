@@ -80,6 +80,8 @@
 </template>
 
 <script setup>
+import { ROUTE_NAMES } from '~/constants/ROUTE_NAMES'
+
 const route = useRoute()
 const router = useRouter()
 
@@ -87,7 +89,7 @@ const tablaSlug = route.query.tabla
 const itemId = route.params.id
 
 if (!tablaSlug || !itemId) {
-    await router.push('/tablas')
+    await router.push(ROUTE_NAMES.TABLAS)
 }
 
 const {
@@ -123,7 +125,7 @@ const handleSubmit = async () => {
         const dataToSubmit = prepareDataForSubmit()
         console.log('Datos a actualizar:', dataToSubmit)
 
-        await router.push(`/tablas/${tablaSlug}`)
+        await router.push(`${ROUTE_NAMES.TABLAS}/${tablaSlug}`)
 
     } catch (error) {
         console.error('Error al actualizar:', error)

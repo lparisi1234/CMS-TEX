@@ -185,7 +185,8 @@ const tablas = {
                 {
                     key: 'pais_apertura',
                     label: 'País Apertura',
-                    type: 'text'
+                    type: 'select',
+                    relatedTable: 'paises'
                 }
             ]
         },

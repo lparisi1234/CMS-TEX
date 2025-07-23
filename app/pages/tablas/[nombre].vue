@@ -34,17 +34,16 @@ if (!tabla) {
     })
 }
 
-// Redirigir a páginas especiales
 if (nombreSlug === 'whatsapp') {
-    await navigateTo('/tablas/whatsapp')
+    await navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.WHATSAPP}`)
 }
 
 if (nombreSlug === 'destinos') {
-    await navigateTo('/tablas/destinos')
+    await navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.DESTINOS}`)
 }
 
 if (nombreSlug === 'productos') {
-    await navigateTo('/tablas/productos')
+    await navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.PRODUCTOS}`)
 }
 
 // Endpoint
@@ -111,10 +110,8 @@ const handleEdit = (item) => {
 
 const handleDelete = async (item) => {
     try {
-        // Aquí puedes implementar tu lógica de eliminación
         console.log(`Item de ${tabla.name} eliminado correctamente`)
 
-        // Actualizar los datos después de eliminar
     } catch (error) {
         console.error('Error al eliminar:', error)
     }

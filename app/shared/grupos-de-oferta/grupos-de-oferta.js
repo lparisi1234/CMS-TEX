@@ -7,7 +7,7 @@ const gruposDeOferta = [
         nro_orden: 1,
         url: "/ofertas/verano-especial",
         estado: "Activo",
-        segmentosExcluidos: [2]
+        segmentosExcluidos: '2'
     },
     {
         id: 2,
@@ -17,7 +17,7 @@ const gruposDeOferta = [
         nro_orden: 2,
         url: "/ofertas/latam-promociones",
         estado: "Activo",
-        segmentosExcluidos: [1]
+        segmentosExcluidos: '1'
     },
     {
         id: 3,
@@ -27,7 +27,7 @@ const gruposDeOferta = [
         nro_orden: 3,
         url: "/ofertas/black-friday",
         estado: "Inactivo",
-        segmentosExcluidos: [1, 2]
+        segmentosExcluidos: '1,2'
     }
 ]
 

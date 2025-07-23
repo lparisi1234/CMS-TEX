@@ -1,18 +1,11 @@
 <template>
     <DefaultSection class="lg:!gap-8">
         <HeadingH1>Países</HeadingH1>
-        
+
         <ButtonPrimary @click="handleCreate" class="!px-4 sm:!px-12">Crear nuevo país</ButtonPrimary>
-        
-        <TableLayout 
-            :data="paisesData" 
-            :columns="paisesColumns" 
-            :related-data="relatedData"
-            empty-state-text="No hay países creados"
-            table-name="Países"
-            @edit="handleEdit"
-            @delete="handleDelete" 
-        />
+
+        <TableLayout :data="paisesData" :columns="paisesColumns" :related-data="relatedData"
+            empty-state-text="No hay países creados" table-name="Países" @edit="handleEdit" @delete="handleDelete" />
     </DefaultSection>
 </template>
 
@@ -20,12 +13,10 @@
 import destinosData from '~/shared/destinos/destinos.js'
 import { ROUTE_NAMES } from '~/constants/ROUTE_NAMES'
 
-// Filtrar solo destinos que SÍ tienen regionId (son países)
 const paisesData = computed(() => {
     return destinosData.filter(destino => destino.regionId)
 })
 
-// Obtener regiones para mostrar en la tabla
 const regionesMap = computed(() => {
     const regiones = destinosData.filter(destino => !destino.regionId)
     const map = {}
@@ -42,19 +33,13 @@ const paisesColumns = [
         type: 'number'
     },
     {
-        key: 'nombre',
-        label: 'Nombre',
+        key: 'url',
+        label: 'URL',
         type: 'text'
     },
     {
-        key: 'regionId',
-        label: 'Región',
-        type: 'select',
-        relatedTable: 'regiones'
-    },
-    {
-        key: 'url',
-        label: 'URL',
+        key: 'nombre',
+        label: 'Nombre',
         type: 'text'
     },
     {
@@ -68,14 +53,76 @@ const paisesColumns = [
         type: 'text'
     },
     {
+        key: 'video_mobile',
+        label: 'Video Mobile',
+        type: 'image'
+    },
+    {
+        key: 'video_desktop',
+        label: 'Video Desktop',
+        type: 'image'
+    },
+    {
+        key: 'experto_id',
+        label: 'Experto',
+        type: 'select',
+        relatedTable: 'expertos'
+    },
+    {
+        key: 'consejo_experto',
+        label: 'Consejo Experto',
+        type: 'text'
+    },
+    {
+        key: 'img',
+        label: 'Imagen',
+        type: 'image'
+    },
+    {
+        key: 'txt_search',
+        label: 'Texto Search',
+        type: 'text'
+    },
+    {
+        key: 'meta_titulo',
+        label: 'Meta Título',
+        type: 'text'
+    },
+    {
+        key: 'meta_descripcion',
+        label: 'Meta Descripción',
+        type: 'text'
+    },
+    {
+        key: 'meta_keywords',
+        label: 'Meta Keywords',
+        type: 'text'
+    },
+    {
+        key: 'mapa',
+        label: 'Coordenadas',
+        type: 'text'
+    },
+    {
         key: 'estado',
         label: 'Estado',
         type: 'badge'
     },
     {
+        key: 'nro_orden',
+        label: 'Número de Orden',
+        type: 'number'
+    },
+    {
         key: 'desde_precio',
         label: 'Precio Desde',
         type: 'currency'
+    },
+    {
+        key: 'regionId',
+        label: 'Región',
+        type: 'select',
+        relatedTable: 'regiones'
     }
 ]
 
@@ -94,7 +141,7 @@ const handleEdit = (item) => {
 const handleDelete = async (item) => {
     try {
         console.log(`País ${item.nombre} eliminado correctamente`)
-        // Aquí harías la llamada a la API para eliminar
+        // DELETE
     } catch (error) {
         console.error('Error al eliminar:', error)
     }

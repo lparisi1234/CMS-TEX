@@ -1,18 +1,12 @@
 <template>
     <DefaultSection class="lg:!gap-8">
         <HeadingH1>Regiones</HeadingH1>
-        
+
         <ButtonPrimary @click="handleCreate" class="!px-4 sm:!px-12">Crear nueva región</ButtonPrimary>
-        
-        <TableLayout 
-            :data="regionesData" 
-            :columns="regionesColumns" 
-            :related-data="relatedData"
-            empty-state-text="No hay regiones creadas"
-            table-name="Regiones"
-            @edit="handleEdit"
-            @delete="handleDelete" 
-        />
+
+        <TableLayout :data="regionesData" :columns="regionesColumns" :related-data="relatedData"
+            empty-state-text="No hay regiones creadas" table-name="Regiones" @edit="handleEdit"
+            @delete="handleDelete" />
     </DefaultSection>
 </template>
 
@@ -20,7 +14,6 @@
 import destinosData from '~/shared/destinos/destinos.js'
 import { ROUTE_NAMES } from '~/constants/ROUTE_NAMES'
 
-// Filtrar solo destinos que NO tienen regionId (son regiones)
 const regionesData = computed(() => {
     return destinosData.filter(destino => !destino.regionId)
 })
@@ -32,13 +25,13 @@ const regionesColumns = [
         type: 'number'
     },
     {
-        key: 'nombre',
-        label: 'Nombre',
+        key: 'url',
+        label: 'URL',
         type: 'text'
     },
     {
-        key: 'url',
-        label: 'URL',
+        key: 'nombre',
+        label: 'Nombre',
         type: 'text'
     },
     {
@@ -52,9 +45,65 @@ const regionesColumns = [
         type: 'text'
     },
     {
+        key: 'video_mobile',
+        label: 'Video Mobile',
+        type: 'image'
+    },
+    {
+        key: 'video_desktop',
+        label: 'Video Desktop',
+        type: 'image'
+    },
+    {
+        key: 'experto_id',
+        label: 'Experto',
+        type: 'select',
+        relatedTable: 'expertos'
+    },
+    {
+        key: 'consejo_experto',
+        label: 'Consejo Experto',
+        type: 'text'
+    },
+    {
+        key: 'img',
+        label: 'Imagen',
+        type: 'image'
+    },
+    {
+        key: 'txt_search',
+        label: 'Texto Search',
+        type: 'text'
+    },
+    {
+        key: 'meta_titulo',
+        label: 'Meta Título',
+        type: 'text'
+    },
+    {
+        key: 'meta_descripcion',
+        label: 'Meta Descripción',
+        type: 'text'
+    },
+    {
+        key: 'meta_keywords',
+        label: 'Meta Keywords',
+        type: 'text'
+    },
+    {
+        key: 'mapa',
+        label: 'Coordenadas',
+        type: 'text'
+    },
+    {
         key: 'estado',
         label: 'Estado',
         type: 'badge'
+    },
+    {
+        key: 'nro_orden',
+        label: 'Número de Orden',
+        type: 'number'
     },
     {
         key: 'desde_precio',

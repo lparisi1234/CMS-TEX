@@ -58,6 +58,18 @@ const paises = [
         nombre: 'Perú',
         descripcion: 'República del Perú',
         estado: 'activo'
+    },
+    {
+        id: 11,
+        nombre: 'México',
+        descripcion: 'Estados Unidos Mexicanos',
+        estado: 'activo'
+    },
+    {
+        id: 12,
+        nombre: 'Estados Unidos',
+        descripcion: 'Estados Unidos de América',
+        estado: 'activo'
     }
 ]
 

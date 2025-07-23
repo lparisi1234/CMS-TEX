@@ -6,4 +6,11 @@ export const ROUTE_NAMES = {
     TABLAS: '/tablas',
     CREAR: '/crear',
     EDITAR: '/editar',
+    // Tablas especiales
+    WHATSAPP: '/whatsapp',
+    DESTINOS: '/destinos',
+    DESTINOS_REGIONES: '/destinos-regiones',
+    DESTINOS_PAISES: '/destinos-paises',
+    CIUDADES: '/ciudades',
+    PRODUCTOS: '/productos'
 }

@@ -23,7 +23,6 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
     const tabla = findTableBySlug(tablaSlug)
 
     const getDisplayLabel = (item, tabla) => {
-        // Priorizar campos más descriptivos
         if (item.nombre) return item.nombre
         if (item.descripcion) return item.descripcion
         if (item.titulo) return item.titulo
@@ -50,7 +49,6 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
             const modules = import.meta.glob('~/shared/**/*.js', { eager: false })
             let modulePath = `/shared/${tabla.endpoint}.js`
             
-            // Si no encontramos el archivo con el endpoint, intentar con el slug
             let moduleImporter = modules[modulePath]
             if (!moduleImporter) {
                 modulePath = `/shared/${tableName}/${tableName}.js`
@@ -163,15 +161,11 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
                         if (item.hasOwnProperty(column.key)) {
                             let value = item[column.key]
                             
-                            // Convertir tipos según el tipo de campo
                             if (column.type === 'text' || column.type === 'currency' || column.type === 'date' || column.type === 'datetime') {
-                                // Para campos de texto, asegurar que sea string
                                 formData.value[column.key] = value != null ? String(value) : ''
                             } else if (column.type === 'badge') {
-                                // Para badges, mantener como string
                                 formData.value[column.key] = value != null ? String(value).toLowerCase() : ''
                             } else {
-                                // Para otros tipos, mantener el valor original
                                 formData.value[column.key] = value
                             }
                         }
