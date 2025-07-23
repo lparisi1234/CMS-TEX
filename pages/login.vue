@@ -32,88 +32,98 @@
 import { ROUTE_NAMES } from '~/constants/ROUTE_NAMES.js'
 
 definePageMeta({
-    layout: "auth",
-});
+  layout: 'auth',
+})
 
 const router = useRouter()
 
 const formData = reactive({
-    email: '',
-    password: ''
+  email: '',
+  password: '',
 })
 
 const errors = reactive({
-    email: '',
-    password: ''
+  email: '',
+  password: '',
 })
 
 const isLoading = ref(false)
 
-const isFormValid = computed(() => {
-    return formData.email.length > 0 &&
-        formData.password.length > 0 &&
-        !errors.email &&
-        !errors.password
-})
-
 const validateEmail = () => {
-    if (!formData.email) {
-        errors.email = 'El correo electrónico es requerido'
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-        errors.email = 'Formato de correo electrónico inválido'
-    } else {
-        errors.email = ''
-    }
+  if (!formData.email) {
+    errors.email = 'El correo electrónico es requerido'
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    errors.email = 'Formato de correo electrónico inválido'
+  } else {
+    errors.email = ''
+  }
 }
 
 const validatePassword = () => {
-    if (!formData.password) {
-        errors.password = 'La contraseña es requerida'
-    } else {
-        errors.password = ''
+  if (!formData.password) {
+    errors.password = 'La contraseña es requerida'
+  } else {
+    errors.password = ''
+  }
+}
+
+const handleSubmit = async () => {
+  isLoading.value = true
+
+  validateEmail()
+  validatePassword()
+
+  if (errors.email || errors.password) {
+    isLoading.value = false
+    return
+  }
+
+  try {
+    const { data, error } = await useFetch('/api/login', {
+      method: 'POST',
+      body: {
+        email: formData.email,
+        password: formData.password,
+      },
+      credentials: 'include',
+    })
+
+    if (error.value) {
+      throw new Error(error.value.data?.statusMessage || 'Error en login')
     }
+
+    await router.push(ROUTE_NAMES.HOME)
+  } catch (err) {
+    console.error('Error en login:', err)
+    errors.password = 'Credenciales incorrectas'
+  } finally {
+    isLoading.value = false
+  }
 }
 
 const onPasswordToggle = (isVisible) => {
-    console.log('Password visibility:', isVisible ? 'visible' : 'hidden')
+  console.log('Password visibility:', isVisible ? 'visible' : 'hidden')
 }
 
 watch(() => formData.email, () => {
-    if (errors.email) errors.email = ''
+  if (errors.email) errors.email = ''
 })
 
 watch(() => formData.password, () => {
-    if (errors.password) errors.password = ''
+  if (errors.password) errors.password = ''
 })
 
-const handleSubmit = async () => {
-    isLoading.value = true
-
-    validateEmail()
-    validatePassword()
-
-    if (errors.email || errors.password) {
-        isLoading.value = false
-        return
-    }
-
-    try {
-        console.log("Iniciar sesion");
-        // Logica login
-
-        await router.push(ROUTE_NAMES.HOME)
-
-    } catch (error) {
-        console.error('Error en login:', error)
-        errors.password = 'Credenciales incorrectas'
-    } finally {
-        isLoading.value = false
-    }
-}
-
 const handleEnterKey = () => {
-    if (!isLoading.value) {
-        handleSubmit()
-    }
+  if (!isLoading.value) {
+    handleSubmit()
+  }
 }
+
+onMounted(() => {
+  const accessToken = useCookie('AccessToken')
+  if (accessToken.value) {
+    navigateTo('/')
+  }
+})
+
 </script>
