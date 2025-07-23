@@ -1,6 +1,9 @@
 <template>
     <div class="w-full flex flex-col gap-2">
-        <FormLabel :required="required" v-if="label">{{ label }}</FormLabel>
+        <p v-if="label" class="text-dark font-light lg:text-xl">
+            {{ label }}
+            <span v-if="required" class="text-primary ml-1">*</span>
+        </p>
 
         <div class="relative">
             <div @click="toggleDropdown"

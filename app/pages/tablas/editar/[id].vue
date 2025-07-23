@@ -32,14 +32,15 @@
                             v-model="formData[column.key]" :label="column.label" :required="column.required"
                             :error="errors[column.key]" />
 
-                        <FormSelectField v-else-if="column.type === 'select'" v-model="formData[column.key]"
-                            :label="column.label" :required="column.required" :error="errors[column.key]"
-                            :options="selectOptions[column.key] || []" :loading="loadingOptions[column.key]"
-                            :placeholder="`Seleccionar ${column.label.toLowerCase()}`" />
+                        <FormSelectField v-else-if="column.type === 'select'" :id="`field-${column.key}`"
+                            v-model="formData[column.key]" :label="column.label" :required="column.required" 
+                            :error="errors[column.key]" :options="selectOptions[column.key] || []" 
+                            :loading="loadingOptions[column.key]" :placeholder="`Seleccionar ${column.label.toLowerCase()}`" />
 
-                        <FormSelectField v-else-if="column.type === 'badge'" v-model="formData[column.key]"
-                            :label="column.label" :required="column.required" :error="errors[column.key]"
-                            :options="badgeOptions" :placeholder="`Seleccionar ${column.label.toLowerCase()}`" />
+                        <FormSelectField v-else-if="column.type === 'badge'" :id="`field-${column.key}`"
+                            v-model="formData[column.key]" :label="column.label" :required="column.required" 
+                            :error="errors[column.key]" :options="badgeOptions" 
+                            :placeholder="`Seleccionar ${column.label.toLowerCase()}`" />
 
                         <FormImageField v-else-if="column.type === 'image'" :id="`field-${column.key}`"
                             v-model="formData[column.key]" :label="column.label" :required="column.required"

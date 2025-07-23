@@ -1,8 +1,31 @@
 <template>
     <DefaultSection>
-        <HeadingH1>{{ botonTexto || 'Crear nuevo elemento' }}</HeadingH1>
+        <HeadingH1>{{ getTituloForm() }}</HeadingH1>
 
-        <FormLayout @submit="handleSubmit" v-if="tabla" class="flex flex-col gap-5">
+        <!-- Formulario específico para destinos -->
+        <FormDestinosCreate 
+            v-if="isDestinosForm()" 
+            :tipo="route.query.tipo"
+            @success="handleSuccess"
+            @cancel="handleCancel"
+        />
+
+        <!-- Formulario específico para ciudades -->
+        <FormCiudadesCreate 
+            v-else-if="isCiudadesForm()" 
+            @success="handleSuccess"
+            @cancel="handleCancel"
+        />
+
+        <!-- Formulario específico para productos -->
+        <FormProductosCreate 
+            v-else-if="isProductosForm()" 
+            @success="handleSuccess"
+            @cancel="handleCancel"
+        />
+
+        <!-- Formulario genérico para otras tablas -->
+        <FormLayout @submit="handleSubmit" v-else-if="tabla" class="flex flex-col gap-5">
             <template v-for="(chunk, chunkIndex) in columnChunks" :key="`chunk-${chunkIndex}`">
                 <FormFieldsContainer>
                     <template v-for="column in chunk" :key="column.key">
@@ -32,14 +55,15 @@
                             v-model="formData[column.key]" :label="column.label" :required="column.required"
                             :error="errors[column.key]" />
 
-                        <FormSelectField v-else-if="column.type === 'select'" v-model="formData[column.key]"
-                            :label="column.label" :required="column.required" :error="errors[column.key]"
-                            :options="selectOptions[column.key] || []" :loading="loadingOptions[column.key]"
-                            :placeholder="`Seleccionar ${column.label.toLowerCase()}`" />
+                        <FormSelectField v-else-if="column.type === 'select'" :id="`field-${column.key}`"
+                            v-model="formData[column.key]" :label="column.label" :required="column.required" 
+                            :error="errors[column.key]" :options="selectOptions[column.key] || []" 
+                            :loading="loadingOptions[column.key]" :placeholder="`Seleccionar ${column.label.toLowerCase()}`" />
 
-                        <FormSelectField v-else-if="column.type === 'badge'" v-model="formData[column.key]"
-                            :label="column.label" :required="column.required" :error="errors[column.key]"
-                            :options="badgeOptions" :placeholder="`Seleccionar ${column.label.toLowerCase()}`" />
+                        <FormSelectField v-else-if="column.type === 'badge'" :id="`field-${column.key}`"
+                            v-model="formData[column.key]" :label="column.label" :required="column.required" 
+                            :error="errors[column.key]" :options="badgeOptions" 
+                            :placeholder="`Seleccionar ${column.label.toLowerCase()}`" />
 
                         <FormImageField v-else-if="column.type === 'image'" :id="`field-${column.key}`"
                             v-model="formData[column.key]" :label="column.label" :required="column.required"
@@ -48,18 +72,25 @@
                 </FormFieldsContainer>
             </template>
 
-            <div class="flex justify-center items-center flex-wrap gap-8 mt-3">
-                <ButtonPrimary :to="`/tablas/${tablaSlug}`" class="!bg-gray-mid !text-dark">
+            <!-- Botones de acción -->
+            <div class="flex justify-center flex-wrap items-center gap-5 mt-8">
+                <ButtonPrimary 
+                    @click="handleCancel"
+                    type="button"
+                    class="!bg-gray-mid !text-dark"
+                >
                     Cancelar
                 </ButtonPrimary>
-                <ButtonPrimary type="submit" :disabled="isSubmitting">
-                    <span v-if="!isSubmitting">Crear</span>
-                    <span v-else class="flex items-center gap-2">
-                        <Icon name="tabler:loader-2" class="animate-spin" />
-                        Creando...
-                    </span>
+                
+                <ButtonPrimary 
+                    type="submit"
+                    :disabled="isSubmitting"
+                    class=""
+                >
+                    {{ isSubmitting ? 'Creando...' : 'Crear' }}
                 </ButtonPrimary>
             </div>
+
         </FormLayout>
 
         <div v-else class="text-center py-8">
@@ -73,6 +104,7 @@
 
 <script setup>
 import { useDynamicForm } from '~/composables/useDynamicForm'
+import { ButtonPrimary } from '#components'
 
 const route = useRoute()
 const router = useRouter()
@@ -96,6 +128,55 @@ const {
 
 const botonTexto = computed(() => tabla?.botonTexto || 'Crear nuevo elemento')
 
+// Funciones para detectar el tipo de formulario
+const isDestinosForm = () => {
+    return tablaSlug === 'destinos' || route.query.tipo === 'region' || route.query.tipo === 'pais'
+}
+
+const isCiudadesForm = () => {
+    return tablaSlug === 'ciudades'
+}
+
+const isProductosForm = () => {
+    return tablaSlug === 'productos'
+}
+
+const getTituloForm = () => {
+    if (isDestinosForm()) {
+        const tipo = route.query.tipo
+        if (tipo === 'region') return 'Crear nueva región'
+        if (tipo === 'pais') return 'Crear nuevo país'
+        return 'Crear nuevo destino'
+    }
+    if (isCiudadesForm()) return 'Crear nueva ciudad'
+    if (isProductosForm()) return 'Crear nuevo producto'
+    return botonTexto.value || 'Crear nuevo elemento'
+}
+
+const handleSuccess = () => {
+    // Navegar de vuelta según el tipo
+    if (isDestinosForm()) {
+        const tipo = route.query.tipo
+        if (tipo === 'region') {
+            router.push('/tablas/destinos-regiones')
+        } else if (tipo === 'pais') {
+            router.push('/tablas/destinos-paises')
+        } else {
+            router.push('/tablas/destinos')
+        }
+    } else if (isCiudadesForm()) {
+        router.push('/tablas/ciudades')
+    } else if (isProductosForm()) {
+        router.push('/tablas/productos')
+    } else {
+        router.push(`/tablas/${tablaSlug}`)
+    }
+}
+
+const handleCancel = () => {
+    handleSuccess() // Usar la misma lógica de navegación
+}
+
 const handleSubmit = async () => {
     if (!validateForm()) return
 
@@ -103,7 +184,7 @@ const handleSubmit = async () => {
 
     try {
         const dataToSubmit = prepareDataForSubmit()
-        console.log('Datos a enviar:', dataToSubmit)
+        // TODO: Enviar datos al servidor
 
         await router.push(`/tablas/${tablaSlug}`)
 

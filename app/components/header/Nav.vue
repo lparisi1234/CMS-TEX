@@ -27,7 +27,7 @@
                                     Configuración
                                 </p>
                                 <ul>
-                                    <li v-for="item in tablas.configuracion" :key="item.name">
+                                    <li v-for="item in tablas.configuracion.filter(t => t.showInNav !== false)" :key="item.name">
                                         <NuxtLink :to="`${ROUTE_NAMES.TABLAS}/${item.slug}`"
                                             class="flex items-center gap-3 text-light font-light py-[0.625rem] px-3"
                                             @click="closeMenu">
@@ -43,7 +43,7 @@
                                     Administración
                                 </p>
                                 <ul>
-                                    <li v-for="item in tablas.administracion" :key="item.name">
+                                    <li v-for="item in tablas.administracion.filter(t => t.showInNav !== false)" :key="item.name">
                                         <NuxtLink :to="`${ROUTE_NAMES.TABLAS}/${item.slug}`"
                                             class="flex items-center gap-3 text-light font-light py-[0.625rem] px-3"
                                             @click="closeMenu">

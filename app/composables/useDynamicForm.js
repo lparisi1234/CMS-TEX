@@ -23,10 +23,13 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
     const tabla = findTableBySlug(tablaSlug)
 
     const getDisplayLabel = (item, tabla) => {
+        // Priorizar campos más descriptivos
         if (item.nombre) return item.nombre
-        if (item.titulo) return item.titulo
         if (item.descripcion) return item.descripcion
+        if (item.titulo) return item.titulo
         if (item.label) return item.label
+        if (item.h1) return item.h1
+        if (item.nombreprod) return item.nombreprod
 
         const textColumn = tabla.columns.find(col => col.type === 'text')
         if (textColumn && item[textColumn.key]) {
@@ -45,9 +48,15 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
             }
 
             const modules = import.meta.glob('~/shared/**/*.js', { eager: false })
-            const modulePath = `/shared/${tabla.endpoint}.js`
+            let modulePath = `/shared/${tabla.endpoint}.js`
+            
+            // Si no encontramos el archivo con el endpoint, intentar con el slug
+            let moduleImporter = modules[modulePath]
+            if (!moduleImporter) {
+                modulePath = `/shared/${tableName}/${tableName}.js`
+                moduleImporter = modules[modulePath]
+            }
 
-            const moduleImporter = modules[modulePath]
             if (moduleImporter) {
                 const module = await moduleImporter()
                 const data = module.default || []
@@ -152,7 +161,19 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
 
                     tabla.columns.forEach(column => {
                         if (item.hasOwnProperty(column.key)) {
-                            formData.value[column.key] = item[column.key]
+                            let value = item[column.key]
+                            
+                            // Convertir tipos según el tipo de campo
+                            if (column.type === 'text' || column.type === 'currency' || column.type === 'date' || column.type === 'datetime') {
+                                // Para campos de texto, asegurar que sea string
+                                formData.value[column.key] = value != null ? String(value) : ''
+                            } else if (column.type === 'badge') {
+                                // Para badges, mantener como string
+                                formData.value[column.key] = value != null ? String(value).toLowerCase() : ''
+                            } else {
+                                // Para otros tipos, mantener el valor original
+                                formData.value[column.key] = value
+                            }
                         }
                     })
 

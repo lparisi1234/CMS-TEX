@@ -4,7 +4,7 @@
 
         <input :id="inputId" :type="type" :placeholder="placeholder" :value="modelValue" :required="required"
             @input="handleInput" @blur="handleBlur" @focus="handleFocus" :autocomplete="autocomplete"
-            class="bg-light border border-dark rounded-[5px] outline-none lg:text-xl font-light text-dark lg:placeholder:text-xl placeholder:font-light placeholder:text-gray-dark py-3 px-[0.875rem]" />
+            class="bg-light border border-dark rounded-[5px] outline-none lg:text-xl font-light text-dark lg:placeholder:text-xl placeholder:font-light placeholder:text-gray-dark py-3 px-[0.875rem] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]" />
 
         <FormError v-if="error && showError">{{ error }}</FormError>
     </div>
@@ -13,7 +13,7 @@
 <script setup>
 const props = defineProps({
     modelValue: {
-        type: String,
+        type: [String, Number],
         default: ''
     },
     label: {

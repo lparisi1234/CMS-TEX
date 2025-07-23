@@ -1,7 +1,7 @@
 const expertos = [
     {
         id: 1,
-        img: '/images/expertos/juan-perez.jpg',
+        img: '/images/Placeholder.png',
         nombre: 'Juan Pérez',
         especialidad: 'Turismo de Aventura',
         experiencia: '15 años',
@@ -13,7 +13,7 @@ const expertos = [
     },
     {
         id: 2,
-        img: '/images/expertos/maria-garcia.jpg',
+        img: '/images/Placeholder.png',
         nombre: 'María García',
         especialidad: 'Turismo Cultural',
         experiencia: '12 años',
@@ -25,7 +25,7 @@ const expertos = [
     },
     {
         id: 3,
-        img: '/images/expertos/carlos-lopez.jpg',
+        img: '/images/Placeholder.png',
         nombre: 'Carlos López',
         especialidad: 'Turismo Gastronómico',
         experiencia: '10 años',
@@ -37,7 +37,7 @@ const expertos = [
     },
     {
         id: 4,
-        img: '/images/expertos/ana-martinez.jpg',
+        img: '/images/Placeholder.png',
         nombre: 'Ana Martínez',
         especialidad: 'Turismo de Bienestar',
         experiencia: '8 años',

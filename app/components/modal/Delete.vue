@@ -34,7 +34,7 @@ const props = defineProps({
         default: false
     },
     itemName: {
-        type: String,
+        type: [String, Number],
         default: ''
     },
     tableName: {

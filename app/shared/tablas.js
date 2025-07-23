@@ -8,13 +8,33 @@ const tablas = {
             botonTexto: 'Crear nuevo segmento',
             columns: [
                 {
+                    key: 'id',
+                    label: 'ID',
+                    type: 'number'
+                },
+                {
                     key: 'descripcion',
                     label: 'Descripción',
                     type: 'text'
                 },
                 {
-                    key: 'texto_header',
+                    key: 'codigo',
+                    label: 'Código',
+                    type: 'text'
+                },
+                {
+                    key: 'txt_header',
                     label: 'Texto Header',
+                    type: 'text'
+                },
+                {
+                    key: 'vencimiento_header',
+                    label: 'Vencimiento Header',
+                    type: 'text'
+                },
+                {
+                    key: 'txt_footer',
+                    label: 'Texto Footer',
                     type: 'text'
                 },
                 {
@@ -23,14 +43,15 @@ const tablas = {
                     type: 'badge'
                 },
                 {
-                    key: 'cod_newton',
+                    key: 'codigo_newton',
                     label: 'Código Newton',
                     type: 'number'
                 },
                 {
-                    key: 'moneda',
+                    key: 'monedaId',
                     label: 'Moneda',
-                    type: 'text'
+                    type: 'select',
+                    relatedTable: 'monedas'
                 }
             ]
         },
@@ -38,9 +59,14 @@ const tablas = {
             name: 'Monedas',
             slug: 'monedas',
             icon: 'world-dollar',
-            endpoint: 'monedas',
+            endpoint: 'monedas/monedas',
             botonTexto: 'Crear nueva moneda',
             columns: [
+                {
+                    key: 'id',
+                    label: 'ID',
+                    type: 'number'
+                },
                 {
                     key: 'descripcion',
                     label: 'Descripción',
@@ -67,18 +93,25 @@ const tablas = {
             name: 'Operadores',
             slug: 'operadores',
             icon: 'map-pin',
-            endpoint: 'operadores',
+            endpoint: 'operadores/operadores',
             botonTexto: 'Crear nuevo operador',
             columns: [
                 {
+                    key: 'id',
+                    label: 'ID',
+                    type: 'number'
+                },
+                {
                     key: 'nombre',
                     label: 'Nombre',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'estado',
                     label: 'Estado',
-                    type: 'badge'
+                    type: 'badge',
+                    required: true
                 },
                 {
                     key: 'certificado',
@@ -117,7 +150,8 @@ const tablas = {
             slug: 'whatsapp',
             icon: 'brand-whatsapp',
             endpoint: 'whatsapp',
-            botonTexto: 'Crear nuevo número de WhatsApp',
+            botonTexto: 'Editar número de WhatsApp',
+            isSpecialPage: true, // Marca esta tabla como especial
             columns: [
                 {
                     key: 'whatsapp',
@@ -130,9 +164,14 @@ const tablas = {
             name: 'Países Operativos',
             slug: 'paises-operativos',
             icon: 'flag',
-            endpoint: 'paises-operativos',
+            endpoint: 'paises-operativos/paises-operativos',
             botonTexto: 'Crear nuevo país operativo',
             columns: [
+                {
+                    key: 'id',
+                    label: 'ID',
+                    type: 'number'
+                },
                 {
                     key: 'numero',
                     label: 'Número',
@@ -158,6 +197,11 @@ const tablas = {
             botonTexto: 'Crear nuevo destino',
             columns: [
                 {
+                    key: 'id',
+                    label: 'ID',
+                    type: 'number'
+                },
+                {
                     key: 'url',
                     label: 'URL',
                     type: 'text'
@@ -180,12 +224,12 @@ const tablas = {
                 {
                     key: 'video_mobile',
                     label: 'Video Mobile',
-                    type: 'text'
+                    type: 'image'
                 },
                 {
                     key: 'video_desktop',
                     label: 'Video Desktop',
-                    type: 'text'
+                    type: 'image'
                 },
                 {
                     key: 'experto_id',
@@ -225,7 +269,7 @@ const tablas = {
                 },
                 {
                     key: 'mapa',
-                    label: 'Coordenadas del Mapa',
+                    label: 'Coordenadas',
                     type: 'text'
                 },
                 {
@@ -242,6 +286,12 @@ const tablas = {
                     key: 'desde_precio',
                     label: 'Precio Desde',
                     type: 'currency'
+                },
+                {
+                    key: 'regionId',
+                    label: 'Región',
+                    type: 'select',
+                    relatedTable: 'destinos'
                 }
             ]
         },
@@ -252,6 +302,11 @@ const tablas = {
             endpoint: 'categorias/categorias',
             botonTexto: 'Crear nueva categoría',
             columns: [
+                {
+                    key: 'id',
+                    label: 'ID',
+                    type: 'number'
+                },
                 {
                     key: 'nombre',
                     label: 'Nombre',
@@ -290,7 +345,7 @@ const tablas = {
                 {
                     key: 'icono',
                     label: 'Ícono',
-                    type: 'text'
+                    type: 'image'
                 },
                 {
                     key: 'coordenadas_icono',
@@ -320,12 +375,12 @@ const tablas = {
                 {
                     key: 'video_mobile',
                     label: 'Video Mobile',
-                    type: 'text'
+                    type: 'image'
                 },
                 {
                     key: 'video_desktop',
                     label: 'Video Desktop',
-                    type: 'text'
+                    type: 'image'
                 },
                 {
                     key: 'estado',
@@ -341,7 +396,7 @@ const tablas = {
                     key: 'idExperto',
                     label: 'Experto',
                     type: 'select',
-                    relatedTable: 'expertos/expertos'
+                    relatedTable: 'expertos'
                 },
                 {
                     key: 'consejo_experto',
@@ -359,9 +414,14 @@ const tablas = {
             name: 'Descuentos',
             slug: 'descuentos',
             icon: 'discount',
-            endpoint: 'descuentos',
+            endpoint: 'descuentos/descuentos',
             botonTexto: 'Crear nuevo descuento',
             columns: [
+                {
+                    key: 'id',
+                    label: 'ID',
+                    type: 'number'
+                },
                 {
                     key: 'nombre',
                     label: 'Nombre',
@@ -480,9 +540,14 @@ const tablas = {
             name: 'Grupos de Oferta',
             slug: 'grupos-de-oferta',
             icon: 'rosette-discount-check',
-            endpoint: 'grupos-de-oferta',
+            endpoint: 'grupos-de-oferta/grupos-de-oferta',
             botonTexto: 'Crear nuevo grupo de oferta',
             columns: [
+                {
+                    key: 'id',
+                    label: 'ID',
+                    type: 'number'
+                },
                 {
                     key: 'descripcion',
                     label: 'Descripción',
@@ -516,7 +581,8 @@ const tablas = {
                 {
                     key: 'segmentosExcluidos',
                     label: 'Segmentos Excluidos',
-                    type: 'text'
+                    type: 'select',
+                    relatedTable: 'segmentos'
                 }
             ]
         },
@@ -524,9 +590,14 @@ const tablas = {
             name: 'Qué esperar Categorías',
             slug: 'que-esperar-categorias',
             icon: 'star',
-            endpoint: 'que-esperar-categorias',
+            endpoint: 'que-esperar-categorias/que-esperar-categorias',
             botonTexto: 'Crear nuevo Que Esperar',
             columns: [
+                {
+                    key: 'id',
+                    label: 'ID',
+                    type: 'number'
+                },
                 {
                     key: 'titulo',
                     label: 'Título',
@@ -559,9 +630,14 @@ const tablas = {
             name: 'Destinos destacados Home',
             slug: 'destinos-destacados-home',
             icon: 'world-star',
-            endpoint: 'destinos-destacados-home',
+            endpoint: 'destinos-destacados-home/destinos-destacados-home',
             botonTexto: 'Crear nuevo Destino Destacado Home',
             columns: [
+                {
+                    key: 'id',
+                    label: 'ID',
+                    type: 'number'
+                },
                 {
                     key: 'destino_id',
                     label: 'Destino',
@@ -594,9 +670,14 @@ const tablas = {
             name: 'Opiniones',
             slug: 'opiniones',
             icon: 'message-chatbot',
-            endpoint: 'opiniones',
+            endpoint: 'opiniones/opiniones',
             botonTexto: 'Crear nueva Opinión',
             columns: [
+                {
+                    key: 'id',
+                    label: 'ID',
+                    type: 'number'
+                },
                 {
                     key: 'nombre',
                     label: 'Nombre',
@@ -656,9 +737,14 @@ const tablas = {
             name: 'Preguntas Frecuentes',
             slug: 'preguntas-frecuentes',
             icon: 'zoom-question',
-            endpoint: 'preguntas-frecuentes',
+            endpoint: 'preguntas-frecuentes/preguntas-frecuentes',
             botonTexto: 'Crear nueva Pregunta Frecuente',
             columns: [
+                {
+                    key: 'id',
+                    label: 'ID',
+                    type: 'number'
+                },
                 {
                     key: 'pregunta',
                     label: 'Pregunta',
@@ -681,9 +767,14 @@ const tablas = {
             name: 'Notas de Prensa',
             slug: 'notas-de-prensa',
             icon: 'notes',
-            endpoint: 'notas-prensa',
+            endpoint: 'notas-de-prensa/notas-de-prensa',
             botonTexto: 'Crear nueva nota de prensa',
             columns: [
+                {
+                    key: 'id',
+                    label: 'ID',
+                    type: 'number'
+                },
                 {
                     key: 'descripcion',
                     label: 'Descripción',
@@ -713,6 +804,11 @@ const tablas = {
             endpoint: 'blogs/blogs',
             botonTexto: 'Crear nueva nota de blog',
             columns: [
+                {
+                    key: 'id',
+                    label: 'ID',
+                    type: 'number'
+                },
                 {
                     key: 'titulo',
                     label: 'Título',
@@ -770,6 +866,11 @@ const tablas = {
             botonTexto: 'Crear nuevo experto',
             columns: [
                 {
+                    key: 'id',
+                    label: 'ID',
+                    type: 'number'
+                },
+                {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image'
@@ -778,6 +879,67 @@ const tablas = {
                     key: 'nombre',
                     label: 'Nombre',
                     type: 'text'
+                }
+            ]
+        },
+        {
+            name: 'Países',
+            slug: 'paises',
+            icon: 'flag',
+            endpoint: 'paises/paises',
+            botonTexto: 'Crear nuevo país',
+            showInNav: false,
+            columns: [
+                {
+                    key: 'id',
+                    label: 'ID',
+                    type: 'number'
+                },
+                {
+                    key: 'nombre',
+                    label: 'Nombre',
+                    type: 'text'
+                },
+                {
+                    key: 'descripcion',
+                    label: 'Descripción',
+                    type: 'text'
+                },
+                {
+                    key: 'estado',
+                    label: 'Estado',
+                    type: 'badge'
+                }
+            ]
+        },
+        {
+            name: 'Ciudades',
+            slug: 'ciudades',
+            icon: 'building-community',
+            endpoint: 'ciudades/ciudades',
+            botonTexto: 'Crear nueva ciudad',
+            showInNav: false,
+            columns: [
+                {
+                    key: 'id',
+                    label: 'ID',
+                    type: 'number'
+                },
+                {
+                    key: 'nombre',
+                    label: 'Nombre',
+                    type: 'text'
+                },
+                {
+                    key: 'estado',
+                    label: 'Estado',
+                    type: 'badge'
+                },
+                {
+                    key: 'paises_id',
+                    label: 'País',
+                    type: 'select',
+                    relatedTable: 'paises'
                 }
             ]
         }

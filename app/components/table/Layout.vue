@@ -15,12 +15,12 @@
 
             <tbody>
                 <tr v-for="(item, index) in data" :key="getRowKey(item, index)"
-                    class="h-20 odd:bg-gray-light even:bg-gray-mid border-b border-gray-dark last:border-none">
+                    class="odd:bg-gray-light even:bg-gray-mid border-b border-gray-dark last:border-none">
                     <td v-for="column in columns" :key="column.key"
-                        class="border-r border-gray-dark text-dark font-light whitespace-nowrap p-3">
+                        class="border-r border-gray-dark text-dark font-light p-3">
                         <slot :name="`cell-${column.key}`" :item="item" :value="getNestedValue(item, column.key)"
                             :column="column" :index="index">
-                            <TableCellRenderer :value="getNestedValue(item, column.key)" :column="column" />
+                            <TableCellRenderer :value="getNestedValue(item, column.key)" :column="column" :related-data="relatedData" />
                         </slot>
                     </td>
 
@@ -62,6 +62,10 @@ const props = defineProps({
         type: Array,
         required: true
     },
+    relatedData: {
+        type: Object,
+        default: () => ({})
+    },
     showActions: {
         type: Boolean,
         default: true
@@ -99,11 +103,24 @@ const getRowKey = (item, index) => {
 }
 
 const openDeleteModal = (item, index) => {
+    // Intentar obtener un nombre descriptivo del elemento
+    let itemName = 'este elemento'
+    
+    // Priorizar campos más descriptivos
+    if (item.nombre) itemName = item.nombre
+    else if (item.descripcion) itemName = item.descripcion
+    else if (item.titulo) itemName = item.titulo
+    else if (item.name) itemName = item.name
+    else if (item.h1) itemName = item.h1
+    else if (item.nombreprod) itemName = item.nombreprod
+    else if (item.url) itemName = item.url
+    else if (item.id) itemName = `ID: ${item.id}`
+    
     deleteModal.value = {
         isOpen: true,
         item: item,
         index: index,
-        itemName: item.name || item.titulo || item.id || 'este elemento',
+        itemName: itemName,
         tableName: props.tableName
     }
 }

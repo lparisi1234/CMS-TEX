@@ -2,7 +2,7 @@
     <DefaultSection class="lg:!gap-8">
         <HeadingH1>{{ tabla.name || 'Tabla no encontrada' }}</HeadingH1>
         <ButtonPrimary @click="handleCreate" class="!px-4 sm:!px-12">{{ tabla.botonTexto }}</ButtonPrimary>
-        <TableLayout :data="displayData" :columns="tabla.columns"
+        <TableLayout :data="displayData" :columns="tabla.columns" :related-data="relatedData"
             :empty-state-text="`No hay items en ${tabla.name} creados`" :table-name="tabla.name" @edit="handleEdit"
             @delete="handleDelete" />
     </DefaultSection>
@@ -34,6 +34,19 @@ if (!tabla) {
     })
 }
 
+// Redirigir a páginas especiales
+if (nombreSlug === 'whatsapp') {
+    await navigateTo('/tablas/whatsapp')
+}
+
+if (nombreSlug === 'destinos') {
+    await navigateTo('/tablas/destinos')
+}
+
+if (nombreSlug === 'productos') {
+    await navigateTo('/tablas/productos')
+}
+
 // Endpoint
 // const tableData = await fetch(`/api/${tabla.endpoint}`)
 //     .then(res => res.ok ? res.json() : [])
@@ -43,27 +56,48 @@ if (!tabla) {
 //     })
 
 // Data hardcodeada
-const getDataForEndpoint = async () => {
+const getDataForEndpoint = async (endpoint) => {
     try {
         const modules = import.meta.glob('~/shared/**/*.js', { eager: false })
-        const modulePath = `/shared/${tabla.endpoint}.js`
+        
+        let foundModule = null
+        for (const [path, importer] of Object.entries(modules)) {
+            if (path.includes(`/${endpoint}.js`)) {
+                foundModule = importer
+                break
+            }
+        }
 
-        const moduleImporter = modules[modulePath]
-        if (moduleImporter) {
-            const module = await moduleImporter()
+        if (foundModule) {
+            const module = await foundModule()
             return module.default || []
         }
 
-        console.warn(`No se encontró archivo para endpoint: ${tabla.endpoint}`)
+        console.warn(`No se encontró archivo para endpoint: ${endpoint}`)
+        console.log('Módulos disponibles:', Object.keys(modules))
         return []
     } catch (error) {
-        console.warn(`Error cargando datos para endpoint: ${tabla.endpoint}`)
+        console.warn(`Error cargando datos para endpoint: ${endpoint}`)
         console.error('Error detallado:', error)
         return []
     }
 }
 
-const tableData = ref(await getDataForEndpoint())
+const loadRelatedData = async () => {
+    const relatedTables = {}
+    
+    for (const column of tabla.columns) {
+        if (column.type === 'select' && column.relatedTable) {
+            const relatedData = await getDataForEndpoint(column.relatedTable)
+            relatedTables[column.relatedTable] = relatedData
+        }
+    }
+    
+    return relatedTables
+}
+
+const tableData = ref(await getDataForEndpoint(tabla.endpoint))
+const relatedData = ref(await loadRelatedData())
 
 const displayData = computed(() => tableData.value || [])
 
