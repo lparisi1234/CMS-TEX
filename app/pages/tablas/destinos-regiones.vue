@@ -12,6 +12,7 @@
 
 <script setup>
 import destinosData from '~/shared/destinos/destinos.js'
+import expertosData from '~/shared/expertos/expertos.js'
 import { ROUTE_NAMES } from '~/constants/ROUTE_NAMES'
 
 const regionesData = computed(() => {
@@ -58,7 +59,8 @@ const regionesColumns = [
         key: 'experto_id',
         label: 'Experto',
         type: 'select',
-        relatedTable: 'expertos'
+        relatedTable: 'expertos',
+        displayField: 'nombre'
     },
     {
         key: 'consejo_experto',
@@ -112,7 +114,9 @@ const regionesColumns = [
     }
 ]
 
-const relatedData = ref({})
+const relatedData = ref({
+    expertos: expertosData
+})
 
 const handleCreate = () => {
     navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.CREAR}?tabla=destinos&tipo=region`)

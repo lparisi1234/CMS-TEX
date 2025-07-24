@@ -1,8 +1,17 @@
 <template>
     <DefaultSection>
-        <HeadingH1>{{ botonTexto || 'Editar elemento' }}</HeadingH1>
+        <HeadingH1>{{ getTituloForm() }}</HeadingH1>
 
-        <FormLayout @submit="handleSubmit" v-if="tabla" class="flex flex-col gap-5">
+        <FormDestinosCreate 
+            v-if="isDestinosForm()" 
+            :tipo="getDestinoTipo()"
+            :is-editing="true"
+            :editing-data="editingData"
+            @success="handleSuccess"
+            @cancel="handleCancel"
+        />
+
+        <FormLayout @submit="handleSubmit" v-else-if="tabla" class="flex flex-col gap-5">
             <template v-for="(chunk, chunkIndex) in columnChunks" :key="`chunk-${chunkIndex}`">
                 <FormFieldsContainer>
                     <template v-for="column in chunk" :key="column.key">
@@ -50,7 +59,7 @@
             </template>
 
             <div class="flex justify-center items-center flex-wrap gap-8 mt-3">
-                <ButtonPrimary :to="`/tablas/${tablaSlug}`" class="!bg-gray-mid !text-dark">
+                <ButtonPrimary @click="handleCancel" class="!bg-gray-mid !text-dark">
                     Cancelar
                 </ButtonPrimary>
                 <ButtonPrimary type="submit" :disabled="isSubmitting">
@@ -71,8 +80,8 @@
         </div>
 
         <div v-else class="text-center py-8">
-            <p class="text-gray-600">No se pudo cargar la configuración de la tabla o el elemento.</p>
-            <NuxtLink :to="`/tablas/${tablaSlug}`" class="text-blue-600 hover:text-blue-800 underline">
+            <p class="text-dark">No se pudo cargar la configuración de la tabla o el elemento.</p>
+            <NuxtLink :to="`${ROUTE_NAMES.TABLAS}/${tablaSlug}`" class="text-primary underline">
                 Volver a la tabla
             </NuxtLink>
         </div>
@@ -92,6 +101,8 @@ if (!tablaSlug || !itemId) {
     await router.push(ROUTE_NAMES.TABLAS)
 }
 
+const editingData = ref(null)
+
 const {
     formData,
     errors,
@@ -109,7 +120,59 @@ const {
     loadExistingData
 } = useDynamicForm(tablaSlug, itemId)
 
+const isDestinosForm = () => {
+    return tablaSlug === 'destinos' || route.query.tipo === 'region' || route.query.tipo === 'pais'
+}
+
+const getDestinoTipo = () => {
+    if (route.query.tipo) {
+        return route.query.tipo
+    }
+    
+    if (editingData.value) {
+        if (editingData.value.regionId) {
+            return 'pais'
+        } else {
+            return 'region'
+        }
+    }
+    
+    return 'destino'
+}
+
+const getTituloForm = () => {
+    if (isDestinosForm()) {
+        const tipo = getDestinoTipo()
+        if (tipo === 'region') return 'Editar región'
+        if (tipo === 'pais') return 'Editar país'
+        return 'Editar destino'
+    }
+    return botonTexto.value || 'Editar elemento'
+}
+
+const handleSuccess = () => {
+    if (isDestinosForm()) {
+        const tipo = getDestinoTipo()
+        if (tipo === 'region') {
+            router.push(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.DESTINOS_REGIONES}`)
+        } else if (tipo === 'pais') {
+            router.push(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.DESTINOS_PAISES}`)
+        } else {
+            router.push(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.DESTINOS}`)
+        }
+    } else {
+        router.push(`${ROUTE_NAMES.TABLAS}/${tablaSlug}`)
+    }
+}
+
+const handleCancel = () => {
+    handleSuccess()
+}
+
 const botonTexto = computed(() => {
+    if (isDestinosForm()) {
+        return getTituloForm()
+    }
     if (tabla?.botonTexto) {
         return tabla.botonTexto.replace('Crear', 'Editar')
     }
@@ -138,6 +201,10 @@ onMounted(async () => {
     if (tabla) {
         await loadSelectOptions()
         await loadExistingData()
+        
+        if (isDestinosForm() && formData.value) {
+            editingData.value = { ...formData.value }
+        }
     }
 })
 </script>

@@ -2,62 +2,62 @@ const ciudades = [
     {
         id: 1,
         nombre: 'París',
-        estado: 'activo',
-        paises_id: 1  // Francia
+        estado: 'Activo',
+        paises_id: 1
     },
     {
         id: 2,
         nombre: 'Lyon',
-        estado: 'activo',
-        paises_id: 1  // Francia
+        estado: 'Activo',
+        paises_id: 1
     },
     {
         id: 3,
         nombre: 'Londres',
-        estado: 'activo',
-        paises_id: 2  // Reino Unido
+        estado: 'Activo',
+        paises_id: 2
     },
     {
         id: 4,
         nombre: 'Edinburgh',
-        estado: 'activo',
-        paises_id: 2  // Reino Unido
+        estado: 'Activo',
+        paises_id: 2
     },
     {
         id: 5,
         nombre: 'Roma',
-        estado: 'activo',
-        paises_id: 3  // Italia
+        estado: 'Activo',
+        paises_id: 3
     },
     {
         id: 6,
         nombre: 'Milán',
-        estado: 'activo',
-        paises_id: 3  // Italia
+        estado: 'Activo',
+        paises_id: 3
     },
     {
         id: 7,
         nombre: 'Madrid',
-        estado: 'activo',
-        paises_id: 4  // España
+        estado: 'Activo',
+        paises_id: 4
     },
     {
         id: 8,
         nombre: 'Barcelona',
-        estado: 'activo',
-        paises_id: 4  // España
+        estado: 'Activo',
+        paises_id: 4
     },
     {
         id: 9,
         nombre: 'Buenos Aires',
-        estado: 'activo',
-        paises_id: 5  // Argentina
+        estado: 'Activo',
+        paises_id: 5
     },
     {
         id: 10,
         nombre: 'Córdoba',
-        estado: 'activo',
-        paises_id: 5  // Argentina
+        estado: 'Activo',
+        paises_id: 5
     }
 ]
 

@@ -2,7 +2,6 @@
     <DefaultSection>
         <HeadingH1>{{ getTituloForm() }}</HeadingH1>
 
-        <!-- Formulario específico para destinos -->
         <FormDestinosCreate 
             v-if="isDestinosForm()" 
             :tipo="route.query.tipo"
@@ -10,21 +9,14 @@
             @cancel="handleCancel"
         />
 
-        <!-- Formulario específico para ciudades -->
-        <FormCiudadesCreate 
-            v-else-if="isCiudadesForm()" 
-            @success="handleSuccess"
-            @cancel="handleCancel"
-        />
 
-        <!-- Formulario específico para productos -->
+
         <FormProductosCreate 
             v-else-if="isProductosForm()" 
             @success="handleSuccess"
             @cancel="handleCancel"
         />
 
-        <!-- Formulario genérico para otras tablas -->
         <FormLayout @submit="handleSubmit" v-else-if="tabla" class="flex flex-col gap-5">
             <template v-for="(chunk, chunkIndex) in columnChunks" :key="`chunk-${chunkIndex}`">
                 <FormFieldsContainer>
@@ -94,9 +86,9 @@
         </FormLayout>
 
         <div v-else class="text-center py-8">
-            <p class="text-gray-600">No se pudo cargar la configuración de la tabla.</p>
-            <NuxtLink to="/tablas" class="text-blue-600 hover:text-blue-800 underline">
-                Volver a tablas
+            <p class="text-dark">No se pudo cargar la configuración de la tabla.</p>
+            <NuxtLink :to="ROUTE_NAMES.HOME" class="text-primary underline">
+                Volver a la Home
             </NuxtLink>
         </div>
     </DefaultSection>
@@ -105,6 +97,7 @@
 <script setup>
 import { useDynamicForm } from '~/composables/useDynamicForm'
 import { ButtonPrimary } from '#components'
+import { ROUTE_NAMES } from '~/constants/ROUTE_NAMES'
 
 const route = useRoute()
 const router = useRouter()
@@ -128,13 +121,8 @@ const {
 
 const botonTexto = computed(() => tabla?.botonTexto || 'Crear nuevo elemento')
 
-// Funciones para detectar el tipo de formulario
 const isDestinosForm = () => {
     return tablaSlug === 'destinos' || route.query.tipo === 'region' || route.query.tipo === 'pais'
-}
-
-const isCiudadesForm = () => {
-    return tablaSlug === 'ciudades'
 }
 
 const isProductosForm = () => {
@@ -148,33 +136,29 @@ const getTituloForm = () => {
         if (tipo === 'pais') return 'Crear nuevo país'
         return 'Crear nuevo destino'
     }
-    if (isCiudadesForm()) return 'Crear nueva ciudad'
     if (isProductosForm()) return 'Crear nuevo producto'
     return botonTexto.value || 'Crear nuevo elemento'
 }
 
 const handleSuccess = () => {
-    // Navegar de vuelta según el tipo
     if (isDestinosForm()) {
         const tipo = route.query.tipo
         if (tipo === 'region') {
-            router.push('/tablas/destinos-regiones')
+            router.push(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.DESTINOS_REGIONES}`)
         } else if (tipo === 'pais') {
-            router.push('/tablas/destinos-paises')
+            router.push(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.DESTINOS_PAISES}`)
         } else {
-            router.push('/tablas/destinos')
+            router.push(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.DESTINOS}`)
         }
-    } else if (isCiudadesForm()) {
-        router.push('/tablas/ciudades')
     } else if (isProductosForm()) {
-        router.push('/tablas/productos')
+        router.push(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.PRODUCTOS}`)
     } else {
-        router.push(`/tablas/${tablaSlug}`)
+        router.push(`${ROUTE_NAMES.TABLAS}/${tablaSlug}`)
     }
 }
 
 const handleCancel = () => {
-    handleSuccess() // Usar la misma lógica de navegación
+    handleSuccess()
 }
 
 const handleSubmit = async () => {
@@ -184,9 +168,9 @@ const handleSubmit = async () => {
 
     try {
         const dataToSubmit = prepareDataForSubmit()
-        // TODO: Enviar datos al servidor
+        // POST
 
-        await router.push(`/tablas/${tablaSlug}`)
+        await router.push(`${ROUTE_NAMES.TABLAS}/${tablaSlug}`)
 
     } catch (error) {
         console.error('Error al crear:', error)

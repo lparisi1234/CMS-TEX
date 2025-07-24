@@ -175,7 +175,7 @@ const tablas = {
                 {
                     key: 'numero',
                     label: 'Número',
-                    type: 'number'
+                    type: 'text'
                 },
                 {
                     key: 'img',
@@ -236,7 +236,8 @@ const tablas = {
                     key: 'experto_id',
                     label: 'Experto',
                     type: 'select',
-                    relatedTable: 'expertos'
+                    relatedTable: 'expertos',
+                    displayField: 'nombre'
                 },
                 {
                     key: 'consejo_experto',
@@ -397,7 +398,8 @@ const tablas = {
                     key: 'idExperto',
                     label: 'Experto',
                     type: 'select',
-                    relatedTable: 'expertos'
+                    relatedTable: 'expertos',
+                    displayField: 'nombre'
                 },
                 {
                     key: 'consejo_experto',
@@ -518,7 +520,8 @@ const tablas = {
                     key: 'expertoId',
                     label: 'Experto',
                     type: 'select',
-                    relatedTable: 'expertos'
+                    relatedTable: 'expertos',
+                    displayField: 'nombre'
                 },
                 {
                     key: 'meta_titulo',
@@ -884,39 +887,9 @@ const tablas = {
             ]
         },
         {
-            name: 'Países',
-            slug: 'paises',
-            icon: 'flag',
-            endpoint: 'paises/paises',
-            botonTexto: 'Crear nuevo país',
-            showInNav: false,
-            columns: [
-                {
-                    key: 'id',
-                    label: 'ID',
-                    type: 'number'
-                },
-                {
-                    key: 'nombre',
-                    label: 'Nombre',
-                    type: 'text'
-                },
-                {
-                    key: 'descripcion',
-                    label: 'Descripción',
-                    type: 'text'
-                },
-                {
-                    key: 'estado',
-                    label: 'Estado',
-                    type: 'badge'
-                }
-            ]
-        },
-        {
             name: 'Ciudades',
             slug: 'ciudades',
-            icon: 'building-community',
+            icon: 'building',
             endpoint: 'ciudades/ciudades',
             botonTexto: 'Crear nueva ciudad',
             showInNav: false,
@@ -940,7 +913,7 @@ const tablas = {
                     key: 'paises_id',
                     label: 'País',
                     type: 'select',
-                    relatedTable: 'paises'
+                    relatedTable: 'destinos'
                 }
             ]
         }

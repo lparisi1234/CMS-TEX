@@ -15,7 +15,7 @@ const destinos = [
         meta_descripcion: 'Explora Europa con nuestros tours especializados',
         meta_keywords: 'Europa, turismo, cultura, historia, arte',
         mapa: '50.0755,14.4378',
-        estado: 'activo',
+        estado: 'Activo',
         nro_orden: 1,
         desde_precio: 1299.00
     },
@@ -35,7 +35,7 @@ const destinos = [
         meta_descripcion: 'Explora América del Sur con expertos locales',
         meta_keywords: 'América del Sur, aventura, naturaleza, turismo',
         mapa: '-14.2350,-51.9253',
-        estado: 'activo',
+        estado: 'Activo',
         nro_orden: 2,
         desde_precio: 1599.00
     },
@@ -55,7 +55,7 @@ const destinos = [
         meta_descripcion: 'Descubre Francia con nuestros tours especializados',
         meta_keywords: 'Francia, París, Torre Eiffel, Louvre, turismo',
         mapa: '46.2276,2.2137',
-        estado: 'activo',
+        estado: 'Activo',
         nro_orden: 3,
         desde_precio: 899.00,
         regionId: 10
@@ -76,7 +76,7 @@ const destinos = [
         meta_descripcion: 'Explora Reino Unido con guías expertos locales',
         meta_keywords: 'Reino Unido, Londres, Big Ben, Buckingham, turismo',
         mapa: '55.3781,-3.4360',
-        estado: 'activo',
+        estado: 'Activo',
         nro_orden: 4,
         desde_precio: 1199.00,
         regionId: 10
@@ -97,7 +97,7 @@ const destinos = [
         meta_descripcion: 'Tours culturales por la histórica Italia',
         meta_keywords: 'Italia, Roma, Coliseo, Vaticano, historia',
         mapa: '41.8719,12.5674',
-        estado: 'activo',
+        estado: 'Activo',
         nro_orden: 5,
         desde_precio: 759.00,
         regionId: 10
@@ -118,7 +118,7 @@ const destinos = [
         meta_descripcion: 'Descubre España con expertos locales',
         meta_keywords: 'España, Madrid, Barcelona, Prado, Retiro, tapas',
         mapa: '40.4637,-3.7492',
-        estado: 'activo',
+        estado: 'Activo',
         nro_orden: 6,
         desde_precio: 649.00,
         regionId: 10
@@ -139,7 +139,7 @@ const destinos = [
         meta_descripcion: 'Tours por Argentina con guías locales',
         meta_keywords: 'Argentina, Buenos Aires, tango, Patagonia, turismo',
         mapa: '-38.4161,-63.6167',
-        estado: 'activo',
+        estado: 'Activo',
         nro_orden: 7,
         desde_precio: 1199.00,
         regionId: 11

@@ -11,6 +11,7 @@
 
 <script setup>
 import destinosData from '~/shared/destinos/destinos.js'
+import expertosData from '~/shared/expertos/expertos.js'
 import { ROUTE_NAMES } from '~/constants/ROUTE_NAMES'
 
 const paisesData = computed(() => {
@@ -66,7 +67,8 @@ const paisesColumns = [
         key: 'experto_id',
         label: 'Experto',
         type: 'select',
-        relatedTable: 'expertos'
+        relatedTable: 'expertos',
+        displayField: 'nombre'
     },
     {
         key: 'consejo_experto',
@@ -127,7 +129,8 @@ const paisesColumns = [
 ]
 
 const relatedData = ref({
-    regiones: destinosData.filter(destino => !destino.regionId)
+    regiones: destinosData.filter(destino => !destino.regionId),
+    expertos: expertosData
 })
 
 const handleCreate = () => {
