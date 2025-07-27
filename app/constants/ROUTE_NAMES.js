@@ -12,5 +12,6 @@ export const ROUTE_NAMES = {
     DESTINOS_REGIONES: '/destinos-regiones',
     DESTINOS_PAISES: '/destinos-paises',
     CIUDADES: '/ciudades',
-    PRODUCTOS: '/productos'
+    PRODUCTOS: '/productos',
+    QUE_ESPERAR: '/que-esperar'
 }

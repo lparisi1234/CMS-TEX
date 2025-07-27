@@ -46,6 +46,10 @@ if (nombreSlug === 'productos') {
     await navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.PRODUCTOS}`)
 }
 
+if (nombreSlug === 'que-esperar-categorias') {
+    await navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.QUE_ESPERAR}`)
+}
+
 // Endpoint
 // const tableData = await fetch(`/api/${tabla.endpoint}`)
 //     .then(res => res.ok ? res.json() : [])

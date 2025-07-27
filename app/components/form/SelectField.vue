@@ -17,7 +17,8 @@
             <div v-if="isOpen"
                 class="max-h-60 absolute top-full left-0 right-0 z-50 bg-light border border-dark rounded-[5px] overflow-hidden mt-1">
                 <div class="border-b border-gray-200">
-                    <input v-model="searchQuery" type="text" placeholder="Buscar..."
+                    <label for="buscar" class="sr-only">Buscar</label>
+                    <input id="buscar" v-model="searchQuery" type="text" placeholder="Buscar..."
                         class="w-full bg-light rounded px-[0.875rem] py-3 text-sm outline-none" @click.stop />
                 </div>
 

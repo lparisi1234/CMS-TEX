@@ -13,7 +13,7 @@ const queEsperarCategorias = [
         texto: "Sumérgete en la historia y tradiciones locales de cada destino",
         img: "/images/Placeholder.png",
         nro_orden: 2,
-        categoriaId: 2
+        categoriaId: 1
     },
     {
         id: 3,
