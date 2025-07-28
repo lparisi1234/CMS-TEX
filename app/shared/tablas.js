@@ -585,7 +585,7 @@ const tablas = {
                 {
                     key: 'segmentosExcluidos',
                     label: 'Segmentos Excluidos',
-                    type: 'select',
+                    type: 'checkbox-multiple',
                     relatedTable: 'segmentos'
                 }
             ]

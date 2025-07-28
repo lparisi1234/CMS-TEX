@@ -2,20 +2,12 @@
     <DefaultSection>
         <HeadingH1>{{ getTituloForm() }}</HeadingH1>
 
-        <FormDestinosCreate 
-            v-if="isDestinosForm()" 
-            :tipo="route.query.tipo"
-            @success="handleSuccess"
-            @cancel="handleCancel"
-        />
+        <FormDestinosCreate v-if="isDestinosForm()" :tipo="route.query.tipo" @success="handleSuccess"
+            @cancel="handleCancel" />
 
 
 
-        <FormProductosCreate 
-            v-else-if="isProductosForm()" 
-            @success="handleSuccess"
-            @cancel="handleCancel"
-        />
+        <FormProductosCreate v-else-if="isProductosForm()" @success="handleSuccess" @cancel="handleCancel" />
 
         <FormLayout @submit="handleSubmit" v-else-if="tabla" class="flex flex-col gap-5">
             <template v-for="(chunk, chunkIndex) in columnChunks" :key="`chunk-${chunkIndex}`">
@@ -47,14 +39,20 @@
                             v-model="formData[column.key]" :label="column.label" :required="column.required"
                             :error="errors[column.key]" />
 
+                        <FormCheckboxGroupField v-else-if="column.type === 'checkbox-multiple'"
+                            :id="`field-${column.key}`" v-model="formData[column.key]" :label="column.label"
+                            :required="column.required" :error="errors[column.key]"
+                            :options="selectOptions[column.key] || []" :loading="loadingOptions[column.key]" />
+
                         <FormSelectField v-else-if="column.type === 'select'" :id="`field-${column.key}`"
-                            v-model="formData[column.key]" :label="column.label" :required="column.required" 
-                            :error="errors[column.key]" :options="selectOptions[column.key] || []" 
-                            :loading="loadingOptions[column.key]" :placeholder="`Seleccionar ${column.label.toLowerCase()}`" />
+                            v-model="formData[column.key]" :label="column.label" :required="column.required"
+                            :error="errors[column.key]" :options="selectOptions[column.key] || []"
+                            :loading="loadingOptions[column.key]"
+                            :placeholder="`Seleccionar ${column.label.toLowerCase()}`" />
 
                         <FormSelectField v-else-if="column.type === 'badge'" :id="`field-${column.key}`"
-                            v-model="formData[column.key]" :label="column.label" :required="column.required" 
-                            :error="errors[column.key]" :options="badgeOptions" 
+                            v-model="formData[column.key]" :label="column.label" :required="column.required"
+                            :error="errors[column.key]" :options="badgeOptions"
                             :placeholder="`Seleccionar ${column.label.toLowerCase()}`" />
 
                         <FormImageField v-else-if="column.type === 'image'" :id="`field-${column.key}`"
@@ -66,19 +64,11 @@
 
             <!-- Botones de acción -->
             <div class="flex justify-center flex-wrap items-center gap-5 mt-8">
-                <ButtonPrimary 
-                    @click="handleCancel"
-                    type="button"
-                    class="!bg-gray-mid !text-dark"
-                >
+                <ButtonPrimary @click="handleCancel" type="button" class="!bg-gray-mid !text-dark">
                     Cancelar
                 </ButtonPrimary>
-                
-                <ButtonPrimary 
-                    type="submit"
-                    :disabled="isSubmitting"
-                    class=""
-                >
+
+                <ButtonPrimary type="submit" :disabled="isSubmitting" class="">
                     {{ isSubmitting ? 'Creando...' : 'Crear' }}
                 </ButtonPrimary>
             </div>

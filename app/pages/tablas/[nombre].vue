@@ -62,7 +62,7 @@ if (nombreSlug === 'que-esperar-categorias') {
 const getDataForEndpoint = async (endpoint) => {
     try {
         const modules = import.meta.glob('~/shared/**/*.js', { eager: false })
-        
+
         let foundModule = null
         for (const [path, importer] of Object.entries(modules)) {
             if (path.includes(`/${endpoint}.js`)) {
@@ -88,14 +88,14 @@ const getDataForEndpoint = async (endpoint) => {
 
 const loadRelatedData = async () => {
     const relatedTables = {}
-    
+
     for (const column of tabla.columns) {
-        if (column.type === 'select' && column.relatedTable) {
+        if ((column.type === 'select' || column.type === 'checkbox-multiple') && column.relatedTable) {
             const relatedData = await getDataForEndpoint(column.relatedTable)
             relatedTables[column.relatedTable] = relatedData
         }
     }
-    
+
     return relatedTables
 }
 

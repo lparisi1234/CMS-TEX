@@ -3,7 +3,7 @@
         <img :src="value" :alt="column.label" class="w-16 h-16 object-cover rounded-lg" />
     </div>
     <div v-else-if="column.type === 'text'" class="w-full max-w-[18.75rem] break-words">
-        <span >{{ value || '-' }}</span>
+        <span>{{ value || '-' }}</span>
     </div>
     <span v-else>{{ formatValue(value, column) }}</span>
 </template>
@@ -27,11 +27,27 @@ const props = defineProps({
 const formatValue = (value, column) => {
     if (value === null || value === undefined) return '-'
 
-    // Si es una relación (select), buscar en relatedData
+    if (column.type === 'checkbox-multiple' && column.relatedTable && props.relatedData[column.relatedTable]) {
+        if (typeof value === 'string' && value) {
+            const ids = value.split(',').map(id => id.trim()).filter(Boolean)
+            const names = ids.map(id => {
+                const relatedItem = props.relatedData[column.relatedTable].find(item => item.id.toString() === id)
+                return relatedItem ? (relatedItem.nombre || relatedItem.descripcion || relatedItem.titulo || relatedItem.label || relatedItem.h1 || relatedItem.nombreprod || id) : id
+            })
+            return names.join(', ')
+        } else if (Array.isArray(value)) {
+            const names = value.map(id => {
+                const relatedItem = props.relatedData[column.relatedTable].find(item => item.id.toString() === id.toString())
+                return relatedItem ? (relatedItem.nombre || relatedItem.descripcion || relatedItem.titulo || relatedItem.label || relatedItem.h1 || relatedItem.nombreprod || id) : id
+            })
+            return names.join(', ')
+        }
+        return value
+    }
+
     if (column.type === 'select' && column.relatedTable && props.relatedData[column.relatedTable]) {
         const relatedItem = props.relatedData[column.relatedTable].find(item => item.id === value)
         if (relatedItem) {
-            // Intentar diferentes campos para mostrar el nombre
             return relatedItem.nombre || relatedItem.descripcion || relatedItem.titulo || relatedItem.label || relatedItem.h1 || relatedItem.nombreprod || value
         }
         return value

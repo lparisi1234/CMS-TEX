@@ -2,14 +2,8 @@
     <DefaultSection>
         <HeadingH1>{{ getTituloForm() }}</HeadingH1>
 
-        <FormDestinosCreate 
-            v-if="isDestinosForm()" 
-            :tipo="getDestinoTipo()"
-            :is-editing="true"
-            :editing-data="editingData"
-            @success="handleSuccess"
-            @cancel="handleCancel"
-        />
+        <FormDestinosCreate v-if="isDestinosForm()" :tipo="getDestinoTipo()" :is-editing="true"
+            :editing-data="editingData" @success="handleSuccess" @cancel="handleCancel" />
 
         <FormLayout @submit="handleSubmit" v-else-if="tabla" class="flex flex-col gap-5">
             <template v-for="(chunk, chunkIndex) in columnChunks" :key="`chunk-${chunkIndex}`">
@@ -41,14 +35,20 @@
                             v-model="formData[column.key]" :label="column.label" :required="column.required"
                             :error="errors[column.key]" />
 
+                        <FormCheckboxGroupField v-else-if="column.type === 'checkbox-multiple'"
+                            :id="`field-${column.key}`" v-model="formData[column.key]" :label="column.label"
+                            :required="column.required" :error="errors[column.key]"
+                            :options="selectOptions[column.key] || []" :loading="loadingOptions[column.key]" />
+
                         <FormSelectField v-else-if="column.type === 'select'" :id="`field-${column.key}`"
-                            v-model="formData[column.key]" :label="column.label" :required="column.required" 
-                            :error="errors[column.key]" :options="selectOptions[column.key] || []" 
-                            :loading="loadingOptions[column.key]" :placeholder="`Seleccionar ${column.label.toLowerCase()}`" />
+                            v-model="formData[column.key]" :label="column.label" :required="column.required"
+                            :error="errors[column.key]" :options="selectOptions[column.key] || []"
+                            :loading="loadingOptions[column.key]"
+                            :placeholder="`Seleccionar ${column.label.toLowerCase()}`" />
 
                         <FormSelectField v-else-if="column.type === 'badge'" :id="`field-${column.key}`"
-                            v-model="formData[column.key]" :label="column.label" :required="column.required" 
-                            :error="errors[column.key]" :options="badgeOptions" 
+                            v-model="formData[column.key]" :label="column.label" :required="column.required"
+                            :error="errors[column.key]" :options="badgeOptions"
                             :placeholder="`Seleccionar ${column.label.toLowerCase()}`" />
 
                         <FormImageField v-else-if="column.type === 'image'" :id="`field-${column.key}`"
@@ -128,7 +128,7 @@ const getDestinoTipo = () => {
     if (route.query.tipo) {
         return route.query.tipo
     }
-    
+
     if (editingData.value) {
         if (editingData.value.regionId) {
             return 'pais'
@@ -136,7 +136,7 @@ const getDestinoTipo = () => {
             return 'region'
         }
     }
-    
+
     return 'destino'
 }
 
@@ -201,7 +201,7 @@ onMounted(async () => {
     if (tabla) {
         await loadSelectOptions()
         await loadExistingData()
-        
+
         if (isDestinosForm() && formData.value) {
             editingData.value = { ...formData.value }
         }

@@ -48,7 +48,7 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
 
             const modules = import.meta.glob('~/shared/**/*.js', { eager: false })
             let modulePath = `/shared/${tabla.endpoint}.js`
-            
+
             let moduleImporter = modules[modulePath]
             if (!moduleImporter) {
                 modulePath = `/shared/${tableName}/${tableName}.js`
@@ -103,6 +103,9 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
                     case 'boolean':
                         formData.value[column.key] = false
                         break
+                    case 'checkbox-multiple':
+                        formData.value[column.key] = []
+                        break
                     case 'number':
                     case 'currency':
                         formData.value[column.key] = ''
@@ -120,7 +123,7 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
         if (!tabla?.columns) return
 
         for (const column of tabla.columns) {
-            if (column.type === 'select' && column.relatedTable) {
+            if ((column.type === 'select' || column.type === 'checkbox-multiple') && column.relatedTable) {
                 loadingOptions.value[column.key] = true
 
                 try {
@@ -160,11 +163,19 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
                     tabla.columns.forEach(column => {
                         if (item.hasOwnProperty(column.key)) {
                             let value = item[column.key]
-                            
+
                             if (column.type === 'text' || column.type === 'currency' || column.type === 'date' || column.type === 'datetime') {
                                 formData.value[column.key] = value != null ? String(value) : ''
                             } else if (column.type === 'badge') {
                                 formData.value[column.key] = value != null ? String(value).toLowerCase() : ''
+                            } else if (column.type === 'checkbox-multiple') {
+                                if (typeof value === 'string' && value) {
+                                    formData.value[column.key] = value.split(',').map(v => v.trim()).filter(Boolean)
+                                } else if (Array.isArray(value)) {
+                                    formData.value[column.key] = value
+                                } else {
+                                    formData.value[column.key] = []
+                                }
                             } else {
                                 formData.value[column.key] = value
                             }
