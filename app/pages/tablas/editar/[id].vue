@@ -10,6 +10,9 @@
             :is-submitting="isSubmitting" :boton-texto="botonTexto" :details-columns="tabla.columns"
             @submit="handleSubmit" @cancel="handleCancel" />
 
+        <FormProductosCreate v-else-if="tablaSlug === 'productos'" :is-editing="true" :editing-data="formData"
+            :product-id="itemId" @success="handleSuccess" @cancel="handleCancel" />
+
         <FormLayout @submit="handleSubmit" v-else-if="tabla" class="flex flex-col gap-5">
             <template v-for="(chunk, chunkIndex) in columnChunks" :key="`chunk-${chunkIndex}`">
                 <FormFieldsContainer>
@@ -164,6 +167,9 @@ const getTituloForm = () => {
     if (isCategoriasForm()) {
         return 'Editar categoría'
     }
+    if (tablaSlug === 'productos') {
+        return 'Editar producto'
+    }
     return botonTexto.value || 'Editar elemento'
 }
 
@@ -177,6 +183,8 @@ const handleSuccess = () => {
         } else {
             router.push(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.DESTINOS}`)
         }
+    } else if (tablaSlug === 'productos') {
+        router.push(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.PRODUCTOS}`)
     } else {
         router.push(`${ROUTE_NAMES.TABLAS}/${tablaSlug}`)
     }
@@ -220,7 +228,7 @@ const handleSubmit = async () => {
 onMounted(async () => {
     if (tabla) {
         await loadSelectOptions()
-        await loadExistingData()
+        const data = await loadExistingData()
 
         if (isDestinosForm() && formData.value) {
             editingData.value = { ...formData.value }

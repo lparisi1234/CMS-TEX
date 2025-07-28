@@ -1,14 +1,14 @@
 const productos = [
     {
-        id: '3/2500254',
+        id: 1,
         nombreprod: "Tour Machu Picchu Clásico",
         h1: "Descubre Machu Picchu con Tour Experto",
         img: "/images/Placeholder.png",
         img_mobile: "/images/Placeholder.png",
-        video_mapa_mobile: "/videos/machu-picchu-mobile.mp4",
-        video_mapa_desktop: "/videos/machu-picchu-desktop.mp4",
-        podcast: "/audio/machu-picchu-podcast.mp3",
-        codigo_newton: 201,
+        video_mapa_mobile: "/images/Placeholder.png",
+        video_mapa_desktop: "/images/Placeholder.png",
+        podcast: "Podcast",
+        codigo_newton: '3/2500254',
         url: "/tours/machu-picchu-clasico",
         cantidad_estrellas: 5,
         cantidadAport: 150,
@@ -17,18 +17,32 @@ const productos = [
         meta_titulo: "Tour Machu Picchu Clásico - Tour Experto",
         meta_descripcion: "Visita la ciudadela inca más famosa del mundo con nuestros expertos",
         estado: "Activo",
-        precio_total: 1299.00
+        segmentos_excluidos: [3, 4],
+        secciones: [
+            {
+                id: 1,
+                pagina: "home",
+                seccion: "mas_vendidos",
+                segmentos_excluidos: [3]
+            },
+            {
+                id: 2,
+                pagina: "home",
+                seccion: "vuelo_incluido",
+                segmentos_excluidos: [2]
+            }
+        ]
     },
     {
-        id: '3/2500298',
+        id: 2,
         nombreprod: "Experiencia Iguazú Premium",
         h1: "Cataratas del Iguazú como nunca las viste",
         img: "/images/Placeholder.png",
         img_mobile: "/images/Placeholder.png",
-        video_mapa_mobile: "/videos/iguazu-mobile.mp4",
-        video_mapa_desktop: "/videos/iguazu-desktop.mp4",
-        podcast: "/audio/iguazu-podcast.mp3",
-        codigo_newton: 202,
+        video_mapa_mobile: "/images/Placeholder.png",
+        video_mapa_desktop: "/images/Placeholder.png",
+        podcast: "Podcast",
+        codigo_newton: '2/2500298',
         url: "/tours/iguazu-premium",
         cantidad_estrellas: 5,
         cantidadAport: 89,
@@ -37,18 +51,26 @@ const productos = [
         meta_titulo: "Cataratas Iguazú Premium - Tour Experto",
         meta_descripcion: "Experiencia premium en las cataratas más impresionantes de Sudamérica",
         estado: "Activo",
-        precio_total: 899.00
+        segmentos_excluidos: [4, 5],
+        secciones: [
+            {
+                id: 3,
+                pagina: "home",
+                seccion: "vuelo_incluido",
+                segmentos_excluidos: [4]
+            }
+        ]
     },
     {
-        id: '3/2500314',
+        id: 3,
         nombreprod: "Safari Patagónico",
         h1: "Aventura en la Patagonia Argentina",
         img: "/images/Placeholder.png",
         img_mobile: "/images/Placeholder.png",
-        video_mapa_mobile: "/videos/patagonia-mobile.mp4",
-        video_mapa_desktop: "/videos/patagonia-desktop.mp4",
-        podcast: "/audio/patagonia-podcast.mp3",
-        codigo_newton: 203,
+        video_mapa_mobile: "/images/Placeholder.png",
+        video_mapa_desktop: "/images/Placeholder.png",
+        podcast: "Podcast",
+        codigo_newton: '3/2500314',
         url: "/tours/safari-patagonico",
         cantidad_estrellas: 4,
         cantidadAport: 45,
@@ -57,18 +79,26 @@ const productos = [
         meta_titulo: "Safari Patagónico - Tour Experto",
         meta_descripcion: "Descubre la vida salvaje y paisajes únicos de la Patagonia",
         estado: "Activo",
-        precio_total: 1599.00
+        segmentos_excluidos: [2],
+        secciones: [
+            {
+                id: 4,
+                pagina: "grupos",
+                seccion: "amigos_europa",
+                segmentos_excluidos: [2, 5]
+            }
+        ]
     },
     {
-        id: '3/2505535',
+        id: 4,
         nombreprod: "Tour Machu Picchu Clásico",
         h1: "La Ciudad Perdida de los Incas",
         img: "/images/Placeholder.png",
         img_mobile: "/images/Placeholder.png",
         video_mapa_mobile: "/images/Placeholder.png",
         video_mapa_desktop: "/images/Placeholder.png",
-        podcast: "/audio/machupicchu-podcast.mp3",
-        codigo_newton: 404,
+        podcast: "Podcast",
+        codigo_newton: '4/2505535',
         url: "/tours/machu-picchu-clasico",
         cantidad_estrellas: 5,
         cantidadAport: 156,
@@ -77,18 +107,19 @@ const productos = [
         meta_titulo: "Machu Picchu Clásico - Tour Experto",
         meta_descripcion: "Descubre la maravilla del mundo con nuestros guías especializados",
         estado: "Activo",
-        precio_total: 1299.00
+        segmentos_excluidos: [],
+        secciones: []
     },
     {
-        id: '3/2505171',
+        id: 5,
         nombreprod: "Europa Medieval - Castillos y Catedrales",
         h1: "Viaje por la Europa Medieval",
         img: "/images/Placeholder.png",
         img_mobile: "/images/Placeholder.png",
         video_mapa_mobile: "/images/Placeholder.png",
         video_mapa_desktop: "/images/Placeholder.png",
-        podcast: "/audio/europa-medieval-podcast.mp3",
-        codigo_newton: 505,
+        podcast: "Podcast",
+        codigo_newton: '2/2505171',
         url: "/tours/europa-medieval",
         cantidad_estrellas: 4,
         cantidadAport: 67,
@@ -97,7 +128,8 @@ const productos = [
         meta_titulo: "Europa Medieval - Tour Experto",
         meta_descripcion: "Explora castillos, catedrales y ciudades medievales de Europa",
         estado: "Activo",
-        precio_total: 2199.00
+        segmentos_excluidos: [],
+        secciones: []
     }
 ]
 

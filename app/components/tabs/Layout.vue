@@ -1,9 +1,9 @@
 <template>
     <div class="w-full">
-        <div class="flex gap-2 border-b border-violet">
+        <div class="flex gap-2 border-b border-violet overflow-auto">
             <button v-for="tab in tabs" :key="tab.id"
                 type="button"
-                class="border border-b-0 border-secondary rounded-t-xl font-medium uppercase transition-colors duration-200 py-2 px-5"
+                class="border border-b-0 border-secondary rounded-t-xl font-medium whitespace-nowrap uppercase transition-colors duration-200 py-2 px-5"
                 :class="[
                     activeTab === tab.id
                         ? 'bg-violet text-light'

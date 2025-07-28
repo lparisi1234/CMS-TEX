@@ -1,130 +1,135 @@
 <template>
     <FormLayout @submit="handleSubmit" class="flex flex-col gap-5">
-        <FormFieldsContainer>
-            <FormTextField
-                v-model="formData.nombreprod"
-                label="Nombre del Producto"
-                required
-                placeholder="Ingresa el nombre del producto"
-                :error="errors.nombreprod"
-            />
-            <FormTextField
-                v-model="formData.codigo_newton"
-                label="Código Newton"
-                type="number"
-                required
-                placeholder="Código único del producto"
-                :error="errors.codigo_newton"
-            />
-        </FormFieldsContainer>
+        <TabsLayout :tabs="tabs" style="-webkit-overflow-scrolling: touch;">
+            <template #detalle>
+                <div class="flex flex-col gap-5">
+                    <FormFieldsContainer>
+                        <FormTextField v-model="formData.nombreprod" id="nombreprod" label="Nombre del Producto"
+                            required placeholder="Ingresa el nombre del producto" :error="errors.nombreprod" />
+                        <FormTextField v-model="formData.codigo_newton" id="codigo_newton" label="Código Newton"
+                            type="text" required placeholder="Código único del producto"
+                            :error="errors.codigo_newton" />
+                    </FormFieldsContainer>
 
-        <FormFieldsContainer>
-            <FormTextField
-                v-model="formData.h1"
-                label="H1"
-                required
-                placeholder="Título principal del producto"
-                :error="errors.h1"
-            />
-            <FormTextField
-                v-model="formData.url"
-                label="URL"
-                required
-                placeholder="/productos/nombre-producto"
-                :error="errors.url"
-            />
-        </FormFieldsContainer>
+                    <FormFieldsContainer>
+                        <FormTextField v-model="formData.url" id="url" label="URL" required
+                            placeholder="/productos/nombre-producto" :error="errors.url" />
+                        <FormTextField v-model="formData.h1" id="h1" label="H1" required
+                            placeholder="Título principal del producto" :error="errors.h1" />
+                    </FormFieldsContainer>
 
-        <FormFieldsContainer>
-            <FormImageField
-                v-model="formData.img"
-                label="Imagen Principal"
-                :error="errors.img"
-            />
-            <FormImageField
-                v-model="formData.img_mobile"
-                label="Imagen Mobile"
-                :error="errors.img_mobile"
-            />
-        </FormFieldsContainer>
+                    <FormFieldsContainer>
+                        <FormTextField v-model="formData.meta_titulo" id="meta_titulo" label="Meta Título"
+                            placeholder="Título para SEO" :error="errors.meta_titulo" />
+                        <FormTextField v-model="formData.meta_descripcion" id="meta_descripcion"
+                            label="Meta Descripción" placeholder="Descripción para SEO"
+                            :error="errors.meta_descripcion" />
+                    </FormFieldsContainer>
 
-        <FormFieldsContainer>
-            <FormTextField
-                v-model="formData.video_mapa_mobile"
-                label="Video Mapa Mobile"
-                placeholder="URL del video para móvil"
-                :error="errors.video_mapa_mobile"
-            />
-            <FormTextField
-                v-model="formData.video_mapa_desktop"
-                label="Video Mapa Desktop"
-                placeholder="URL del video para escritorio"
-                :error="errors.video_mapa_desktop"
-            />
-        </FormFieldsContainer>
+                    <FormFieldsContainer>
+                        <FormImageField v-model="formData.img" id="img" label="Imagen Principal" :error="errors.img" />
+                        <FormImageField v-model="formData.img_mobile" id="img_mobile" label="Imagen Mobile"
+                            :error="errors.img_mobile" />
+                    </FormFieldsContainer>
 
-        <FormFieldsContainer>
-            <FormTextField
-                v-model="formData.podcast"
-                label="Podcast"
-                placeholder="URL del podcast relacionado"
-                :error="errors.podcast"
-            />
-            <FormTextField
-                v-model="formData.cantidad_estrellas"
-                label="Cantidad de Estrellas"
-                type="number"
-                min="1"
-                max="5"
-                placeholder="Calificación (1-5)"
-                :error="errors.cantidad_estrellas"
-            />
-        </FormFieldsContainer>
+                    <FormFieldsContainer>
+                        <FormImageField v-model="formData.video_mapa_mobile" id="video_mapa_mobile"
+                            label="Video Mapa Mobile" :error="errors.video_mapa_mobile" />
+                        <FormImageField v-model="formData.video_mapa_desktop" id="video_mapa_desktop"
+                            label="Video Mapa Desktop" :error="errors.video_mapa_desktop" />
+                    </FormFieldsContainer>
 
-        <FormFieldsContainer>
-            <FormTextField
-                v-model="formData.cantidadAport"
-                label="Cantidad de Aportaciones"
-                type="number"
-                placeholder="Número de reviews o comentarios"
-                :error="errors.cantidadAport"
-            />
-            <FormTextField
-                v-model="formData.consejo_experto"
-                label="Consejo del Experto"
-                placeholder="Consejo útil para este producto"
-                :error="errors.consejo_experto"
-            />
-        </FormFieldsContainer>
+                    <FormFieldsContainer>
+                        <FormTextField v-model="formData.cantidad_estrellas" id="cantidad_estrellas"
+                            label="Cantidad de Estrellas" type="number" min="1" max="5" placeholder="Calificación (1-5)"
+                            :error="errors.cantidad_estrellas" />
+                        <FormTextField v-model="formData.cantidadAport" id="cantidadAport" label="Cantidad de Aportes"
+                            type="number" placeholder="Número de reviews o comentarios" :error="errors.cantidadAport" />
+                    </FormFieldsContainer>
 
-        <FormFieldsContainer>
-            <FormTextField
-                v-model="formData.precio_total"
-                label="Precio Total"
-                type="number"
-                step="0.01"
-                placeholder="0.00"
-                :error="errors.precio_total"
-            />
-            <FormSelectField
-                v-model="formData.estado"
-                label="Estado"
-                required
-                :options="estadoOptions"
-                placeholder="Seleccionar estado"
-                :error="errors.estado"
-            />
-        </FormFieldsContainer>
+                    <FormFieldsContainer>
+                        <FormSelectField v-model="formData.estado" id="estado" label="Estado" required
+                            :options="estadoOptions" placeholder="Seleccionar estado" :error="errors.estado" />
+                        <FormSelectField v-model="formData.expertoId" id="expertoId" label="Experto"
+                            :options="expertosOptions" placeholder="Seleccionar experto" :error="errors.expertoId" />
+                    </FormFieldsContainer>
+
+                    <FormFieldsContainer>
+                        <FormTextareaField v-model="formData.consejo_experto" id="consejo_experto"
+                            label="Consejo del Experto" placeholder="Escribe un Consejo de Experto" :rows="3"
+                            :error="errors.consejo_experto" />
+                    </FormFieldsContainer>
+
+                    <FormFieldsContainer>
+                        <FormTextareaField v-model="formData.podcast" id="podcast" label="Podcast"
+                            placeholder="Escribe el iframe del podcast del tour" :error="errors.podcast" />
+                    </FormFieldsContainer>
+                </div>
+            </template>
+
+            <template #segmentos>
+                <div class="flex flex-col gap-5">
+                    <FormFieldsContainer>
+                        <FormCheckboxGroupField id="segmentos-excluidos" v-model="formData.segmentos_excluidos"
+                            :options="segmentosOptions" label="Segmentos Excluidos" />
+                    </FormFieldsContainer>
+                </div>
+            </template>
+
+            <template #secciones>
+                <div class="flex flex-col gap-5">
+                    <TableLayout :data="displaySecciones" :columns="seccionesColumns" :table-name="'Secciones'"
+                        :show-actions="true" :empty-state-text="'No hay secciones creadas'" @edit="handleEditSeccion"
+                        @delete="handleDeleteSeccion" />
+                    <div class="flex justify-start pb-4">
+                        <ButtonPrimary @click.prevent.stop="openCreateSeccionModal" type="button">
+                            + Agregar Sección
+                        </ButtonPrimary>
+                    </div>
+                </div>
+
+                <div v-if="showSeccionModal"
+                    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+                    @click="handleSeccionModalBackgroundClick">
+                    <div class="w-full max-w-[60rem] flex flex-col gap-6 bg-light rounded-[20px] p-8" @click.stop>
+                        <HeadingH2 class="text-center">
+                            {{ isEditingSeccion ? 'Editar Sección' : 'Crear Sección' }}
+                        </HeadingH2>
+                        <form @submit.prevent="saveSeccion" class="flex flex-col gap-4">
+                            <FormFieldsContainer>
+                                <FormSelectField id="modal-pagina" v-model="modalSeccion.pagina" label="Página"
+                                    :options="paginaOptions" required />
+                                <FormSelectField id="modal-seccion" v-model="modalSeccion.seccion" label="Sección"
+                                    :options="seccionOptions" required :disabled="!modalSeccion.pagina" />
+                            </FormFieldsContainer>
+                            <FormFieldsContainer>
+                                <FormCheckboxGroupField id="modal-segmentos" v-model="modalSeccion.segmentos_excluidos"
+                                    :options="segmentosOptions" label="Segmentos excluidos" />
+                            </FormFieldsContainer>
+                            <div class="flex justify-center gap-5 mt-2">
+                                <ButtonPrimary @click.prevent="closeSeccionModal('cancel-button')" type="button"
+                                    class="!bg-gray-mid !text-dark">
+                                    Cancelar
+                                </ButtonPrimary>
+                                <ButtonPrimary type="submit">
+                                    {{ isEditingSeccion ? 'Actualizar' : 'Crear' }}
+                                </ButtonPrimary>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </template>
+        </TabsLayout>
 
         <div class="flex justify-center items-center flex-wrap gap-8 mt-3">
             <ButtonPrimary @click="$emit('cancel')" class="!bg-gray-mid !text-dark">
                 Cancelar
             </ButtonPrimary>
             <ButtonPrimary type="submit" :disabled="isSubmitting">
-                <span v-if="!isSubmitting">Crear Producto</span>
+                <span v-if="!isSubmitting">{{ isEditing ? 'Actualizar' : 'Crear' }} Producto</span>
                 <span v-else class="flex items-center gap-2">
                     <Icon name="tabler:loader-2" class="animate-spin" />
-                    Creando...
+                    {{ isEditing ? 'Actualizando...' : 'Creando...' }}
                 </span>
             </ButtonPrimary>
         </div>
@@ -132,6 +137,25 @@
 </template>
 
 <script setup>
+import segmentosData from '~/shared/segmentos/segmentos.js'
+import expertosData from '~/shared/expertos/expertos.js'
+import productosData from '~/shared/productos/productos.js'
+
+const props = defineProps({
+    isEditing: {
+        type: Boolean,
+        default: false
+    },
+    editingData: {
+        type: Object,
+        default: null
+    },
+    productId: {
+        type: [String, Number],
+        default: null
+    }
+})
+
 const emit = defineEmits(['success', 'cancel'])
 
 const formData = ref({
@@ -147,56 +171,270 @@ const formData = ref({
     cantidad_estrellas: 5,
     cantidadAport: 0,
     consejo_experto: '',
+    expertoId: '',
+    meta_titulo: '',
+    meta_descripcion: '',
     precio_total: 0,
-    estado: 'activo'
+    estado: 'Activo',
+    segmentos_excluidos: [],
+    secciones: []
 })
+
+watchEffect(() => {
+    if (Array.isArray(formData.value.segmentos_excluidos)) {
+        formData.value.segmentos_excluidos = formData.value.segmentos_excluidos.map(v => v.toString())
+    }
+    if (Array.isArray(formData.value.secciones)) {
+        formData.value.secciones = formData.value.secciones.map(seccion => ({
+            ...seccion,
+            segmentos_excluidos: Array.isArray(seccion.segmentos_excluidos)
+                ? seccion.segmentos_excluidos.map(v => v.toString())
+                : []
+        }))
+    }
+})
+
+const tabs = [
+    { id: 'detalle', label: 'Detalle' },
+    { id: 'segmentos', label: 'Segmentos excluidos' },
+    { id: 'secciones', label: 'Secciones' }
+]
 
 const errors = ref({})
 const isSubmitting = ref(false)
 
-// Opciones para selects
 const estadoOptions = [
-    { value: 'activo', label: 'Activo' },
-    { value: 'inactivo', label: 'Inactivo' },
-    { value: 'borrador', label: 'Borrador' }
+    { value: 'Activo', label: 'Activo' },
+    { value: 'Inactivo', label: 'Inactivo' },
+    { value: 'Borrador', label: 'Borrador' }
 ]
 
-const validateForm = () => {
-    errors.value = {}
-    
-    if (!formData.value.nombreprod) errors.value.nombreprod = 'El nombre del producto es requerido'
-    if (!formData.value.codigo_newton) errors.value.codigo_newton = 'El código Newton es requerido'
-    if (!formData.value.h1) errors.value.h1 = 'El H1 es requerido'
-    if (!formData.value.url) errors.value.url = 'La URL es requerida'
-    if (!formData.value.estado) errors.value.estado = 'El estado es requerido'
-    
-    if (formData.value.cantidad_estrellas && (formData.value.cantidad_estrellas < 1 || formData.value.cantidad_estrellas > 5)) {
-        errors.value.cantidad_estrellas = 'Las estrellas deben ser entre 1 y 5'
+const segmentosOptions = computed(() =>
+    segmentosData.map(s => ({
+        value: s.id,
+        label: s.descripcion
+    }))
+)
+
+const expertosOptions = computed(() =>
+    expertosData.map(e => ({
+        value: e.id,
+        label: e.nombre
+    }))
+)
+
+const seccionesColumns = [
+    { key: 'seccion', label: 'Sección', type: 'text', required: true },
+    { key: 'segmentos_excluidos', label: 'Segmentos excluidos', type: 'array-ids', required: false }
+]
+
+const paginaOptions = [
+    { value: 'home', label: 'Home' },
+    { value: 'grupos', label: 'Grupos de Ofertas' }
+]
+
+const seccionOptions = computed(() => {
+    if (modalSeccion.value.pagina === 'home') {
+        return [
+            { value: 'mas_vendidos', label: 'Mas vendidos' },
+            { value: 'vuelo_incluido', label: 'Vuelo incluido' }
+        ]
+    } else if (modalSeccion.value.pagina === 'grupos') {
+        return [
+            { value: 'tours_europa', label: 'Tours por Europa, Escandinavia y Balticos' },
+            { value: 'amigos_europa', label: 'Viaja con amigos por Europa' }
+        ]
     }
-    
-    return Object.keys(errors.value).length === 0
+    return []
+})
+
+const displaySecciones = computed(() => {
+    const secciones = formData.value.secciones || []
+    if (!Array.isArray(secciones)) return []
+
+    return secciones.map(seccion => ({
+        ...seccion,
+        segmentos_excluidos: Array.isArray(seccion.segmentos_excluidos)
+            ? (seccion.segmentos_excluidos.length > 0
+                ? seccion.segmentos_excluidos
+                    .map(id => {
+                        const found = segmentosOptions.value.find(s => String(s.value) === String(id))
+                        return found ? found.label : `ID: ${id}`
+                    })
+                    .join(', ')
+                : 'Sin segmentos')
+            : String(seccion.segmentos_excluidos || 'Sin segmentos')
+    }))
+})
+
+const seccionModalDefault = {
+    pagina: '',
+    seccion: '',
+    segmentos_excluidos: []
+}
+const modalSeccion = ref({ ...seccionModalDefault })
+const showSeccionModal = ref(false)
+const isEditingSeccion = ref(false)
+const editingSeccionIndex = ref(-1)
+
+const openCreateSeccionModal = (event) => {
+    if (event) {
+        event.preventDefault()
+        event.stopPropagation()
+    }
+    isEditingSeccion.value = false
+    editingSeccionIndex.value = -1
+    modalSeccion.value = { ...seccionModalDefault }
+    showSeccionModal.value = true
+}
+
+const handleEditSeccion = (seccion, index) => {
+    nextTick(() => editSeccion(seccion))
+}
+
+const handleDeleteSeccion = (seccion, index) => {
+    deleteSeccion(seccion)
+}
+
+const editSeccion = (seccion) => {
+    const idx = formData.value.secciones.findIndex(s => s.id === seccion.id)
+    if (idx !== -1) {
+        isEditingSeccion.value = true
+        editingSeccionIndex.value = idx
+        const original = formData.value.secciones[idx]
+        modalSeccion.value = {
+            pagina: original.pagina || '',
+            seccion: original.seccion || '',
+            segmentos_excluidos: Array.isArray(original.segmentos_excluidos)
+                ? original.segmentos_excluidos.map(v => v.toString())
+                : []
+        }
+        showSeccionModal.value = true
+    }
+}
+
+const closeSeccionModal = () => {
+    showSeccionModal.value = false
+    isEditingSeccion.value = false
+    editingSeccionIndex.value = -1
+    modalSeccion.value = { ...seccionModalDefault }
+}
+
+const handleSeccionModalBackgroundClick = (event) => {
+    if (event.target === event.currentTarget) {
+        closeSeccionModal('background-click')
+    }
+}
+
+const saveSeccion = () => {
+    if (!modalSeccion.value.pagina || !modalSeccion.value.seccion) return
+
+    const seccionData = {
+        id: isEditingSeccion.value
+            ? formData.value.secciones[editingSeccionIndex.value].id
+            : Date.now(),
+        pagina: modalSeccion.value.pagina,
+        seccion: modalSeccion.value.seccion,
+        segmentos_excluidos: Array.isArray(modalSeccion.value.segmentos_excluidos)
+            ? modalSeccion.value.segmentos_excluidos.map(v => v.toString())
+            : []
+    }
+
+    if (!formData.value.secciones) {
+        formData.value.secciones = []
+    }
+
+    if (isEditingSeccion.value) {
+        formData.value.secciones[editingSeccionIndex.value] = seccionData
+    } else {
+        formData.value.secciones.push(seccionData)
+    }
+
+    closeSeccionModal('form-submitted')
+}
+
+const deleteSeccion = (seccion) => {
+    const idx = formData.value.secciones.findIndex(s => s.id === seccion.id)
+    if (idx !== -1) {
+        formData.value.secciones.splice(idx, 1)
+    }
 }
 
 const handleSubmit = async () => {
-    if (!validateForm()) return
-    
+
     isSubmitting.value = true
-    
+
     try {
         const dataToSubmit = { ...formData.value }
-        
-        // Generar ID único (en una aplicación real, esto lo haría el backend)
-        dataToSubmit.id = Date.now()
-        
-        // POST
-        
+
+        if (!props.isEditing) {
+            const timestamp = Date.now()
+            const lastDigits = timestamp.toString().slice(-6)
+            dataToSubmit.id = `3/${lastDigits}`
+        }
+
+        dataToSubmit.cantidad_estrellas = parseInt(dataToSubmit.cantidad_estrellas)
+        dataToSubmit.cantidadAport = parseInt(dataToSubmit.cantidadAport)
+        dataToSubmit.precio_total = parseFloat(dataToSubmit.precio_total) || 0
+
+        if (props.isEditing) {
+            // PUT ?
+        } else {
+            // POST ?
+        }
+
         emit('success')
-        
+
     } catch (error) {
-        console.error('Error al crear producto:', error)
-        // Mostrar error al usuario
+        console.error('Error al procesar producto:', error)
     } finally {
         isSubmitting.value = false
     }
 }
+
+const loadProductData = async () => {
+    if (props.isEditing && props.productId) {
+        const producto = productosData.find(p =>
+            String(p.id) === String(props.productId)
+        )
+
+        if (producto) {
+            Object.keys(formData.value).forEach(key => {
+                if (producto.hasOwnProperty(key)) {
+                    if (key === 'segmentos_excluidos' || key === 'secciones') {
+                        formData.value[key] = Array.isArray(producto[key])
+                            ? [...producto[key]]
+                            : []
+                    } else {
+                        formData.value[key] = producto[key]
+                    }
+                }
+            })
+        }
+    } else if (props.editingData) {
+        Object.keys(formData.value).forEach(key => {
+            if (props.editingData.hasOwnProperty(key)) {
+                if (key === 'segmentos_excluidos' || key === 'secciones') {
+                    formData.value[key] = Array.isArray(props.editingData[key])
+                        ? [...props.editingData[key]]
+                        : []
+                } else {
+                    formData.value[key] = props.editingData[key]
+                }
+            }
+        })
+    }
+}
+
+watch(() => props.editingData, (newData) => {
+    if (newData && props.isEditing) {
+        loadProductData()
+    }
+}, { immediate: true })
+
+onMounted(() => {
+    if (props.isEditing) {
+        loadProductData()
+    }
+})
 </script>

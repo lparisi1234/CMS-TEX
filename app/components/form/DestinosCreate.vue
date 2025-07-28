@@ -168,7 +168,7 @@
 
     <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
         @click="handleModalBackgroundClick">
-        <div class="w-full max-w-[56rem] flex flex-col gap-6 bg-white rounded-[20px] p-12" @click.stop>
+        <div class="w-full max-w-[56rem] flex flex-col gap-6 bg-light rounded-[20px] p-12" @click.stop>
             <HeadingH2 class="text-center">
                 {{ isEditingSubgrupo ? 'Editar Subgrupo' : 'Crear Subgrupo' }}
             </HeadingH2>
@@ -203,7 +203,7 @@
     <div v-if="showTablaEspecialModal"
         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
         @click="handleTablaEspecialModalBackgroundClick">
-        <div class="w-full max-w-[56rem] flex flex-col gap-6 bg-white rounded-[20px] p-12" @click.stop>
+        <div class="w-full max-w-[56rem] flex flex-col gap-6 bg-light rounded-[20px] p-12" @click.stop>
             <HeadingH2 class="text-center">
                 Editar {{ currentTablaEspecialName }}
             </HeadingH2>
@@ -236,7 +236,13 @@ import masVendidosData from '~/shared/masVendidos/masVendidos.js'
 import vueloIncluidoData from '~/shared/vueloIncluido/vueloIncluido.js'
 import recomendadosData from '~/shared/recomendados/recomendados.js'
 
-const { badgeOptions } = useDynamicForm('destinos')
+const badgeOptions = [
+    { value: 'activo', label: 'Activo' },
+    { value: 'inactivo', label: 'Inactivo' },
+    { value: 'borrador', label: 'Borrador' },
+    { value: 'publicado', label: 'Publicado' },
+    { value: 'archivado', label: 'Archivado' }
+]
 
 const props = defineProps({
     tipo: {
@@ -309,7 +315,6 @@ const tabs = [
     { id: 'subgrupos', label: 'Subgrupos' }
 ]
 
-// Columnas para el formulario de detale
 const detailsColumns = [
     { key: 'nombre', label: 'Nombre', type: 'text', required: true },
     { key: 'url', label: 'URL', type: 'text', required: true },

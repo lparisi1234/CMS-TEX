@@ -455,7 +455,7 @@ const tablas = {
             name: 'Productos',
             slug: 'productos',
             icon: 'aerial-lift',
-            endpoint: 'productos',
+            endpoint: 'productos/productos',
             botonTexto: 'Crear nuevo producto',
             columns: [
                 {

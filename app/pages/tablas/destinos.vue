@@ -3,7 +3,7 @@
         <HeadingH1>Destinos</HeadingH1>
         <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-6">
             <div v-for="card in destinationCards" :key="card.id"
-                class="flex flex-col items-center gap-4 bg-white rounded-lg shadow-sm border p-6">
+                class="flex flex-col items-center gap-4 bg-light rounded-lg shadow-sm border p-6">
                 <div class="flex flex-col items-center gap-4 text-center">
                     <div :class="`w-16 h-16 flex items-center justify-center ${card.bgColor} rounded-full`">
                         <Icon :name="`tabler:${card.icon}`" :class="`w-8 h-8 ${card.iconColor}`" />
@@ -29,7 +29,7 @@
 
             <!-- REVISAR -->
             <div v-if="searchQuery && searchResults.length > 0"
-                class="bg-white border border-gray-200 rounded-lg shadow-sm max-h-64 overflow-y-auto mt-4">
+                class="bg-light border border-gray-200 rounded-lg shadow-sm max-h-64 overflow-y-auto mt-4">
                 <div v-for="result in searchResults" :key="`${result.type}-${result.id}`"
                     class="border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors duration-200 cursor-pointer px-4 py-3"
                     @click="goToResult(result)">

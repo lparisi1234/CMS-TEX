@@ -24,11 +24,11 @@
 
                 <template v-else>
                     <button @click="handleSave"
-                        class="flex items-center bg-primary text-white rounded-lg p-2">
+                        class="flex items-center bg-primary text-light rounded-lg p-2">
                         <Icon name="tabler:check" class="w-5 h-5" />
                     </button>
                     <button @click="handleCancel"
-                        class="flex items-center bg-gray-dark text-white rounded-lg p-2">
+                        class="flex items-center bg-gray-dark text-light rounded-lg p-2">
                         <Icon name="tabler:x" class="w-5 h-5" />
                     </button>
                 </template>

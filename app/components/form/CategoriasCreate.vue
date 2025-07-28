@@ -73,7 +73,7 @@
 
     <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
         @click="handleModalBackgroundClick">
-        <div class="w-full max-w-[56rem] flex flex-col gap-6 bg-white rounded-[20px] p-12" @click.stop>
+        <div class="w-full max-w-[56rem] flex flex-col gap-6 bg-light rounded-[20px] p-12" @click.stop>
             <HeadingH2 class="text-center">
                 {{ isEditingSubgrupo ? 'Editar Subgrupo' : 'Crear Subgrupo' }}
             </HeadingH2>
