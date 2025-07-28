@@ -242,7 +242,7 @@ const tablas = {
                 {
                     key: 'consejo_experto',
                     label: 'Consejo Experto',
-                    type: 'text'
+                    type: 'textarea'
                 },
                 {
                     key: 'img',
@@ -320,6 +320,11 @@ const tablas = {
                     type: 'text'
                 },
                 {
+                    key: 'url',
+                    label: 'URL',
+                    type: 'text'
+                },
+                {
                     key: 'h1',
                     label: 'H1',
                     type: 'text'
@@ -360,11 +365,6 @@ const tablas = {
                     type: 'text'
                 },
                 {
-                    key: 'nro_orden',
-                    label: 'Número de Orden',
-                    type: 'number'
-                },
-                {
                     key: 'img_carousel',
                     label: 'Imagen Carousel',
                     type: 'image'
@@ -383,6 +383,11 @@ const tablas = {
                     key: 'video_desktop',
                     label: 'Video Desktop',
                     type: 'image'
+                },
+                {
+                    key: 'nro_orden',
+                    label: 'Número de Orden',
+                    type: 'number'
                 },
                 {
                     key: 'estado',
@@ -404,13 +409,14 @@ const tablas = {
                 {
                     key: 'consejo_experto',
                     label: 'Consejo Experto',
-                    type: 'text'
+                    type: 'textarea'
                 },
                 {
-                    key: 'url',
-                    label: 'URL',
-                    type: 'text'
-                }
+                    key: 'subgrupos',
+                    label: 'Subgrupos',
+                    type: 'array',
+                    required: false
+                },
             ]
         },
         {
@@ -514,7 +520,7 @@ const tablas = {
                 {
                     key: 'consejo_experto',
                     label: 'Consejo Experto',
-                    type: 'text'
+                    type: 'textarea'
                 },
                 {
                     key: 'expertoId',

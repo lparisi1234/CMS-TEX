@@ -4,7 +4,7 @@
         <ButtonPrimary @click="handleCreate" class="!px-4 sm:!px-12">
             Agregar Qué Esperar
         </ButtonPrimary>
-        <div class="lg:w-[37.5rem] flex flex-col sm:flex-row gap-4 items-end">
+        <div class="w-full lg:w-[37.5rem] flex items-end gap-4">
             <div class="w-full flex flex-col gap-1">
                 <FormLabel>Selecciona una categoría</FormLabel>
                 <FormSelectField v-model="selectedCategoriaId" :options="categoriaOptions"

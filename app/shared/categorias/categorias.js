@@ -20,7 +20,27 @@ const categorias = [
         codigo_newton: 1,
         idExperto: 1,
         consejo_experto: 'Siempre verifica el equipo de seguridad antes de cualquier actividad',
-        url: '/categorias/aventura'
+        url: '/categorias/aventura',
+        subgrupos: [
+            {
+                id: 1,
+                nombre: 'Escalada',
+                nro_orden: 1,
+                productos: ['3/2500254', '3/2500298', '3/2500314']
+            },
+            {
+                id: 2,
+                nombre: 'Parapente',
+                nro_orden: 2,
+                productos: ['3/2505535', '3/2505171']
+            },
+            {
+                id: 3,
+                nombre: 'Rafting',
+                nro_orden: 3,
+                productos: ['3/2500254', '3/2500314']
+            }
+        ]
     },
     {
         id: 2,
@@ -43,7 +63,24 @@ const categorias = [
         codigo_newton: 2,
         idExperto: 2,
         consejo_experto: 'Investiga la historia del lugar antes de visitarlo para una mejor experiencia',
-        url: '/categorias/cultura'
+        url: '/categorias/cultura',
+        subgrupos: [
+            {
+                nombre: 'Más Vendidos',
+                nro_orden: 1,
+                productos: ['3/2500254', '3/2505535']
+            },
+            {
+                nombre: 'Recomendados',
+                nro_orden: 2,
+                productos: ['3/2505171', '3/2500298']
+            },
+            {
+                nombre: 'Arte local',
+                nro_orden: 3,
+                productos: ['3/2500314']
+            }
+        ]
     },
     {
         id: 3,
@@ -66,7 +103,27 @@ const categorias = [
         codigo_newton: 3,
         idExperto: 3,
         consejo_experto: 'Reserva tratamientos de spa con anticipación durante temporada alta',
-        url: '/categorias/relax'
+        url: '/categorias/relax',
+        subgrupos: [
+            {
+                id: 7,
+                nombre: 'Spa',
+                nro_orden: 1,
+                productos: ['3/2500298', '3/2505171']
+            },
+            {
+                id: 8,
+                nombre: 'Yoga',
+                nro_orden: 2,
+                productos: ['3/2500314', '3/2505535']
+            },
+            {
+                id: 9,
+                nombre: 'Meditación',
+                nro_orden: 3,
+                productos: ['3/2500254']
+            }
+        ]
     },
     {
         id: 4,
@@ -89,7 +146,27 @@ const categorias = [
         codigo_newton: 4,
         idExperto: 4,
         consejo_experto: 'Prueba siempre los platos típicos de la región que visites',
-        url: '/categorias/gastronomico'
+        url: '/categorias/gastronomico',
+        subgrupos: [
+            {
+                id: 10,
+                nombre: 'Restaurantes',
+                nro_orden: 1,
+                productos: ['3/2505171', '3/2500298', '3/2500314']
+            },
+            {
+                id: 11,
+                nombre: 'Street food',
+                nro_orden: 2,
+                productos: ['3/2500254', '3/2505535']
+            },
+            {
+                id: 12,
+                nombre: 'Mercados',
+                nro_orden: 3,
+                productos: ['3/2500298', '3/2500314']
+            }
+        ]
     },
     {
         id: 5,
@@ -112,7 +189,27 @@ const categorias = [
         codigo_newton: 5,
         idExperto: 1,
         consejo_experto: 'Contrata guías locales para conocer las historias no documentadas',
-        url: '/categorias/historico'
+        url: '/categorias/historico',
+        subgrupos: [
+            {
+                id: 13,
+                nombre: 'Monumentos',
+                nro_orden: 1,
+                productos: ['3/2500254', '3/2505535', '3/2505171']
+            },
+            {
+                id: 14,
+                nombre: 'Ruinas',
+                nro_orden: 2,
+                productos: ['3/2500254', '3/2505535']
+            },
+            {
+                id: 15,
+                nombre: 'Sitios UNESCO',
+                nro_orden: 3,
+                productos: ['3/2500254', '3/2505171']
+            }
+        ]
     }
 ]
 

@@ -5,9 +5,12 @@
         <FormDestinosCreate v-if="isDestinosForm()" :tipo="route.query.tipo" @success="handleSuccess"
             @cancel="handleCancel" />
 
-
-
         <FormProductosCreate v-else-if="isProductosForm()" @success="handleSuccess" @cancel="handleCancel" />
+
+        <FormCategoriasCreate v-else-if="isCategoriasForm()" :formData="formData" :errors="errors"
+            :selectOptions="selectOptions" :loadingOptions="loadingOptions" :badgeOptions="badgeOptions"
+            :isSubmitting="isSubmitting" :botonTexto="botonTexto" :detailsColumns="tabla?.columns || []"
+            @submit="handleSubmit" @cancel="handleCancel" />
 
         <FormLayout @submit="handleSubmit" v-else-if="tabla" class="flex flex-col gap-5">
             <template v-for="(chunk, chunkIndex) in columnChunks" :key="`chunk-${chunkIndex}`">
@@ -16,6 +19,11 @@
                         <FormTextField v-if="column.type === 'text'" :id="`field-${column.key}`"
                             v-model="formData[column.key]" :label="column.label" :required="column.required"
                             :error="errors[column.key]" :placeholder="`Ingresa ${column.label.toLowerCase()}`" />
+
+                        <FormTextareaField v-else-if="column.type === 'textarea'" :id="`field-${column.key}`"
+                            v-model="formData[column.key]" :label="column.label" :required="column.required"
+                            :error="errors[column.key]" :placeholder="`Ingresa ${column.label.toLowerCase()}`"
+                            :rows="4" />
 
                         <FormTextField v-else-if="column.type === 'number'" :id="`field-${column.key}`"
                             v-model="formData[column.key]" :label="column.label" :required="column.required"
@@ -62,7 +70,6 @@
                 </FormFieldsContainer>
             </template>
 
-            <!-- Botones de acción -->
             <div class="flex justify-center flex-wrap items-center gap-5 mt-8">
                 <ButtonPrimary @click="handleCancel" type="button" class="!bg-gray-mid !text-dark">
                     Cancelar
@@ -119,6 +126,10 @@ const isProductosForm = () => {
     return tablaSlug === 'productos'
 }
 
+const isCategoriasForm = () => {
+    return tablaSlug === 'categorias'
+}
+
 const getTituloForm = () => {
     if (isDestinosForm()) {
         const tipo = route.query.tipo
@@ -127,6 +138,7 @@ const getTituloForm = () => {
         return 'Crear nuevo destino'
     }
     if (isProductosForm()) return 'Crear nuevo producto'
+    if (isCategoriasForm()) return 'Crear nueva categoría'
     return botonTexto.value || 'Crear nuevo elemento'
 }
 
@@ -142,6 +154,8 @@ const handleSuccess = () => {
         }
     } else if (isProductosForm()) {
         router.push(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.PRODUCTOS}`)
+    } else if (isCategoriasForm()) {
+        router.push(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.CATEGORIAS}`)
     } else {
         router.push(`${ROUTE_NAMES.TABLAS}/${tablaSlug}`)
     }

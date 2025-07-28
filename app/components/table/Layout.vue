@@ -1,6 +1,6 @@
 <template>
     <div class="w-full max-w-screen overflow-auto">
-        <table class="mx-auto">
+        <table class="w-full mx-auto">
             <thead>
                 <tr>
                     <th v-for="column in columns" :key="column.key"
@@ -20,17 +20,19 @@
                         class="border-r border-gray-dark text-dark font-light p-3">
                         <slot :name="`cell-${column.key}`" :item="item" :value="getNestedValue(item, column.key)"
                             :column="column" :index="index">
-                            <TableCellRenderer :value="getNestedValue(item, column.key)" :column="column" :related-data="relatedData" />
+                            <TableCellRenderer :value="getNestedValue(item, column.key)" :column="column"
+                                :related-data="relatedData" />
                         </slot>
                     </td>
 
                     <td v-if="showActions" class="text-dark font-light whitespace-nowrap p-3">
                         <slot name="row-actions" :item="item" :index="index">
                             <div class="flex justify-center items-center gap-2">
-                                <button @click="$emit('edit', item, index)" title="Editar">
+                                <button type="button" @click.prevent.stop="$emit('edit', item, index)" title="Editar">
                                     <Icon name="tabler:edit" class="w-6 h-6 text-violet" />
                                 </button>
-                                <button @click="openDeleteModal(item, index)" title="Eliminar">
+                                <button type="button" @click.prevent.stop="openDeleteModal(item, index)"
+                                    title="Eliminar">
                                     <Icon name="tabler:trash" class="w-6 h-6 text-primary" />
                                 </button>
                             </div>
@@ -103,10 +105,8 @@ const getRowKey = (item, index) => {
 }
 
 const openDeleteModal = (item, index) => {
-    // Intentar obtener un nombre descriptivo del elemento
     let itemName = 'este elemento'
-    
-    // Priorizar campos más descriptivos
+
     if (item.nombre) itemName = item.nombre
     else if (item.descripcion) itemName = item.descripcion
     else if (item.titulo) itemName = item.titulo
@@ -115,7 +115,7 @@ const openDeleteModal = (item, index) => {
     else if (item.nombreprod) itemName = item.nombreprod
     else if (item.url) itemName = item.url
     else if (item.id) itemName = `ID: ${item.id}`
-    
+
     deleteModal.value = {
         isOpen: true,
         item: item,

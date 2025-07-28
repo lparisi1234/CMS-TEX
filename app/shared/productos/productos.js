@@ -1,6 +1,6 @@
 const productos = [
     {
-        id: 1,
+        id: '3/2500254',
         nombreprod: "Tour Machu Picchu Clásico",
         h1: "Descubre Machu Picchu con Tour Experto",
         img: "/images/Placeholder.png",
@@ -20,7 +20,7 @@ const productos = [
         precio_total: 1299.00
     },
     {
-        id: 2,
+        id: '3/2500298',
         nombreprod: "Experiencia Iguazú Premium",
         h1: "Cataratas del Iguazú como nunca las viste",
         img: "/images/Placeholder.png",
@@ -40,7 +40,7 @@ const productos = [
         precio_total: 899.00
     },
     {
-        id: 3,
+        id: '3/2500314',
         nombreprod: "Safari Patagónico",
         h1: "Aventura en la Patagonia Argentina",
         img: "/images/Placeholder.png",
@@ -60,7 +60,7 @@ const productos = [
         precio_total: 1599.00
     },
     {
-        id: 4,
+        id: '3/2505535',
         nombreprod: "Tour Machu Picchu Clásico",
         h1: "La Ciudad Perdida de los Incas",
         img: "/images/Placeholder.png",
@@ -80,7 +80,7 @@ const productos = [
         precio_total: 1299.00
     },
     {
-        id: 5,
+        id: '3/2505171',
         nombreprod: "Europa Medieval - Castillos y Catedrales",
         h1: "Viaje por la Europa Medieval",
         img: "/images/Placeholder.png",

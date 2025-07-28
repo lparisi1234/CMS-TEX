@@ -2,7 +2,8 @@
     <div v-if="column.type === 'image'" class="flex items-center justify-center">
         <img :src="value" :alt="column.label" class="w-16 h-16 object-cover rounded-lg" />
     </div>
-    <div v-else-if="column.type === 'text'" class="w-full max-w-[18.75rem] break-words">
+    <div v-else-if="(column.type === 'text' || column.type === 'textarea') && column.key !== 'subgrupos'"
+        class="w-full max-w-[18.75rem] break-words">
         <span>{{ value || '-' }}</span>
     </div>
     <span v-else>{{ formatValue(value, column) }}</span>
@@ -26,6 +27,13 @@ const props = defineProps({
 
 const formatValue = (value, column) => {
     if (value === null || value === undefined) return '-'
+
+    if (column.key === 'subgrupos' && Array.isArray(value)) {
+        const subgruposNames = value
+            .filter(subgrupo => subgrupo && typeof subgrupo === 'object' && subgrupo.nombre)
+            .map(subgrupo => subgrupo.nombre)
+        return subgruposNames.length > 0 ? subgruposNames.join(', ') : '-'
+    }
 
     if (column.type === 'checkbox-multiple' && column.relatedTable && props.relatedData[column.relatedTable]) {
         if (typeof value === 'string' && value) {
@@ -79,6 +87,16 @@ const formatValue = (value, column) => {
 
         case 'image':
             return value
+
+        case 'text':
+        case 'textarea':
+            if (column.key === 'subgrupos' && Array.isArray(value)) {
+                const subgruposNames = value
+                    .filter(subgrupo => subgrupo && typeof subgrupo === 'object' && subgrupo.nombre)
+                    .map(subgrupo => subgrupo.nombre)
+                return subgruposNames.length > 0 ? subgruposNames.join(', ') : '-'
+            }
+            return value || '-'
 
         default:
             return value

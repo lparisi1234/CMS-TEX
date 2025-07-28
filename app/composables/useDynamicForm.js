@@ -164,7 +164,7 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
                         if (item.hasOwnProperty(column.key)) {
                             let value = item[column.key]
 
-                            if (column.type === 'text' || column.type === 'currency' || column.type === 'date' || column.type === 'datetime') {
+                            if (column.type === 'text' || column.type === 'textarea' || column.type === 'currency' || column.type === 'date' || column.type === 'datetime') {
                                 formData.value[column.key] = value != null ? String(value) : ''
                             } else if (column.type === 'badge') {
                                 formData.value[column.key] = value != null ? String(value).toLowerCase() : ''
@@ -172,6 +172,12 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
                                 if (typeof value === 'string' && value) {
                                     formData.value[column.key] = value.split(',').map(v => v.trim()).filter(Boolean)
                                 } else if (Array.isArray(value)) {
+                                    formData.value[column.key] = value
+                                } else {
+                                    formData.value[column.key] = []
+                                }
+                            } else if (column.type === 'array') {
+                                if (Array.isArray(value)) {
                                     formData.value[column.key] = value
                                 } else {
                                     formData.value[column.key] = []

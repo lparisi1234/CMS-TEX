@@ -5,6 +5,11 @@
         <FormDestinosCreate v-if="isDestinosForm()" :tipo="getDestinoTipo()" :is-editing="true"
             :editing-data="editingData" @success="handleSuccess" @cancel="handleCancel" />
 
+        <FormCategoriasCreate v-else-if="isCategoriasForm()" :form-data="formData" :errors="errors"
+            :select-options="selectOptions" :loading-options="loadingOptions" :badge-options="badgeOptions"
+            :is-submitting="isSubmitting" :boton-texto="botonTexto" :details-columns="tabla.columns"
+            @submit="handleSubmit" @cancel="handleCancel" />
+
         <FormLayout @submit="handleSubmit" v-else-if="tabla" class="flex flex-col gap-5">
             <template v-for="(chunk, chunkIndex) in columnChunks" :key="`chunk-${chunkIndex}`">
                 <FormFieldsContainer>
@@ -12,6 +17,11 @@
                         <FormTextField v-if="column.type === 'text'" :id="`field-${column.key}`"
                             v-model="formData[column.key]" :label="column.label" :required="column.required"
                             :error="errors[column.key]" :placeholder="`Ingresa ${column.label.toLowerCase()}`" />
+
+                        <FormTextareaField v-else-if="column.type === 'textarea'" :id="`field-${column.key}`"
+                            v-model="formData[column.key]" :label="column.label" :required="column.required"
+                            :error="errors[column.key]" :placeholder="`Ingresa ${column.label.toLowerCase()}`"
+                            :rows="4" />
 
                         <FormTextField v-else-if="column.type === 'number'" :id="`field-${column.key}`"
                             v-model="formData[column.key]" :label="column.label" :required="column.required"
@@ -124,6 +134,10 @@ const isDestinosForm = () => {
     return tablaSlug === 'destinos' || route.query.tipo === 'region' || route.query.tipo === 'pais'
 }
 
+const isCategoriasForm = () => {
+    return tablaSlug === 'categorias'
+}
+
 const getDestinoTipo = () => {
     if (route.query.tipo) {
         return route.query.tipo
@@ -146,6 +160,9 @@ const getTituloForm = () => {
         if (tipo === 'region') return 'Editar región'
         if (tipo === 'pais') return 'Editar país'
         return 'Editar destino'
+    }
+    if (isCategoriasForm()) {
+        return 'Editar categoría'
     }
     return botonTexto.value || 'Editar elemento'
 }
@@ -172,6 +189,9 @@ const handleCancel = () => {
 const botonTexto = computed(() => {
     if (isDestinosForm()) {
         return getTituloForm()
+    }
+    if (isCategoriasForm()) {
+        return 'Actualizar categoría'
     }
     if (tabla?.botonTexto) {
         return tabla.botonTexto.replace('Crear', 'Editar')
