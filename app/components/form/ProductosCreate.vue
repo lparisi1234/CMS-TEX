@@ -188,13 +188,7 @@ const handleSubmit = async () => {
         // Generar ID único (en una aplicación real, esto lo haría el backend)
         dataToSubmit.id = Date.now()
         
-        console.log('Creando producto:', dataToSubmit)
-        
-        // Aquí harías la llamada a la API
-        // await fetch('/api/productos/create', {
-        //     method: 'POST',
-        //     body: JSON.stringify(dataToSubmit)
-        // })
+        // POST
         
         emit('success')
         

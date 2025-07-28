@@ -206,7 +206,7 @@ const handleSubmit = async () => {
 
     try {
         const dataToSubmit = prepareDataForSubmit()
-        console.log('Datos a actualizar:', dataToSubmit)
+        // PUT
 
         await router.push(`${ROUTE_NAMES.TABLAS}/${tablaSlug}`)
 

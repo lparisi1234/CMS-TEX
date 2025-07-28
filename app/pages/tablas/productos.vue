@@ -72,8 +72,7 @@ const handleDelete = async (item) => {
     }
 
     try {
-        console.log(`Producto ${item.nombreprod} eliminado correctamente`)
-        // Aquí harías la llamada a la API para eliminar
+        // DELETE
 
         // Limpiar búsqueda si el producto eliminado era el encontrado
         if (foundProduct.value && foundProduct.value.id === item.id) {

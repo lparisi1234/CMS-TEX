@@ -223,38 +223,6 @@ const tablas = {
                     type: 'text'
                 },
                 {
-                    key: 'video_mobile',
-                    label: 'Video Mobile',
-                    type: 'image'
-                },
-                {
-                    key: 'video_desktop',
-                    label: 'Video Desktop',
-                    type: 'image'
-                },
-                {
-                    key: 'experto_id',
-                    label: 'Experto',
-                    type: 'select',
-                    relatedTable: 'expertos',
-                    displayField: 'nombre'
-                },
-                {
-                    key: 'consejo_experto',
-                    label: 'Consejo Experto',
-                    type: 'textarea'
-                },
-                {
-                    key: 'img',
-                    label: 'Imagen',
-                    type: 'image'
-                },
-                {
-                    key: 'txt_search',
-                    label: 'Texto Search',
-                    type: 'text'
-                },
-                {
                     key: 'meta_titulo',
                     label: 'Meta Título',
                     type: 'text'
@@ -269,6 +237,22 @@ const tablas = {
                     label: 'Meta Keywords',
                     type: 'text'
                 },
+                {
+                    key: 'video_mobile',
+                    label: 'Video Mobile',
+                    type: 'image'
+                },
+                {
+                    key: 'video_desktop',
+                    label: 'Video Desktop',
+                    type: 'image'
+                },
+                {
+                    key: 'img',
+                    label: 'Imagen',
+                    type: 'image'
+                },
+
                 {
                     key: 'mapa',
                     label: 'Coordenadas',
@@ -294,7 +278,19 @@ const tablas = {
                     label: 'Región',
                     type: 'select',
                     relatedTable: 'destinos'
-                }
+                },
+                {
+                    key: 'experto_id',
+                    label: 'Experto',
+                    type: 'select',
+                    relatedTable: 'expertos',
+                    displayField: 'nombre'
+                },
+                {
+                    key: 'consejo_experto',
+                    label: 'Consejo Experto',
+                    type: 'textarea'
+                },
             ]
         },
         {

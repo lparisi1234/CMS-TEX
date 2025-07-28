@@ -9,8 +9,7 @@
                     @blur="validateEmail" />
 
                 <FormPasswordField v-model="formData.password" label="Contraseña" id="contrasena"
-                    placeholder="Ingresa tu contraseña" :error="errors.password" required @blur="validatePassword"
-                    @toggle-visibility="onPasswordToggle" />
+                    placeholder="Ingresa tu contraseña" :error="errors.password" required @blur="validatePassword" />
             </FormFieldsContainer>
 
             <NuxtLink to="#" class="text-dark font-light underline">
@@ -74,10 +73,6 @@ const validatePassword = () => {
     }
 }
 
-const onPasswordToggle = (isVisible) => {
-    console.log('Password visibility:', isVisible ? 'visible' : 'hidden')
-}
-
 watch(() => formData.email, () => {
     if (errors.email) errors.email = ''
 })
@@ -98,7 +93,6 @@ const handleSubmit = async () => {
     }
 
     try {
-        console.log("Iniciar sesion");
         // Logica login
 
         await router.push(ROUTE_NAMES.HOME)

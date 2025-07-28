@@ -22,7 +22,7 @@
                 <div class="relative">
                     <FormTextField id="search" v-model="searchQuery" type="text" placeholder="Europa" @input="handleSearch" />
                     <div class="flex items-center absolute top-1/2 right-0 transform -translate-y-1/2 pr-3">
-                        <Icon name="tabler:search" class="w-5 h-5 text-gray-dark" />
+                        <Icon name="tabler:search" class="w-6 h-6 text-gray-dark" />
                     </div>
                 </div>
             </div>

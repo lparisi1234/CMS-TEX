@@ -81,11 +81,6 @@ const paisesColumns = [
         type: 'image'
     },
     {
-        key: 'txt_search',
-        label: 'Texto Search',
-        type: 'text'
-    },
-    {
         key: 'meta_titulo',
         label: 'Meta Título',
         type: 'text'
@@ -116,11 +111,6 @@ const paisesColumns = [
         type: 'number'
     },
     {
-        key: 'desde_precio',
-        label: 'Precio Desde',
-        type: 'currency'
-    },
-    {
         key: 'regionId',
         label: 'Región',
         type: 'select',
@@ -143,7 +133,6 @@ const handleEdit = (item) => {
 
 const handleDelete = async (item) => {
     try {
-        console.log(`País ${item.nombre} eliminado correctamente`)
         // DELETE
     } catch (error) {
         console.error('Error al eliminar:', error)

@@ -1,6 +1,6 @@
 <template>
     <FormLayout @submit="handleSubmit" class="flex flex-col gap-5">
-        <TabsLayout :tabs="tabs" @tab-change="onTabChange">
+        <TabsLayout :tabs="tabs">
             <template #detalle>
                 <div class="flex flex-col gap-5">
                     <template v-for="(chunk, chunkIndex) in detailsColumnChunks" :key="`chunk-${chunkIndex}`">
@@ -89,7 +89,7 @@
 
                 <FormFieldsContainer>
                     <FormTextareaField id="modal-productos" v-model="modalSubgrupo.productos_text"
-                        label="Productos (IDs separados por comas)" placeholder="Ej: 3/2500254, 3/2500298, 3/2500314"
+                        label="Productos (IDs separados por espacios)" placeholder="Ej: 3/2500254 3/2500298 3/2500314"
                         :rows="3" :required="false" :error="modalErrors.productos" />
                 </FormFieldsContainer>
 
@@ -207,7 +207,7 @@ const displaySubgrupos = computed(() => {
         ...subgrupo,
         productos: Array.isArray(subgrupo.productos)
             ? (subgrupo.productos.length > 0
-                ? subgrupo.productos.map(id => String(id)).join(', ')
+                ? subgrupo.productos.map(id => String(id)).join(' ')
                 : 'Sin productos')
             : String(subgrupo.productos || 'Sin productos')
     }))
@@ -235,33 +235,28 @@ const openCreateModal = (event) => {
 }
 
 const handleEditSubgrupo = (subgrupo, index) => {
-    console.log('handleEditSubgrupo called:', subgrupo)
-    // Usar nextTick para asegurar que la reactividad se complete antes de abrir el modal
     nextTick(() => {
         editSubgrupo(subgrupo)
     })
 }
 
 const handleDeleteSubgrupo = (subgrupo, index) => {
-    console.log('handleDeleteSubgrupo called:', subgrupo)
     deleteSubgrupo(subgrupo)
 }
 
 const editSubgrupo = (subgrupo) => {
-    console.log('editSubgrupo called with:', subgrupo)
     const index = props.formData.subgrupos.findIndex(s => s.id === subgrupo.id)
     if (index !== -1) {
         isEditingSubgrupo.value = true
         editingSubgrupoIndex.value = index
 
-        // Obtener los productos originales antes de procesarlos para la visualización
         const originalSubgrupo = props.formData.subgrupos[index]
 
         modalSubgrupo.value = {
             nombre: originalSubgrupo.nombre || '',
             nro_orden: originalSubgrupo.nro_orden || 1,
             productos_text: Array.isArray(originalSubgrupo.productos)
-                ? originalSubgrupo.productos.join(', ')
+                ? originalSubgrupo.productos.join(' ')
                 : (originalSubgrupo.productos || '')
         }
         modalErrors.value = {
@@ -270,14 +265,11 @@ const editSubgrupo = (subgrupo) => {
             productos: ''
         }
 
-        console.log('About to show modal. showModal.value will be set to true')
         showModal.value = true
-        console.log('Modal state set. showModal.value is now:', showModal.value)
     }
 }
 
-const closeModal = (reason = 'unknown') => {
-    console.log(`Closing modal. Reason: ${reason}`)
+const closeModal = () => {
     showModal.value = false
     isEditingSubgrupo.value = false
     editingSubgrupoIndex.value = -1
@@ -294,7 +286,6 @@ const closeModal = (reason = 'unknown') => {
 }
 
 const handleModalBackgroundClick = (event) => {
-    // Solo cerrar si se hace click en el fondo, no en el contenido del modal
     if (event.target === event.currentTarget) {
         closeModal('background-click')
     }
@@ -329,7 +320,7 @@ const saveSubgrupo = () => {
 
     const productos = modalSubgrupo.value.productos_text
         ? modalSubgrupo.value.productos_text
-            .split(',')
+            .split(/\s+/)
             .map(id => id.trim())
             .filter(id => id.length > 0)
         : []
@@ -370,26 +361,12 @@ const handleSubmit = () => {
     emit('submit')
 }
 
-const onTabChange = (tabId) => {
-    console.log('Tab changed to:', tabId)
-}
-
-// Watcher para debug del modal
-watch(showModal, (newValue, oldValue) => {
-    console.log(`Modal state changed from ${oldValue} to ${newValue}`)
-    if (newValue === false && oldValue === true) {
-        console.log('Modal was closed - investigating why...')
-        console.trace('Modal close stack trace')
-    }
-})
-
 onMounted(() => {
     if (!props.formData.subgrupos) {
         props.formData.subgrupos = []
     }
 
     if (!Array.isArray(props.formData.subgrupos)) {
-        console.warn('Subgrupos no es un array, inicializando como array vacío:', props.formData.subgrupos)
         props.formData.subgrupos = []
     }
 

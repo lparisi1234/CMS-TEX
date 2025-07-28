@@ -19,14 +19,13 @@
 
                 <FormTextareaField id="subgrupo-productos" v-model="localFormData.productos_text"
                     label="IDs de Productos"
-                    placeholder="Ingresa los IDs separados por comas (ej: 3/2500254, 3/2500298)" :rows="3"
+                    placeholder="Ingresa los IDs separados por espacios (ej: 3/2500254 3/2500298)" :rows="3"
                     :required="false" :error="errors.productos" />
 
                 <div class="flex justify-end gap-3 mt-4">
-                    <button @click="$emit('cancel')" type="button"
-                        class="px-4 py-2 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md hover:bg-gray-50">
+                    <ButtonPrimary @click="$emit('cancel')" type="button" class="!bg-gray-mid !text-dark">
                         Cancelar
-                    </button>
+                    </ButtonPrimary>
                     <ButtonPrimary type="submit" :disabled="isSubmitting">
                         {{ isSubmitting ? 'Guardando...' : (isEditing ? 'Actualizar' : 'Crear') }}
                     </ButtonPrimary>

@@ -73,7 +73,6 @@ const handleSave = async () => {
         currentWhatsapp.value = editedWhatsapp.value
         isEditing.value = false
 
-        console.log('WhatsApp actualizado:', editedWhatsapp.value)
     } catch (error) {
         console.error('Error al actualizar WhatsApp:', error)
         alert('Error al actualizar el número de WhatsApp')

@@ -77,7 +77,6 @@ const getDataForEndpoint = async (endpoint) => {
         }
 
         console.warn(`No se encontró archivo para endpoint: ${endpoint}`)
-        console.log('Módulos disponibles:', Object.keys(modules))
         return []
     } catch (error) {
         console.warn(`Error cargando datos para endpoint: ${endpoint}`)
@@ -114,7 +113,7 @@ const handleEdit = (item) => {
 
 const handleDelete = async (item) => {
     try {
-        console.log(`Item de ${tabla.name} eliminado correctamente`)
+        // DELETE
 
     } catch (error) {
         console.error('Error al eliminar:', error)

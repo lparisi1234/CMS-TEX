@@ -145,7 +145,6 @@ const handleEdit = (item) => {
 
 const handleDelete = async (item) => {
     try {
-        console.log(`Item de ${tabla.name} eliminado correctamente`)
         // DELETE
 
         queEsperarData.value = await getDataForEndpoint(tabla.endpoint)

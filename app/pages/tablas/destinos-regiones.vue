@@ -73,11 +73,6 @@ const regionesColumns = [
         type: 'image'
     },
     {
-        key: 'txt_search',
-        label: 'Texto Search',
-        type: 'text'
-    },
-    {
         key: 'meta_titulo',
         label: 'Meta Título',
         type: 'text'
@@ -107,11 +102,6 @@ const regionesColumns = [
         label: 'Número de Orden',
         type: 'number'
     },
-    {
-        key: 'desde_precio',
-        label: 'Precio Desde',
-        type: 'currency'
-    }
 ]
 
 const relatedData = ref({
@@ -128,8 +118,7 @@ const handleEdit = (item) => {
 
 const handleDelete = async (item) => {
     try {
-        console.log(`Región ${item.nombre} eliminada correctamente`)
-        // Aquí harías la llamada a la API para eliminar
+        // DELETE
     } catch (error) {
         console.error('Error al eliminar:', error)
     }
