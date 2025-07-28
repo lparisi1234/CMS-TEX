@@ -316,6 +316,8 @@ const tabs = [
 ]
 
 const detailsColumns = [
+    { key: 'codigo_newton', label: 'Código Newton', type: 'number', required: true },
+    ...(props.tipo === 'pais' ? [{ key: 'regionId', label: 'Región', type: 'select', required: true, }] : []),
     { key: 'nombre', label: 'Nombre', type: 'text', required: true },
     { key: 'url', label: 'URL', type: 'text', required: true },
     { key: 'h1', label: 'H1', type: 'text', required: true },
@@ -331,7 +333,6 @@ const detailsColumns = [
     { key: 'nro_orden', label: 'Número de Orden', type: 'number' },
     { key: 'experto_id', label: 'Experto', type: 'select' },
     { key: 'consejo_experto', label: 'Consejo del Experto', type: 'textarea', fullWidth: true },
-    ...(props.tipo === 'pais' ? [{ key: 'regionId', label: 'Región', type: 'select', required: true, fullWidth: true }] : []),
 ]
 
 const detailsColumnChunks = computed(() => {

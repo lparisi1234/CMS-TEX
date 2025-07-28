@@ -21,8 +21,8 @@ const regionesData = computed(() => {
 
 const regionesColumns = [
     {
-        key: 'id',
-        label: 'ID',
+        key: 'codigo_newton',
+        label: 'Código Newton',
         type: 'number'
     },
     {

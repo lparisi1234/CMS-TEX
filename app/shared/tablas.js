@@ -8,11 +8,6 @@ const tablas = {
             botonTexto: 'Crear nuevo segmento',
             columns: [
                 {
-                    key: 'id',
-                    label: 'ID',
-                    type: 'number'
-                },
-                {
                     key: 'descripcion',
                     label: 'Descripción',
                     type: 'text'
@@ -136,12 +131,12 @@ const tablas = {
                 {
                     key: 'txt_contacto',
                     label: 'Texto Contacto',
-                    type: 'text'
+                    type: 'textarea'
                 },
                 {
                     key: 'txt_cancelaciones',
                     label: 'Texto Cancelaciones',
-                    type: 'text'
+                    type: 'textarea'
                 }
             ]
         },
@@ -185,9 +180,14 @@ const tablas = {
                 {
                     key: 'pais_apertura',
                     label: 'País Apertura',
+                    type: 'text',
+                },
+                {
+                    key: 'segmento',
+                    label: 'Segmento',
                     type: 'select',
-                    relatedTable: 'paises'
-                }
+                    relatedTable: 'segmentos'
+                },
             ]
         },
         {
@@ -198,8 +198,8 @@ const tablas = {
             botonTexto: 'Crear nuevo destino',
             columns: [
                 {
-                    key: 'id',
-                    label: 'ID',
+                    key: 'codigo_newton',
+                    label: 'Código Newton',
                     type: 'number'
                 },
                 {
@@ -652,9 +652,15 @@ const tablas = {
                     required: true
                 },
                 {
-                    key: 'segmentos_id',
-                    label: 'Segmento',
-                    type: 'select',
+                    key: 'imagen',
+                    label: 'Imagen',
+                    type: 'image',
+                    required: true
+                },
+                {
+                    key: 'segmentos_excluidos',
+                    label: 'Segmentos Excluidos',
+                    type: 'checkbox-multiple',
                     relatedTable: 'segmentos',
                     required: true
                 },
