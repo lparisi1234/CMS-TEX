@@ -2,7 +2,6 @@ const categorias = [
     {
         id: 1,
         nombre: 'Aventura',
-        descripcion: 'Viajes llenos de adrenalina y actividades extremas',
         h1: 'Aventura y Deportes Extremos',
         h2: 'Vive la emoción al máximo',
         meta_titulo: 'Tours de Aventura - Experiencias Extremas',
@@ -20,7 +19,7 @@ const categorias = [
         codigo_newton: 1,
         idExperto: 1,
         consejo_experto: 'Siempre verifica el equipo de seguridad antes de cualquier actividad',
-        url: '/categorias/aventura',
+        url: 'aventura',
         subgrupos: [
             {
                 id: 1,
@@ -45,7 +44,6 @@ const categorias = [
     {
         id: 2,
         nombre: 'Cultura',
-        descripcion: 'Sumérgete en la historia y tradiciones locales',
         h1: 'Turismo Cultural',
         h2: 'Descubre tradiciones milenarias',
         meta_titulo: 'Tours Culturales - Historia y Tradiciones',
@@ -63,7 +61,7 @@ const categorias = [
         codigo_newton: 2,
         idExperto: 2,
         consejo_experto: 'Investiga la historia del lugar antes de visitarlo para una mejor experiencia',
-        url: '/categorias/cultura',
+        url: 'cultura',
         subgrupos: [
             {
                 nombre: 'Más Vendidos',
@@ -85,7 +83,6 @@ const categorias = [
     {
         id: 3,
         nombre: 'Relax',
-        descripcion: 'Experiencias para desconectar y renovar energías',
         h1: 'Turismo de Bienestar',
         h2: 'Relájate y renuévate',
         meta_titulo: 'Tours de Relax - Bienestar y Spa',
@@ -103,7 +100,7 @@ const categorias = [
         codigo_newton: 3,
         idExperto: 3,
         consejo_experto: 'Reserva tratamientos de spa con anticipación durante temporada alta',
-        url: '/categorias/relax',
+        url: 'relax',
         subgrupos: [
             {
                 id: 7,
@@ -128,7 +125,6 @@ const categorias = [
     {
         id: 4,
         nombre: 'Gastronómico',
-        descripcion: 'Descubre los sabores únicos de cada destino',
         h1: 'Turismo Gastronómico',
         h2: 'Saborea el mundo',
         meta_titulo: 'Tours Gastronómicos - Sabores del Mundo',
@@ -146,7 +142,7 @@ const categorias = [
         codigo_newton: 4,
         idExperto: 4,
         consejo_experto: 'Prueba siempre los platos típicos de la región que visites',
-        url: '/categorias/gastronomico',
+        url: 'gastronomico',
         subgrupos: [
             {
                 id: 10,
@@ -171,7 +167,6 @@ const categorias = [
     {
         id: 5,
         nombre: 'Histórico',
-        descripcion: 'Recorre los lugares que marcaron la historia',
         h1: 'Turismo Histórico',
         h2: 'Camina por la historia',
         meta_titulo: 'Tours Históricos - Patrimonio Mundial',
@@ -189,7 +184,7 @@ const categorias = [
         codigo_newton: 5,
         idExperto: 1,
         consejo_experto: 'Contrata guías locales para conocer las historias no documentadas',
-        url: '/categorias/historico',
+        url: 'historico',
         subgrupos: [
             {
                 id: 13,

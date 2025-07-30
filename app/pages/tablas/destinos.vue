@@ -20,7 +20,8 @@
             <div class="flex flex-col gap-1">
                 <FormLabel id="search">Busca un destino</FormLabel>
                 <div class="relative">
-                    <FormTextField id="search" v-model="searchQuery" type="text" placeholder="Europa" @input="handleSearch" />
+                    <FormTextField id="search" v-model="searchQuery" type="text" placeholder="Europa"
+                        @input="handleSearch" />
                     <div class="flex items-center absolute top-1/2 right-0 transform -translate-y-1/2 pr-3">
                         <Icon name="tabler:search" class="w-6 h-6 text-gray-dark" />
                     </div>
@@ -36,14 +37,18 @@
                     <div class="flex justify-between items-center">
                         <div>
                             <span class="font-medium">{{ result.nombre }}</span>
+                            <!-- Mostrar código Newton si es un destino -->
+                            <span v-if="result.type === 'destino'" class="ml-2 text-xs text-gray-500">
+                                (Código: {{ result.codigo_newton }})
+                            </span>
                             <span class="ml-2 text-xs px-2 py-1 rounded"
-                                :class="result.type === 'destino' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'">
-                                {{ result.type === 'destino' ? 'Destino' : 'Ciudad' }}
+                                :class="result.type === 'destino' ? (result.regionId ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800') : 'bg-purple-100 text-purple-800'">
+                                {{ result.type === 'destino' ? (result.regionId ? 'País' : 'Región') : 'Ciudad' }}
                             </span>
                         </div>
                         <div class="text-sm text-gray-500">
-                            {{ result.type === 'destino' ? (result.regionId ? 'País' : 'Región') : `País ID:
-                            ${result.paises_id}` }}
+                            {{ result.type === 'destino' ? (result.regionId ? 'Destino País' : 'Destino Región') : `País
+                            ID: ${result.paises_id || 'N/A'}` }}
                         </div>
                     </div>
                 </div>
@@ -74,8 +79,10 @@ const handleSearch = () => {
     const results = []
 
     destinosData.forEach(destino => {
-        if (destino.nombre.toLowerCase().includes(query) ||
-            destino.txt_search.toLowerCase().includes(query)) {
+        const matchesName = destino.nombre.toLowerCase().includes(query)
+        const matchesCode = destino.codigo_newton.toString().includes(query)
+
+        if (matchesName || matchesCode) {
             results.push({
                 ...destino,
                 type: 'destino'
@@ -98,13 +105,16 @@ const handleSearch = () => {
 const goToResult = (result) => {
     if (result.type === 'destino') {
         if (result.regionId) {
-            navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.DESTINOS_PAISES}`)
+            navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.DESTINOS_PAISES}/${result.id}`)
         } else {
-            navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.DESTINOS_REGIONES}`)
+            navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.DESTINOS_REGIONES}/${result.id}`)
         }
     } else {
-        navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.CIUDADES}`)
+        navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.CIUDADES}/${result.id}`)
     }
+
+    searchQuery.value = ''
+    searchResults.value = []
 }
 
 const goToRegiones = () => {

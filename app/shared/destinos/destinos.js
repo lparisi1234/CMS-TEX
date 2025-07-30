@@ -2,7 +2,7 @@ const destinos = [
     {
         id: 10,
         codigo_newton: 1,
-        url: '/destinos/europa',
+        url: 'europa',
         nombre: 'Europa',
         h1: 'Europa - Continente de Historia y Cultura',
         h2: 'Descubre la diversidad europea',
@@ -35,7 +35,7 @@ const destinos = [
     {
         id: 11,
         codigo_newton: 2,
-        url: '/destinos/america-del-sur',
+        url: 'america-del-sur',
         nombre: 'América del Sur',
         h1: 'América del Sur - Naturaleza y Aventura',
         h2: 'Descubre la magia sudamericana',
@@ -74,7 +74,7 @@ const destinos = [
     {
         id: 1,
         codigo_newton: 3,
-        url: '/destinos/francia',
+        url: 'francia',
         nombre: 'Francia',
         h1: 'Francia - País del Arte y la Elegancia',
         h2: 'Descubre la magia francesa',
@@ -108,7 +108,7 @@ const destinos = [
     {
         id: 2,
         codigo_newton: 4,
-        url: '/destinos/reino-unido',
+        url: 'reino-unido',
         nombre: 'Reino Unido',
         h1: 'Reino Unido - Tradición y Modernidad',
         h2: 'Tradición y modernidad en perfecta armonía',
@@ -142,7 +142,7 @@ const destinos = [
     {
         id: 3,
         codigo_newton: 5,
-        url: '/destinos/italia',
+        url: 'italia',
         nombre: 'Italia',
         h1: 'Italia - La Cuna del Arte',
         h2: 'Donde cada piedra cuenta una historia',
@@ -176,7 +176,7 @@ const destinos = [
     {
         id: 4,
         codigo_newton: 6,
-        url: '/destinos/españa',
+        url: 'españa',
         nombre: 'España',
         h1: 'España - Pasión y Tradición',
         h2: 'Arte, cultura y gastronomía ibérica',
@@ -216,7 +216,7 @@ const destinos = [
     {
         id: 5,
         codigo_newton: 7,
-        url: '/destinos/argentina',
+        url: 'argentina',
         nombre: 'Argentina',
         h1: 'Argentina - Tierra de Pasión',
         h2: 'Tango, asado y paisajes infinitos',

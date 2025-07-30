@@ -31,9 +31,9 @@
                             :error="errors[column.key]" type="number"
                             :placeholder="`Ingresa ${column.label.toLowerCase()}`" />
 
-                        <FormTextField v-else-if="column.type === 'date'" :id="`field-${column.key}`"
+                        <FormDateField v-else-if="column.type === 'date'" :id="`field-${column.key}`"
                             v-model="formData[column.key]" :label="column.label" :required="column.required"
-                            :error="errors[column.key]" type="date" />
+                            :error="errors[column.key]" />
 
                         <FormTextField v-else-if="column.type === 'datetime'" :id="`field-${column.key}`"
                             v-model="formData[column.key]" :label="column.label" :required="column.required"
@@ -65,6 +65,10 @@
                             :placeholder="`Seleccionar ${column.label.toLowerCase()}`" />
 
                         <FormImageField v-else-if="column.type === 'image'" :id="`field-${column.key}`"
+                            v-model="formData[column.key]" :label="column.label" :required="column.required"
+                            :error="errors[column.key]" />
+
+                        <FormFileField v-else-if="column.type === 'file'" :id="`field-${column.key}`"
                             v-model="formData[column.key]" :label="column.label" :required="column.required"
                             :error="errors[column.key]" />
                     </template>

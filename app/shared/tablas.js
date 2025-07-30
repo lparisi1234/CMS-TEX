@@ -10,12 +10,14 @@ const tablas = {
                 {
                     key: 'descripcion',
                     label: 'Descripción',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
-                    key: 'codigo',
-                    label: 'Código',
-                    type: 'text'
+                    key: 'codigo_newton',
+                    label: 'Código Newton',
+                    type: 'number',
+                    required: true
                 },
                 {
                     key: 'txt_header',
@@ -25,28 +27,26 @@ const tablas = {
                 {
                     key: 'vencimiento_header',
                     label: 'Vencimiento Header',
-                    type: 'text'
+                    type: 'date'
                 },
                 {
                     key: 'txt_footer',
                     label: 'Texto Footer',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'estado',
                     label: 'Estado',
-                    type: 'badge'
-                },
-                {
-                    key: 'codigo_newton',
-                    label: 'Código Newton',
-                    type: 'number'
+                    type: 'badge',
+                    required: true
                 },
                 {
                     key: 'monedaId',
                     label: 'Moneda',
                     type: 'select',
-                    relatedTable: 'monedas'
+                    relatedTable: 'monedas',
+                    required: true
                 }
             ]
         },
@@ -60,22 +60,26 @@ const tablas = {
                 {
                     key: 'descripcion',
                     label: 'Descripción',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'codigo',
                     label: 'Código',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'importe',
                     label: 'Importe',
-                    type: 'currency'
+                    type: 'currency',
+                    required: true
                 },
                 {
                     key: 'estado',
                     label: 'Estado',
-                    type: 'badge'
+                    type: 'badge',
+                    required: true
                 }
             ]
         },
@@ -101,12 +105,19 @@ const tablas = {
                 {
                     key: 'certificado',
                     label: 'Certificado',
-                    type: 'text'
+                    type: 'file',
+                },
+                {
+                    key: 'img',
+                    label: 'Imagen',
+                    type: 'image',
+                    required: true
                 },
                 {
                     key: 'codigo',
                     label: 'Código',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'nro_orden',
@@ -114,19 +125,16 @@ const tablas = {
                     type: 'number'
                 },
                 {
-                    key: 'img',
-                    label: 'Imagen',
-                    type: 'image'
-                },
-                {
                     key: 'txt_contacto',
                     label: 'Texto Contacto',
-                    type: 'textarea'
+                    type: 'textarea',
+                    required: true
                 },
                 {
                     key: 'txt_cancelaciones',
                     label: 'Texto Cancelaciones',
-                    type: 'textarea'
+                    type: 'textarea',
+                    required: true
                 }
             ]
         },
@@ -185,7 +193,8 @@ const tablas = {
                 {
                     key: 'codigo_newton',
                     label: 'Código Newton',
-                    type: 'number'
+                    type: 'number',
+                    required: true
                 },
                 {
                     key: 'url',
@@ -195,7 +204,8 @@ const tablas = {
                 {
                     key: 'nombre',
                     label: 'Nombre',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'h1',
@@ -246,7 +256,8 @@ const tablas = {
                 {
                     key: 'estado',
                     label: 'Estado',
-                    type: 'badge'
+                    type: 'badge',
+                    required: true
                 },
                 {
                     key: 'nro_orden',
@@ -288,110 +299,133 @@ const tablas = {
                 {
                     key: 'nombre',
                     label: 'Nombre',
-                    type: 'text'
-                },
-                {
-                    key: 'descripcion',
-                    label: 'Descripción',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'url',
                     label: 'URL',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'h1',
                     label: 'H1',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'h2',
                     label: 'H2',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'meta_titulo',
                     label: 'Meta Título',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'meta_descripcion',
                     label: 'Meta Descripción',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'meta_keywords',
                     label: 'Meta Keywords',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'icono',
                     label: 'Ícono',
-                    type: 'image'
+                    type: 'image',
+                    required: true
                 },
                 {
                     key: 'coordenadas_icono',
                     label: 'Coordenadas Ícono',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'coordenadas_icono_hover',
                     label: 'Coordenadas Ícono Hover',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'img_carousel',
                     label: 'Imagen Carousel',
-                    type: 'image'
+                    type: 'image',
+                    required: true
                 },
                 {
                     key: 'img_search',
                     label: 'Imagen Search',
-                    type: 'image'
+                    type: 'image',
+                    required: true
                 },
                 {
                     key: 'video_mobile',
                     label: 'Video Mobile',
-                    type: 'image'
+                    type: 'image',
+                    required: true
                 },
                 {
                     key: 'video_desktop',
                     label: 'Video Desktop',
-                    type: 'image'
+                    type: 'image',
+                    required: true
                 },
                 {
                     key: 'nro_orden',
                     label: 'Número de Orden',
-                    type: 'number'
+                    type: 'number',
+                    required: true
                 },
                 {
                     key: 'estado',
                     label: 'Estado',
-                    type: 'badge'
+                    type: 'badge',
+                    required: true
                 },
                 {
                     key: 'codigo_newton',
                     label: 'Código Newton',
-                    type: 'number'
+                    type: 'number',
+                    required: true
                 },
                 {
                     key: 'idExperto',
                     label: 'Experto',
                     type: 'select',
                     relatedTable: 'expertos',
-                    displayField: 'nombre'
+                    displayField: 'nombre',
+                    required: true
                 },
                 {
                     key: 'consejo_experto',
                     label: 'Consejo Experto',
-                    type: 'textarea'
+                    type: 'textarea',
+                    required: true
+                },
+                {
+                    key: 'icono_search',
+                    label: 'Icono Search',
+                    type: 'image'
+                },
+                {
+                    key: 'etiqueta_search',
+                    label: 'Etiqueta Search',
+                    type: 'text',
                 },
                 {
                     key: 'subgrupos',
                     label: 'Subgrupos',
                     type: 'array',
-                    required: false
                 },
             ]
         },
@@ -405,22 +439,26 @@ const tablas = {
                 {
                     key: 'nombre',
                     label: 'Nombre',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'img',
                     label: 'Imagen',
-                    type: 'image'
+                    type: 'image',
+                    required: true
                 },
                 {
                     key: 'estado',
                     label: 'Estado',
-                    type: 'badge'
+                    type: 'badge',
+                    required: true
                 },
                 {
                     key: 'codigo_newton',
                     label: 'Código Newton',
-                    type: 'number'
+                    type: 'number',
+                    required: true
                 }
             ]
         },
@@ -436,7 +474,8 @@ const tablas = {
                 {
                     key: 'nombreprod',
                     label: 'Nombre Producto',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'h1',
@@ -471,7 +510,8 @@ const tablas = {
                 {
                     key: 'codigo_newton',
                     label: 'Código Newton',
-                    type: 'number'
+                    type: 'number',
+                    required: true
                 },
                 {
                     key: 'url',
@@ -513,7 +553,8 @@ const tablas = {
                 {
                     key: 'estado',
                     label: 'Estado',
-                    type: 'badge'
+                    type: 'badge',
+                    required: true
                 }
             ]
         },
@@ -527,38 +568,81 @@ const tablas = {
                 {
                     key: 'descripcion',
                     label: 'Descripción',
-                    type: 'text'
+                        type: 'text',
+                        required: true
                 },
                 {
                     key: 'segundaDescripcion',
                     label: 'Segunda Descripción',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
-                    key: 'img',
-                    label: 'Imagen',
-                    type: 'image'
+                    key: 'titulo',
+                    label: 'Título para landing',
+                    type: 'text',
+                    required: true
+                },
+                {
+                    key: 'subtitulo',
+                    label: 'Subtítulo para landing',
+                    type: 'textarea',
+                    required: true
+                },
+                {
+                    key: 'descuento_id',
+                    label: 'Sticker Descuento',
+                    type: 'select',
+                    relatedTable: 'descuentos',
+                    required: true
+                },
+                {
+                    key: 'img_desktop',
+                    label: 'Imagen Desktop',
+                    type: 'image',
+                    required: true
+                },
+                {
+                    key: 'img_tablet',
+                    label: 'Imagen Tablet',
+                    type: 'image',
+                    required: true
+                },
+                {
+                    key: 'img_mobile',
+                    label: 'Imagen Mobile',
+                    type: 'image',
+                    required: true
                 },
                 {
                     key: 'nro_orden',
                     label: 'Número de Orden',
-                    type: 'number'
+                    type: 'number',
+                    required: true
                 },
                 {
                     key: 'url',
                     label: 'URL',
-                    type: 'text'
+                    type: 'text',
+                    required: true
+                },
+                {
+                    key: 'hasta_fecha',
+                    label: 'Hasta Fecha',
+                    type: 'date',
+                    required: true
                 },
                 {
                     key: 'estado',
                     label: 'Estado',
-                    type: 'badge'
+                    type: 'badge',
+                    required: true
                 },
                 {
                     key: 'segmentosExcluidos',
                     label: 'Segmentos Excluidos',
                     type: 'checkbox-multiple',
-                    relatedTable: 'segmentos'
+                    relatedTable: 'segmentos',
                 }
             ]
         },
@@ -572,28 +656,33 @@ const tablas = {
                 {
                     key: 'titulo',
                     label: 'Título',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'texto',
                     label: 'Texto',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'img',
                     label: 'Imagen',
-                    type: 'image'
+                    type: 'image',
+                    required: true
                 },
                 {
                     key: 'nro_orden',
                     label: 'Número de Orden',
-                    type: 'number'
+                    type: 'number',
+                    required: true
                 },
                 {
                     key: 'categoriaId',
                     label: 'Categoría',
                     type: 'select',
-                    relatedTable: 'categorias'
+                    relatedTable: 'categorias',
+                    required: true
                 }
             ]
         },
@@ -622,7 +711,6 @@ const tablas = {
                     label: 'Segmentos Excluidos',
                     type: 'checkbox-multiple',
                     relatedTable: 'segmentos',
-                    required: true
                 },
                 {
                     key: 'nro_orden',
@@ -648,55 +736,65 @@ const tablas = {
                 {
                     key: 'nombre',
                     label: 'Nombre',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'tour',
                     label: 'Tour',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'img',
                     label: 'Imagen',
-                    type: 'image'
+                    type: 'image',
+                    required: true
                 },
                 {
                     key: 'rating',
                     label: 'Rating',
-                    type: 'number'
+                    type: 'number',
+                    required: true
                 },
                 {
                     key: 'comentario',
                     label: 'Comentario',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'estado',
                     label: 'Estado',
-                    type: 'badge'
+                    type: 'badge',
+                    required: true
                 },
                 {
                     key: 'destacado',
                     label: 'Destacado',
-                    type: 'boolean'
+                    type: 'boolean',
+                    required: true
                 },
                 {
                     key: 'producto_Id',
                     label: 'Producto',
                     type: 'select',
-                    relatedTable: 'productos'
+                    relatedTable: 'productos',
+                    required: true
                 },
                 {
                     key: 'categoria_id',
                     label: 'Categoría',
                     type: 'select',
-                    relatedTable: 'categorias'
+                    relatedTable: 'categorias',
+                    required: true
                 },
                 {
                     key: 'destino_id',
                     label: 'Destino',
                     type: 'select',
-                    relatedTable: 'destinos'
+                    relatedTable: 'destinos',
+                    required: true
                 }
             ]
         },
@@ -710,18 +808,21 @@ const tablas = {
                 {
                     key: 'pregunta',
                     label: 'Pregunta',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'respuesta',
                     label: 'Respuesta',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'destino_id',
                     label: 'Destino',
                     type: 'select',
-                    relatedTable: 'destinos'
+                    relatedTable: 'destinos',
+                    required: true
                 }
             ]
         },
@@ -765,31 +866,26 @@ const tablas = {
                     key: 'titulo',
                     label: 'Título',
                     type: 'text',
-                    required: true
                 },
                 {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
-                    required: true
                 },
                 {
                     key: 'autor',
                     label: 'Autor',
                     type: 'text',
-                    required: true
                 },
                 {
                     key: 'fecha',
                     label: 'Fecha',
                     type: 'date',
-                    required: true
                 },
                 {
                     key: 'estado',
                     label: 'Estado',
                     type: 'badge',
-                    required: true
                 },
                 {
                     key: 'destacado_home',
@@ -820,12 +916,14 @@ const tablas = {
                 {
                     key: 'img',
                     label: 'Imagen',
-                    type: 'image'
+                    type: 'image',
+                    required: true
                 },
                 {
                     key: 'nombre',
                     label: 'Nombre',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 }
             ]
         },
@@ -838,21 +936,40 @@ const tablas = {
             showInNav: false,
             columns: [
                 {
+                    key: 'codigo_newton',
+                    label: 'Código Newton',
+                    type: 'number',
+                    required: true
+                },
+                {
                     key: 'nombre',
                     label: 'Nombre',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'estado',
                     label: 'Estado',
-                    type: 'badge'
+                    type: 'badge',
+                    required: true
                 },
                 {
                     key: 'paises_id',
                     label: 'País',
                     type: 'select',
-                    relatedTable: 'destinos'
-                }
+                    relatedTable: 'destinos',
+                    required: true
+                },
+                {
+                    key: 'guia',
+                    label: 'Guía',
+                    type: 'file',
+                },
+                {
+                    key: 'img',
+                    label: 'Imagen',
+                    type: 'image',
+                },
             ]
         }
     ]
