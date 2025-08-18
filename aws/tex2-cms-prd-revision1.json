@@ -1,0 +1,101 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:260241676804:task-definition/tex2-cms-prd:4",
+    "containerDefinitions": [
+        {
+            "name": "cms",
+            "image": "260241676804.dkr.ecr.us-east-1.amazonaws.com/tex2-cms:latest",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "containerPort": 8080,
+                    "hostPort": 8080,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "secrets": [],
+            "healthCheck": {
+                "command": [
+                    "CMD-SHELL",
+                    "curl -f http://localhost:8080/admin/health || exit 1"
+                ],
+                "interval": 30,
+                "timeout": 5,
+                "retries": 3,
+                "startPeriod": 60
+            },
+            "systemControls": []
+        }
+    ],
+    "family": "tex2-cms-prd",
+    "taskRoleArn": "arn:aws:iam::260241676804:role/tex2-cms-ecs-task-role-prd",
+    "executionRoleArn": "arn:aws:iam::260241676804:role/tex2-cms-ecs-execution-role-prd",
+    "networkMode": "awsvpc",
+    "revision": 4,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "name": "ecs.capability.container-health-check"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "256",
+    "memory": "512",
+    "registeredAt": "2025-08-18T21:26:50.455Z",
+    "registeredBy": "arn:aws:iam::260241676804:user/terraform-deploy",
+    "tags": [
+        {
+            "key": "Project",
+            "value": "tex2"
+        },
+        {
+            "key": "Environment",
+            "value": "prd"
+        },
+        {
+            "key": "Owner",
+            "value": "devops"
+        },
+        {
+            "key": "ManagedBy",
+            "value": "terraform"
+        },
+        {
+            "key": "Producto",
+            "value": "tex2"
+        },
+        {
+            "key": "Name",
+            "value": "tex2-cms-task-def"
+        }
+    ]
+}
