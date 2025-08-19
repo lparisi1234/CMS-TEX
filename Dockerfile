@@ -1,13 +1,23 @@
-# Nuxt 4 production build & run using Debian (glibc)
-FROM node:18-bullseye-slim AS base
+# Nuxt 4 production build & run using Debian Bookworm (latest stable)
+FROM node:18-bookworm-slim AS base
 
 # ---------- Dependencies layer ----------
 FROM base AS deps
 WORKDIR /app
-RUN apt-get update && apt-get install -y python3 make g++ curl && rm -rf /var/lib/apt/lists/*
+# Instalar todas las dependencias necesarias para bindings nativos
+RUN apt-get update && apt-get install -y \
+    python3 \
+    make \
+    g++ \
+    curl \
+    pkg-config \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY package.json package-lock.json* ./
-# Evitamos postinstall aquí (nuxt prepare) que puede fallar por bindings
+# Instalar dependencias y forzar rebuild de bindings nativos
 RUN npm ci --ignore-scripts
+RUN npm rebuild
 
 # ---------- Build layer ----------
 FROM deps AS builder
