@@ -19,7 +19,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Generate Prisma client
-RUN npx prisma generate
+RUN if [ -f prisma/schema.prisma ] || [ -f schema.prisma ]; then npx prisma generate; else echo 'Skipping prisma generate: schema.prisma not found'; fi
 
 # Production image, copy all the files and run the app
 FROM base AS runner
