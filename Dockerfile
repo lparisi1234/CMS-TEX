@@ -1,5 +1,5 @@
 # Nuxt 4 production build & run using Debian Bookworm (latest stable)
-FROM node:18-bookworm-slim AS base
+FROM node:20-bookworm-slim AS base
 
 # ---------- Dependencies layer ----------
 FROM base AS deps
