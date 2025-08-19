@@ -1,56 +1,39 @@
-# Use Node.js 18 Debian (glibc), no Alpine
+# Nuxt 4 production build & run using Debian (glibc)
 FROM node:18-bullseye-slim AS base
 
-# Install dependencies only when needed
+# ---------- Dependencies layer ----------
 FROM base AS deps
 WORKDIR /app
-# Dependencias del sistema necesarias
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
-
-# Copiamos manifest y lockfile si existe
+RUN apt-get update && apt-get install -y python3 make g++ curl && rm -rf /var/lib/apt/lists/*
 COPY package.json package-lock.json* ./
-# Instala dependencias sin ejecutar scripts (evita "nuxt prepare" en postinstall)
+# Evitamos postinstall aquí (nuxt prepare) que puede fallar por bindings
 RUN npm ci --ignore-scripts
 
-# Rebuild the source code only when needed
-FROM base AS builder
+# ---------- Build layer ----------
+FROM deps AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+# Preparar y compilar Nuxt (esto genera .output)
+RUN npx nuxt prepare && npm run build
 
-# Generate Prisma client
-RUN if [ -f prisma/schema.prisma ] || [ -f schema.prisma ]; then npx prisma generate; else echo 'Skipping prisma generate: schema.prisma not found'; fi
-
-# Production image, copy all the files and run the app
+# ---------- Runtime layer ----------
 FROM base AS runner
 WORKDIR /app
-
 ENV NODE_ENV=production
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
-
-# Crear usuario no-root
+# Usuario no-root
 RUN groupadd -g 1001 nodejs && useradd -u 1001 -g 1001 -s /usr/sbin/nologin nodejs
 
-# Copy only the files that exist
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/src ./src
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/index.js ./
-COPY --from=builder /app/package.json ./
-
-# Remover dependencias de desarrollo en la imagen final
-RUN npm prune --omit=dev
+# Copiamos solo el artefacto compilado
+COPY --from=builder /app/.output ./.output
 
 USER nodejs
-
 EXPOSE 8080
+ENV NITRO_PORT=8080
+ENV NITRO_HOST=0.0.0.0
 
-ENV PORT=8080
-ENV HOSTNAME=0.0.0.0
-
-# Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:8080/ || exit 1
 
-# Start the application
-CMD ["node", "index.js"] 
+# Ejecuta el servidor Nitro generado por Nuxt
+CMD ["node", ".output/server/index.mjs"] 
