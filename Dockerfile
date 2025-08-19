@@ -9,8 +9,8 @@ RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
 # Copiamos manifest y lockfile si existe
 COPY package.json package-lock.json* ./
-# Instala dependencias (incluye scripts postinstall como "nuxt prepare")
-RUN npm ci
+# Instala dependencias sin ejecutar scripts (evita "nuxt prepare" en postinstall)
+RUN npm ci --ignore-scripts
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -37,6 +37,9 @@ COPY --from=builder /app/src ./src
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/index.js ./
 COPY --from=builder /app/package.json ./
+
+# Remover dependencias de desarrollo en la imagen final
+RUN npm prune --omit=dev
 
 USER nodejs
 
