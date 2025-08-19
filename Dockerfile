@@ -1,14 +1,16 @@
-# Use Node.js 18 Alpine as base image
-FROM node:18-alpine AS base
+# Use Node.js 18 Debian (glibc), no Alpine
+FROM node:18-bullseye-slim AS base
 
 # Install dependencies only when needed
 FROM base AS deps
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
+# Dependencias del sistema necesarias
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
-# Install dependencies based on the preferred package manager
+# Copiamos manifest y lockfile si existe
 COPY package.json package-lock.json* ./
-RUN npm ci --only=production
+# Instala dependencias (incluye scripts postinstall como "nuxt prepare")
+RUN npm ci
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -24,10 +26,10 @@ FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
-RUN apk add --no-cache libc6-compat curl
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nodejs
+# Crear usuario no-root
+RUN groupadd -g 1001 nodejs && useradd -u 1001 -g 1001 -s /usr/sbin/nologin nodejs
 
 # Copy only the files that exist
 COPY --from=builder /app/node_modules ./node_modules
