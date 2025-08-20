@@ -29,6 +29,7 @@
 </template>
 
 <script setup>
+/*
 import { ROUTE_NAMES } from '~/constants/ROUTE_NAMES.js'
 
 definePageMeta({
@@ -125,5 +126,5 @@ onMounted(() => {
     navigateTo('/')
   }
 })
-
+*/
 </script>
