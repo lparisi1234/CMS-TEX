@@ -1,4 +1,4 @@
-import { pool } from '../../db'
+import getDbPool from "~/server/db" 
 
 export default defineEventHandler(async (event) => {
   try {
@@ -55,6 +55,7 @@ export default defineEventHandler(async (event) => {
       region_id
     ];
 
+    const pool = await getDbPool();
     const result = await pool.query(query, values)
     return { success: true, message: 'Blog creado correctamente', blog: result.rows[0] }
   } catch (error) {
