@@ -1,14 +1,4 @@
-import { Pool } from 'pg'
-export const pool = new Pool({
-  connectionString: process.env.DB_URL, // Usa tu variable de entorno
-})
-
-// Prueba de conexión
-pool.query('SELECT NOW()')
-  .then(res => console.log('Conexión exitosa a PostgreSQL:', res.rows[0]))
-  .catch(err => console.error('Error conectando a PostgreSQL:', err))
-
-  import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
+import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
 import { Pool } from 'pg';
 
 const secretName = "rds!cluster-006274a9-499c-42fd-8ee4-16da7a66ab2a";
