@@ -59,6 +59,7 @@ if (nombreSlug === 'que-esperar-categorias') {
 //     })
 
 // Data hardcodeada
+
 const getDataForEndpoint = async (endpoint) => {
     try {
         const modules = import.meta.glob('~/shared/**/*.js', { eager: false })

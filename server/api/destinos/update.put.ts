@@ -1,7 +1,8 @@
-import { pool } from '../../db'
+import getDbPool from "../../db"
 
 export default defineEventHandler(async (event) => {
   try {
+    const pool = await getDbPool()
     const {
       id,
       url,
