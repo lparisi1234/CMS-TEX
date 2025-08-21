@@ -46,27 +46,13 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
                 return []
             }
 
-            const modules = import.meta.glob('~/shared/**/*.js', { eager: false })
-            let modulePath = `/shared/${tabla.endpoint}.js`
+            const response = await $fetch(`/api/${tabla.endpoint}`)
+            const data = response || []
 
-            let moduleImporter = modules[modulePath]
-            if (!moduleImporter) {
-                modulePath = `/shared/${tableName}/${tableName}.js`
-                moduleImporter = modules[modulePath]
-            }
-
-            if (moduleImporter) {
-                const module = await moduleImporter()
-                const data = module.default || []
-
-                return data.map(item => ({
-                    value: item.id,
-                    label: getDisplayLabel(item, tabla)
-                }))
-            }
-
-            console.warn(`No se encontró archivo de datos para: ${tableName}`)
-            return []
+            return data.map(item => ({
+                value: item.id,
+                label: getDisplayLabel(item, tabla)
+            }))
 
         } catch (error) {
             console.error(`Error en getRelatedTableData para ${tableName}:`, error)
@@ -148,48 +134,40 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
         loadingData.value = true
 
         try {
-            const modules = import.meta.glob('~/shared/**/*.js', { eager: false })
-            const modulePath = `/shared/${tabla.endpoint}.js`
+            const item = await $fetch(`/api/${tabla.endpoint}/${itemId}`)
 
-            const moduleImporter = modules[modulePath]
-            if (moduleImporter) {
-                const module = await moduleImporter()
-                const data = module.default || []
+            if (item) {
+                initializeFormData()
 
-                const item = data.find(item => item.id == itemId)
-                if (item) {
-                    initializeFormData()
+                tabla.columns.forEach(column => {
+                    if (item.hasOwnProperty(column.key)) {
+                        let value = item[column.key]
 
-                    tabla.columns.forEach(column => {
-                        if (item.hasOwnProperty(column.key)) {
-                            let value = item[column.key]
-
-                            if (column.type === 'text' || column.type === 'textarea' || column.type === 'currency' || column.type === 'date' || column.type === 'datetime') {
-                                formData.value[column.key] = value != null ? String(value) : ''
-                            } else if (column.type === 'badge') {
-                                formData.value[column.key] = value != null ? String(value).toLowerCase() : ''
-                            } else if (column.type === 'checkbox-multiple') {
-                                if (typeof value === 'string' && value) {
-                                    formData.value[column.key] = value.split(',').map(v => v.trim()).filter(Boolean)
-                                } else if (Array.isArray(value)) {
-                                    formData.value[column.key] = value
-                                } else {
-                                    formData.value[column.key] = []
-                                }
-                            } else if (column.type === 'array') {
-                                if (Array.isArray(value)) {
-                                    formData.value[column.key] = value
-                                } else {
-                                    formData.value[column.key] = []
-                                }
-                            } else {
+                        if (column.type === 'text' || column.type === 'textarea' || column.type === 'currency' || column.type === 'date' || column.type === 'datetime') {
+                            formData.value[column.key] = value != null ? String(value) : ''
+                        } else if (column.type === 'badge') {
+                            formData.value[column.key] = value != null ? String(value).toLowerCase() : ''
+                        } else if (column.type === 'checkbox-multiple') {
+                            if (typeof value === 'string' && value) {
+                                formData.value[column.key] = value.split(',').map(v => v.trim()).filter(Boolean)
+                            } else if (Array.isArray(value)) {
                                 formData.value[column.key] = value
+                            } else {
+                                formData.value[column.key] = []
                             }
+                        } else if (column.type === 'array') {
+                            if (Array.isArray(value)) {
+                                formData.value[column.key] = value
+                            } else {
+                                formData.value[column.key] = []
+                            }
+                        } else {
+                            formData.value[column.key] = value
                         }
-                    })
+                    }
+                })
 
-                    return item
-                }
+                return item
             }
 
             console.error(`No se encontró elemento con ID ${itemId} en la tabla ${tablaSlug}`)

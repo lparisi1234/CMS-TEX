@@ -9,7 +9,6 @@
 </template>
 
 <script setup>
-import tablas from '~/shared/tablas.js'
 import { ROUTE_NAMES } from '~/constants/ROUTE_NAMES'
 
 const route = useRoute()
