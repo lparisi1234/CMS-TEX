@@ -2,7 +2,7 @@
     <DefaultSection class="lg:!gap-8">
         <HeadingH1>{{ tabla.name || 'Tabla no encontrada' }}</HeadingH1>
         <ButtonPrimary @click="handleCreate" class="!px-4 sm:!px-12">{{ tabla.botonTexto }}</ButtonPrimary>
-        <TableLayout :data="displayData" :columns="tabla.columns" :related-data="relatedData"
+        <TableLayout v-if="displayData.length" :data="displayData" :columns="tabla.columns" :related-data="relatedData"
             :empty-state-text="`No hay items en ${tabla.name} creados`" :table-name="tabla.name" @edit="handleEdit"
             @delete="handleDelete" />
     </DefaultSection>
@@ -12,19 +12,11 @@
 import { ROUTE_NAMES } from '~/constants/ROUTE_NAMES'
 
 const route = useRoute()
+const { success, error } = useNotification()
 const nombreSlug = route.params.nombre
 
-const getTabla = () => {
-    const configTabla = tablas.configuracion.find(item => item.slug === nombreSlug)
-    if (configTabla) return configTabla
-
-    const adminTabla = tablas.administracion.find(item => item.slug === nombreSlug)
-    if (adminTabla) return adminTabla
-
-    return null
-}
-
-const tabla = getTabla()
+const { findTableBySlug } = useDynamicForm(nombreSlug)
+const tabla = findTableBySlug(nombreSlug)
 
 if (!tabla) {
     throw createError({
@@ -50,12 +42,10 @@ if (nombreSlug === 'que-esperar-categorias') {
 }
 
 // Endpoint
-const tableData = await fetch(`/api/${tabla.endpoint}`)
-    .then(res => res.ok ? res.json() : [])
-    .catch(err => {
-        console.error('Error cargando datos:', err)
-        return []
-    })
+const tableData = await $fetch(`/api/${tabla.endpoint}`).catch(err => {
+    console.error('Error cargando datos:', err)
+    return []
+})
 
 
 const loadRelatedData = async () => {
@@ -64,9 +54,13 @@ const loadRelatedData = async () => {
     for (const column of tabla.columns) {
         if ((column.type === 'select' || column.type === 'checkbox-multiple') && column.relatedTable) {
             try {
-                const relatedData = await fetch(`/api/${column.relatedTable}`)
-                    .then(res => res.ok ? res.json() : [])
-                relatedTables[column.relatedTable] = relatedData
+                const relatedTabla = findTableBySlug(column.relatedTable)
+                if (relatedTabla) {
+                    const relatedData = await $fetch(`/api/${relatedTabla.endpoint}`)
+                    relatedTables[column.relatedTable] = relatedData || []
+                } else {
+                    relatedTables[column.relatedTable] = []
+                }
             } catch (error) {
                 console.error(`Error cargando datos relacionados para ${column.relatedTable}:`, error)
                 relatedTables[column.relatedTable] = []
@@ -91,13 +85,18 @@ const handleEdit = (item) => {
 
 const handleDelete = async (item) => {
     try {
-        await fetch(`/api/${tabla.endpoint}/${item.id}`, {
-            method: 'DELETE'
+        const endpointBase = tabla.endpoint.split('/')[0] // Obtener 'segmentos' de 'segmentos/segmentos'
+        await $fetch(`/api/${endpointBase}/delete`, {
+            method: 'POST',
+            body: { id: item.id }
         })
+        
+        success(`${tabla.name} eliminado exitosamente`)
         // Recargar datos después de eliminar
         location.reload()
-    } catch (error) {
-        console.error('Error al eliminar:', error)
+    } catch (err) {
+        console.error('Error al eliminar:', err)
+        error(`Error al eliminar ${tabla.name}`)
     }
 }
 </script>

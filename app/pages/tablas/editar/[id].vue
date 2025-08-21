@@ -132,9 +132,8 @@ const {
     columnChunks,
     initializeFormData,
     loadSelectOptions,
-    validateForm,
-    prepareDataForSubmit,
-    loadExistingData
+    loadExistingData,
+    updateItem
 } = useDynamicForm(tablaSlug, itemId)
 
 const isDestinosForm = () => {
@@ -212,27 +211,16 @@ const botonTexto = computed(() => {
 })
 
 const handleSubmit = async () => {
-    if (!validateForm()) return
-
-    isSubmitting.value = true
-
-    try {
-        const dataToSubmit = prepareDataForSubmit()
-        // PUT
-
+    const success = await updateItem()
+    if (success) {
         await router.push(`${ROUTE_NAMES.TABLAS}/${tablaSlug}`)
-
-    } catch (error) {
-        console.error('Error al actualizar:', error)
-    } finally {
-        isSubmitting.value = false
     }
 }
 
 onMounted(async () => {
     if (tabla) {
         await loadSelectOptions()
-        const data = await loadExistingData()
+        await loadExistingData()
 
         if (isDestinosForm() && formData.value) {
             editingData.value = { ...formData.value }

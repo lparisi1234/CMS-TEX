@@ -116,8 +116,7 @@ const {
     columnChunks,
     initializeFormData,
     loadSelectOptions,
-    validateForm,
-    prepareDataForSubmit
+    createItem
 } = useDynamicForm(tablaSlug)
 
 const botonTexto = computed(() => tabla?.botonTexto || 'Crear nuevo elemento')
@@ -170,20 +169,9 @@ const handleCancel = () => {
 }
 
 const handleSubmit = async () => {
-    if (!validateForm()) return
-
-    isSubmitting.value = true
-
-    try {
-        const dataToSubmit = prepareDataForSubmit()
-        // POST
-
+    const success = await createItem()
+    if (success) {
         await router.push(`${ROUTE_NAMES.TABLAS}/${tablaSlug}`)
-
-    } catch (error) {
-        console.error('Error al crear:', error)
-    } finally {
-        isSubmitting.value = false
     }
 }
 

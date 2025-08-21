@@ -1,6 +1,7 @@
 import tablas from '~/shared/tablas.js'
 
 export const useDynamicForm = (tablaSlug, itemId = null) => {
+    const { success, error } = useNotification()
     const formData = ref({})
     const errors = ref({})
     const selectOptions = ref({})
@@ -134,7 +135,9 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
         loadingData.value = true
 
         try {
-            const item = await $fetch(`/api/${tabla.endpoint}/${itemId}`)
+            // Obtener todos los elementos y filtrar por ID
+            const allItems = await $fetch(`/api/${tabla.endpoint}`)
+            const item = allItems.find(item => item.id == itemId)
 
             if (item) {
                 initializeFormData()
@@ -222,6 +225,56 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
         return dataToSubmit
     }
 
+    const createItem = async () => {
+        if (!validateForm()) return false
+
+        isSubmitting.value = true
+
+        try {
+            const dataToSubmit = prepareDataForSubmit()
+            const endpointBase = tabla.endpoint.split('/')[0]
+            
+            await $fetch(`/api/${endpointBase}/create`, {
+                method: 'PUT',
+                body: dataToSubmit
+            })
+
+            success(`${tabla.name} creado exitosamente`)
+            return true
+        } catch (err) {
+            console.error('Error al crear:', err)
+            error(`Error al crear ${tabla.name}`)
+            return false
+        } finally {
+            isSubmitting.value = false
+        }
+    }
+
+    const updateItem = async () => {
+        if (!validateForm()) return false
+
+        isSubmitting.value = true
+
+        try {
+            const dataToSubmit = prepareDataForSubmit()
+            const endpointBase = tabla.endpoint.split('/')[0]
+            
+            await $fetch(`/api/${endpointBase}/update`, {
+                method: 'PUT',
+                body: { ...dataToSubmit, id: itemId }
+            })
+
+            success(`${tabla.name} actualizado exitosamente`)
+            return true
+        } catch (err) {
+            console.error('Error al actualizar:', err)
+            error(`Error al actualizar ${tabla.name}`)
+            return false
+        } finally {
+            isSubmitting.value = false
+        }
+    }
+
     return {
         formData,
         errors,
@@ -239,6 +292,8 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
         loadExistingData,
         validateForm,
         prepareDataForSubmit,
+        createItem,
+        updateItem,
         findTableBySlug
     }
 }
