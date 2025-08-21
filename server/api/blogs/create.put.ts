@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
       destino_id
     } = await readBody(event)
 
-    // La validación de los campos está correcta
+    
     if (
       autor === undefined ||
       img === undefined ||
@@ -28,7 +28,8 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
-    const estadoBoolean = estado === "activo" ? true : false;
+    
+    const estadoDB = estado === "activo" ? true : false;
 
     const query = `
       INSERT INTO "NotaBlog" (
@@ -48,7 +49,7 @@ export default defineEventHandler(async (event) => {
       autor,
       img,
       fecha,
-      estadoBoolean,
+      estadoDB,
       titulo,
       destacado_home,
       categoria_id,
