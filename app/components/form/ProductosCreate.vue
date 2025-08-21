@@ -137,9 +137,30 @@
 </template>
 
 <script setup>
-import segmentosData from '~/shared/segmentos/segmentos.js'
-import expertosData from '~/shared/expertos/expertos.js'
-import productosData from '~/shared/productos/productos.js'
+const { success, error } = useNotification()
+
+// Datos reactivos para endpoints
+const segmentosData = ref([])
+const expertosData = ref([])
+const productosData = ref([])
+
+// Cargar datos desde endpoints
+const loadData = async () => {
+    try {
+        const [segmentos, expertos, productos] = await Promise.all([
+            $fetch('/api/segmentos/segmentos'),
+            $fetch('/api/expertos/expertos'),  
+            $fetch('/api/productos/productos')
+        ])
+        
+        segmentosData.value = segmentos || []
+        expertosData.value = expertos || []
+        productosData.value = productos || []
+    } catch (err) {
+        console.error('Error cargando datos:', err)
+        error('Error al cargar los datos')
+    }
+}
 
 const props = defineProps({
     isEditing: {
@@ -210,14 +231,14 @@ const estadoOptions = [
 ]
 
 const segmentosOptions = computed(() =>
-    segmentosData.map(s => ({
+    segmentosData.value.map(s => ({
         value: s.id,
         label: s.descripcion
     }))
 )
 
 const expertosOptions = computed(() =>
-    expertosData.map(e => ({
+    expertosData.value.map(e => ({
         value: e.id,
         label: e.nombre
     }))
@@ -394,7 +415,7 @@ const handleSubmit = async () => {
 
 const loadProductData = async () => {
     if (props.isEditing && props.productId) {
-        const producto = productosData.find(p =>
+        const producto = productosData.value.find(p =>
             String(p.id) === String(props.productId)
         )
 
@@ -432,7 +453,8 @@ watch(() => props.editingData, (newData) => {
     }
 }, { immediate: true })
 
-onMounted(() => {
+onMounted(async () => {
+    await loadData()
     if (props.isEditing) {
         loadProductData()
     }

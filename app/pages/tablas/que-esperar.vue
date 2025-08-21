@@ -28,6 +28,8 @@
 <script setup>
 import { ROUTE_NAMES } from '~/constants/ROUTE_NAMES'
 
+const { success, error } = useNotification()
+
 const tabla = {
     name: 'Qué esperar Categorías',
     slug: 'que-esperar-categorias',
@@ -72,34 +74,27 @@ const selectedCategoriaId = ref('')
 const selectedCategoriaName = ref('')
 const showResults = ref(false)
 
-const getDataForEndpoint = async (endpoint) => {
+const queEsperarData = ref([])
+const categoriasData = ref([])
+
+const loadData = async () => {
     try {
-        const modules = import.meta.glob('~/shared/**/*.js', { eager: false })
-
-        let foundModule = null
-        for (const [path, importer] of Object.entries(modules)) {
-            if (path.includes(`/${endpoint}.js`)) {
-                foundModule = importer
-                break
-            }
-        }
-
-        if (foundModule) {
-            const module = await foundModule()
-            return module.default || []
-        }
-
-        console.warn(`No se encontró archivo para endpoint: ${endpoint}`)
-        return []
-    } catch (error) {
-        console.warn(`Error cargando datos para endpoint: ${endpoint}`)
-        console.error('Error detallado:', error)
-        return []
+        const [queEsperarResponse, categoriasResponse] = await Promise.all([
+            $fetch('/api/que-esperar-categorias/que-esperar-categorias'),
+            $fetch('/api/categorias/categorias')
+        ])
+        
+        queEsperarData.value = queEsperarResponse || []
+        categoriasData.value = categoriasResponse || []
+    } catch (err) {
+        console.error('Error cargando datos:', err)
+        error('Error al cargar los datos')
     }
 }
 
-const queEsperarData = ref(await getDataForEndpoint(tabla.endpoint))
-const categoriasData = ref(await getDataForEndpoint('categorias/categorias'))
+onMounted(() => {
+    loadData()
+})
 
 const categoriaOptions = computed(() => {
     return categoriasData.value.map(categoria => ({
@@ -145,11 +140,17 @@ const handleEdit = (item) => {
 
 const handleDelete = async (item) => {
     try {
-        // DELETE
+        await $fetch('/api/que-esperar-categorias/delete', {
+            method: 'POST',
+            body: { id: item.id }
+        })
 
-        queEsperarData.value = await getDataForEndpoint(tabla.endpoint)
-    } catch (error) {
-        console.error('Error al eliminar:', error)
+        // Recargar datos
+        await loadData()
+        success('Elemento eliminado exitosamente')
+    } catch (err) {
+        console.error('Error al eliminar:', err)
+        error('Error al eliminar el elemento')
     }
 }
 </script>

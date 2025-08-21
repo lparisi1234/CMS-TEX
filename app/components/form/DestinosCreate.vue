@@ -230,11 +230,7 @@
 </template>
 
 <script setup>
-import destinosData from '~/shared/destinos/destinos.js'
-import expertosData from '~/shared/expertos/expertos.js'
-import masVendidosData from '~/shared/masVendidos/masVendidos.js'
-import vueloIncluidoData from '~/shared/vueloIncluido/vueloIncluido.js'
-import recomendadosData from '~/shared/recomendados/recomendados.js'
+const { success, error } = useNotification()
 
 const badgeOptions = [
     { value: 'activo', label: 'Activo' },
@@ -261,6 +257,35 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['success', 'cancel'])
+
+// Datos reactivos para endpoints
+const destinosData = ref([])
+const expertosData = ref([])
+const masVendidosData = ref([])
+const vueloIncluidoData = ref([])
+const recomendadosData = ref([])
+
+// Cargar datos desde endpoints
+const loadData = async () => {
+    try {
+        const [destinos, expertos, masVendidos, vueloIncluido, recomendados] = await Promise.all([
+            $fetch('/api/destinos/destinos'),
+            $fetch('/api/expertos/expertos'),
+            $fetch('/api/mas-vendidos/mas-vendidos').catch(() => []),
+            $fetch('/api/vuelo-incluido/vuelo-incluido').catch(() => []),
+            $fetch('/api/recomendados/recomendados').catch(() => [])
+        ])
+        
+        destinosData.value = destinos || []
+        expertosData.value = expertos || []
+        masVendidosData.value = masVendidos || []
+        vueloIncluidoData.value = vueloIncluido || []
+        recomendadosData.value = recomendados || []
+    } catch (err) {
+        console.error('Error cargando datos:', err)
+        error('Error al cargar los datos')
+    }
+}
 
 const initFormData = () => {
     const baseData = {
@@ -358,14 +383,14 @@ const detailsColumnChunks = computed(() => {
 })
 
 const expertosOptions = computed(() => {
-    return expertosData.map(experto => ({
+    return expertosData.value.map(experto => ({
         value: experto.id,
         label: experto.nombre
     }))
 })
 
 const regionesOptions = computed(() => {
-    return destinosData
+    return destinosData.value
         .filter(destino => !destino.regionId)
         .map(region => ({
             value: region.id,
@@ -374,7 +399,7 @@ const regionesOptions = computed(() => {
 })
 
 const paisesOptions = computed(() => {
-    return destinosData
+    return destinosData.value
         .filter(destino => destino.regionId)
         .map(pais => ({
             value: pais.id,
@@ -409,13 +434,13 @@ const getTablaEspecialData = (tipo, destinoId) => {
     let sourceData = []
     switch (tipo) {
         case 'masVendidos':
-            sourceData = masVendidosData
+            sourceData = masVendidosData.value
             break
         case 'vueloIncluido':
-            sourceData = vueloIncluidoData
+            sourceData = vueloIncluidoData.value
             break
         case 'recomendados':
-            sourceData = recomendadosData
+            sourceData = recomendadosData.value
             break
     }
 
@@ -699,14 +724,15 @@ watch(() => props.editingData, (newData) => {
             }
         })
 
-        const destinoEncontrado = destinosData.find(d => d.id === newData.id)
+        const destinoEncontrado = destinosData.value.find(d => d.id === newData.id)
         if (destinoEncontrado && destinoEncontrado.subgrupos) {
             formData.value.subgrupos = [...destinoEncontrado.subgrupos]
         }
     }
 }, { immediate: true })
 
-onMounted(() => {
+onMounted(async () => {
+    await loadData()
     setupSelectOptions()
 
     if (!formData.value.masVendidos) formData.value.masVendidos = []

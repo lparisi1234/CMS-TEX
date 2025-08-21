@@ -49,10 +49,24 @@
 
 <script setup>
 import { ROUTE_NAMES } from '~/constants/ROUTE_NAMES'
-import productosData from '~/shared/productos/productos.js'
 
+const { success, error } = useNotification()
 const searchCodigoNewton = ref('')
-const productos = ref([...productosData])
+const productos = ref([])
+
+const loadProductos = async () => {
+    try {
+        const data = await $fetch('/api/productos/productos')
+        productos.value = data || []
+    } catch (err) {
+        console.error('Error cargando productos:', err)
+        error('Error al cargar los productos')
+    }
+}
+
+onMounted(() => {
+    loadProductos()
+})
 
 const filteredProductos = computed(() => {
     if (!searchCodigoNewton.value) return []
@@ -91,15 +105,27 @@ const closeDeleteModal = () => {
     productoAEliminar.value = null
 }
 
-const confirmDelete = () => {
-    const index = productos.value.findIndex(p =>
-        p.id === productoAEliminar.value.id
-    )
+const confirmDelete = async () => {
+    try {
+        await $fetch('/api/productos/delete', {
+            method: 'POST',
+            body: { id: productoAEliminar.value.id }
+        })
 
-    if (index > -1) {
-        productos.value.splice(index, 1)
+        // Actualizar la lista local
+        const index = productos.value.findIndex(p =>
+            p.id === productoAEliminar.value.id
+        )
+
+        if (index > -1) {
+            productos.value.splice(index, 1)
+        }
+
+        success('Producto eliminado exitosamente')
+        closeDeleteModal()
+    } catch (err) {
+        console.error('Error al eliminar producto:', err)
+        error('Error al eliminar el producto')
     }
-
-    closeDeleteModal()
 }
 </script>

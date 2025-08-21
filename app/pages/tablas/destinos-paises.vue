@@ -10,16 +10,38 @@
 </template>
 
 <script setup>
-import destinosData from '~/shared/destinos/destinos.js'
-import expertosData from '~/shared/expertos/expertos.js'
 import { ROUTE_NAMES } from '~/constants/ROUTE_NAMES'
 
+const { success, error } = useNotification()
+
+const destinosData = ref([])
+const expertosData = ref([])
+
+const loadData = async () => {
+    try {
+        const [destinosResponse, expertosResponse] = await Promise.all([
+            $fetch('/api/destinos/destinos'),
+            $fetch('/api/expertos/expertos')
+        ])
+        
+        destinosData.value = destinosResponse || []
+        expertosData.value = expertosResponse || []
+    } catch (err) {
+        console.error('Error cargando datos:', err)
+        error('Error al cargar los datos')
+    }
+}
+
+onMounted(() => {
+    loadData()
+})
+
 const paisesData = computed(() => {
-    return destinosData.filter(destino => destino.regionId)
+    return destinosData.value.filter(destino => destino.regionId)
 })
 
 const regionesMap = computed(() => {
-    const regiones = destinosData.filter(destino => !destino.regionId)
+    const regiones = destinosData.value.filter(destino => !destino.regionId)
     const map = {}
     regiones.forEach(region => {
         map[region.id] = region.nombre
@@ -118,10 +140,10 @@ const paisesColumns = [
     }
 ]
 
-const relatedData = ref({
-    regiones: destinosData.filter(destino => !destino.regionId),
-    expertos: expertosData
-})
+const relatedData = computed(() => ({
+    regiones: destinosData.value.filter(destino => !destino.regionId),
+    expertos: expertosData.value
+}))
 
 const handleCreate = () => {
     navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.CREAR}?tabla=destinos&tipo=pais`)
@@ -133,9 +155,16 @@ const handleEdit = (item) => {
 
 const handleDelete = async (item) => {
     try {
-        // DELETE
-    } catch (error) {
-        console.error('Error al eliminar:', error)
+        await $fetch('/api/destinos/delete', {
+            method: 'POST',
+            body: { id: item.id }
+        })
+
+        await loadData()
+        success('País eliminado exitosamente')
+    } catch (err) {
+        console.error('Error al eliminar:', err)
+        error('Error al eliminar el país')
     }
 }
 </script>

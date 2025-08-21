@@ -62,8 +62,27 @@
 </template>
 
 <script setup>
-import destinosData from '~/shared/destinos/destinos.js'
-import ciudadesData from '~/shared/ciudades/ciudades.js'
+const { success, error } = useNotification()
+
+// Datos reactivos para endpoints
+const destinosData = ref([])
+const ciudadesData = ref([])
+
+// Cargar datos desde endpoints
+const loadData = async () => {
+    try {
+        const [destinos, ciudades] = await Promise.all([
+            $fetch('/api/destinos/destinos'),
+            $fetch('/api/ciudades/ciudades')
+        ])
+        
+        destinosData.value = destinos || []
+        ciudadesData.value = ciudades || []
+    } catch (err) {
+        console.error('Error cargando datos:', err)
+        error('Error al cargar los datos')
+    }
+}
 import { ROUTE_NAMES } from '~/constants/ROUTE_NAMES'
 
 const searchQuery = ref('')
@@ -78,7 +97,7 @@ const handleSearch = () => {
     const query = searchQuery.value.toLowerCase()
     const results = []
 
-    destinosData.forEach(destino => {
+    destinosData.value.forEach(destino => {
         const matchesName = destino.nombre.toLowerCase().includes(query)
         const matchesCode = destino.codigo_newton.toString().includes(query)
 
@@ -90,7 +109,7 @@ const handleSearch = () => {
         }
     })
 
-    ciudadesData.forEach(ciudad => {
+    ciudadesData.value.forEach(ciudad => {
         if (ciudad.nombre.toLowerCase().includes(query)) {
             results.push({
                 ...ciudad,
@@ -161,4 +180,8 @@ const destinationCards = [
         action: goToCiudades
     }
 ]
+
+onMounted(() => {
+    loadData()
+})
 </script>

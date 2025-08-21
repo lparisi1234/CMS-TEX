@@ -38,18 +38,28 @@
 </template>
 
 <script setup>
-import whatsappData from '~/shared/whatsapp/whatsapp.js'
+const { success, error } = useNotification()
 
 const isEditing = ref(false)
 const currentWhatsapp = ref('')
 const editedWhatsapp = ref('')
 const whatsappInput = ref(null)
 
-onMounted(() => {
-    if (whatsappData.length > 0) {
-        currentWhatsapp.value = whatsappData[0].whatsapp
-        editedWhatsapp.value = whatsappData[0].whatsapp
+const loadWhatsappData = async () => {
+    try {
+        const data = await $fetch('/api/whatsapp')
+        if (data && data.length > 0) {
+            currentWhatsapp.value = data[0].whatsapp || ''
+            editedWhatsapp.value = data[0].whatsapp || ''
+        }
+    } catch (err) {
+        console.error('Error cargando datos de WhatsApp:', err)
+        error('Error al cargar los datos de WhatsApp')
     }
+}
+
+onMounted(() => {
+    loadWhatsappData()
 })
 
 const startEditing = () => {
@@ -63,19 +73,23 @@ const startEditing = () => {
 
 const handleSave = async () => {
     if (!editedWhatsapp.value.trim()) {
-        alert('Por favor, ingresa un número de WhatsApp válido')
+        error('Por favor, ingresa un número de WhatsApp válido')
         return
     }
 
     try {
-        // PUT
+        await $fetch('/api/whatsapp/update', {
+            method: 'PUT',
+            body: { whatsapp: editedWhatsapp.value }
+        })
 
         currentWhatsapp.value = editedWhatsapp.value
         isEditing.value = false
+        success('Número de WhatsApp actualizado exitosamente')
 
-    } catch (error) {
-        console.error('Error al actualizar WhatsApp:', error)
-        alert('Error al actualizar el número de WhatsApp')
+    } catch (err) {
+        console.error('Error al actualizar WhatsApp:', err)
+        error('Error al actualizar el número de WhatsApp')
     }
 }
 
