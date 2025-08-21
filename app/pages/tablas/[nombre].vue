@@ -51,40 +51,39 @@ if (nombreSlug === 'que-esperar-categorias') {
 }
 
 // Endpoint
-// const tableData = await fetch(`/api/${tabla.endpoint}`)
-//     .then(res => res.ok ? res.json() : [])
-//     .catch(err => {
-//         console.error('Error cargando datos:', err)
-//         return []
-//     })
+const tableData = await fetch(`/api/${tabla.endpoint}`)
+    .then(res => res.ok ? res.json() : [])
+    .catch(err => {
+        console.error('Error cargando datos:', err)
+        return []
+    })
 
 // Data hardcodeada
+// const getDataForEndpoint = async (endpoint) => {
+//     try {
+//         const modules = import.meta.glob('~/shared/**/*.js', { eager: false })
 
-const getDataForEndpoint = async (endpoint) => {
-    try {
-        const modules = import.meta.glob('~/shared/**/*.js', { eager: false })
+//         let foundModule = null
+//         for (const [path, importer] of Object.entries(modules)) {
+//             if (path.includes(`/${endpoint}.js`)) {
+//                 foundModule = importer
+//                 break
+//             }
+//         }
 
-        let foundModule = null
-        for (const [path, importer] of Object.entries(modules)) {
-            if (path.includes(`/${endpoint}.js`)) {
-                foundModule = importer
-                break
-            }
-        }
+//         if (foundModule) {
+//             const module = await foundModule()
+//             return module.default || []
+//         }
 
-        if (foundModule) {
-            const module = await foundModule()
-            return module.default || []
-        }
-
-        console.warn(`No se encontró archivo para endpoint: ${endpoint}`)
-        return []
-    } catch (error) {
-        console.warn(`Error cargando datos para endpoint: ${endpoint}`)
-        console.error('Error detallado:', error)
-        return []
-    }
-}
+//         console.warn(`No se encontró archivo para endpoint: ${endpoint}`)
+//         return []
+//     } catch (error) {
+//         console.warn(`Error cargando datos para endpoint: ${endpoint}`)
+//         console.error('Error detallado:', error)
+//         return []
+//     }
+// }
 
 const loadRelatedData = async () => {
     const relatedTables = {}
@@ -99,7 +98,7 @@ const loadRelatedData = async () => {
     return relatedTables
 }
 
-const tableData = ref(await getDataForEndpoint(tabla.endpoint))
+// const tableData = ref(await getDataForEndpoint(tabla.endpoint))
 const relatedData = ref(await loadRelatedData())
 
 const displayData = computed(() => tableData.value || [])
