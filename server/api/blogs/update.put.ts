@@ -12,8 +12,7 @@ export default defineEventHandler(async (event) => {
       titulo,
       destacado_home,
       categoria_id,
-      paises_id,
-      region_id
+      destino_id
     } = await readBody(event)
 
     if (
@@ -25,10 +24,24 @@ export default defineEventHandler(async (event) => {
       titulo === undefined ||
       destacado_home === undefined ||
       categoria_id === undefined ||
-      paises_id === undefined ||
-      region_id === undefined
+      destino_id === undefined
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
+    }
+
+     let estadoDb;
+    switch ((estado || '').toLowerCase()) {
+      case 'activo':
+      case 'publicado':
+        estadoDb = true
+        break
+      case 'inactivo':
+      case 'borrado':
+      case 'archivado':
+        estadoDb = false
+        break
+      default:
+        estadoDb = false
     }
 
     const query = `
@@ -40,9 +53,8 @@ export default defineEventHandler(async (event) => {
         titulo = $5,
         destacado_home = $6,
         categoria_id = $7,
-        paises_id = $8,
-        region_id = $9
-      WHERE id = $10
+        destino_id = $8
+      WHERE id = $9
       RETURNING *;
     `;
 
@@ -50,12 +62,11 @@ export default defineEventHandler(async (event) => {
       autor,
       img,
       fecha,
-      estado,
+      estadoDb,
       titulo,
       destacado_home,
       categoria_id,
-      paises_id,
-      region_id,
+      destino_id,
       id
     ];
 

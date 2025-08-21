@@ -17,10 +17,17 @@ async function getDbPool() {
     password: "Zkw7-XwhYk.V9!0<.5t[7YWjwXdv",
     database: "testdb",
     port: 5432,
+
     // host: "localhost",
     // user: "postgres",
     // password: "Lioben2000!#",
     // database: "TEX_db",
+
+    // host: "localhost",
+    // user: "postgres",
+    // password: "root",
+    // database: "dbtest",
+
 
   });
 

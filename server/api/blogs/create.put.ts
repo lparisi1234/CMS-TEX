@@ -11,10 +11,10 @@ export default defineEventHandler(async (event) => {
       titulo,
       destacado_home,
       categoria_id,
-      paises_id,
-      region_id
+      destino_id
     } = await readBody(event)
 
+    // La validación de los campos está correcta
     if (
       autor === undefined ||
       img === undefined ||
@@ -23,11 +23,12 @@ export default defineEventHandler(async (event) => {
       titulo === undefined ||
       destacado_home === undefined ||
       categoria_id === undefined ||
-      paises_id === undefined ||
-      region_id === undefined
+      destino_id === undefined
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
     }
+
+    const estadoBoolean = estado === "activo" ? true : false;
 
     const query = `
       INSERT INTO "NotaBlog" (
@@ -38,9 +39,8 @@ export default defineEventHandler(async (event) => {
         titulo,
         destacado_home,
         categoria_id,
-        paises_id,
-        region_id
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        destino_id
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
       RETURNING *;
     `;
 
@@ -48,12 +48,11 @@ export default defineEventHandler(async (event) => {
       autor,
       img,
       fecha,
-      estado,
+      estadoBoolean,
       titulo,
       destacado_home,
       categoria_id,
-      paises_id,
-      region_id
+      destino_id,
     ];
 
     const result = await pool.query(query, values)
