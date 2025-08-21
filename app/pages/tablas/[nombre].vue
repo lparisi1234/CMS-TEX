@@ -58,50 +58,29 @@ const tableData = await fetch(`/api/${tabla.endpoint}`)
         return []
     })
 
-// Data hardcodeada
-// const getDataForEndpoint = async (endpoint) => {
-//     try {
-//         const modules = import.meta.glob('~/shared/**/*.js', { eager: false })
-
-//         let foundModule = null
-//         for (const [path, importer] of Object.entries(modules)) {
-//             if (path.includes(`/${endpoint}.js`)) {
-//                 foundModule = importer
-//                 break
-//             }
-//         }
-
-//         if (foundModule) {
-//             const module = await foundModule()
-//             return module.default || []
-//         }
-
-//         console.warn(`No se encontró archivo para endpoint: ${endpoint}`)
-//         return []
-//     } catch (error) {
-//         console.warn(`Error cargando datos para endpoint: ${endpoint}`)
-//         console.error('Error detallado:', error)
-//         return []
-//     }
-// }
 
 const loadRelatedData = async () => {
     const relatedTables = {}
 
     for (const column of tabla.columns) {
         if ((column.type === 'select' || column.type === 'checkbox-multiple') && column.relatedTable) {
-            const relatedData = await getDataForEndpoint(column.relatedTable)
-            relatedTables[column.relatedTable] = relatedData
+            try {
+                const relatedData = await fetch(`/api/${column.relatedTable}`)
+                    .then(res => res.ok ? res.json() : [])
+                relatedTables[column.relatedTable] = relatedData
+            } catch (error) {
+                console.error(`Error cargando datos relacionados para ${column.relatedTable}:`, error)
+                relatedTables[column.relatedTable] = []
+            }
         }
     }
 
     return relatedTables
 }
 
-// const tableData = ref(await getDataForEndpoint(tabla.endpoint))
 const relatedData = ref(await loadRelatedData())
 
-const displayData = computed(() => tableData.value || [])
+const displayData = computed(() => tableData || [])
 
 const handleCreate = () => {
     navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.CREAR}?tabla=${nombreSlug}`)
@@ -113,8 +92,11 @@ const handleEdit = (item) => {
 
 const handleDelete = async (item) => {
     try {
-        // DELETE
-
+        await fetch(`/api/${tabla.endpoint}/${item.id}`, {
+            method: 'DELETE'
+        })
+        // Recargar datos después de eliminar
+        location.reload()
     } catch (error) {
         console.error('Error al eliminar:', error)
     }
