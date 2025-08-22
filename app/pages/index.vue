@@ -1,5 +1,5 @@
 <template>
     <DefaultSection>
-        <HeadingH1>Home</HeadingH1>
+        <HeadingH1>Home Test</HeadingH1>
     </DefaultSection>
 </template>

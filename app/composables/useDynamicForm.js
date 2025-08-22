@@ -135,7 +135,6 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
         loadingData.value = true
 
         try {
-            // Obtener todos los elementos y filtrar por ID
             const allItems = await $fetch(`/api/${tabla.endpoint}`)
             const item = allItems.find(item => item.id == itemId)
 
