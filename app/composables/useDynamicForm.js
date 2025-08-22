@@ -65,8 +65,6 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
         { value: 'activo', label: 'Activo' },
         { value: 'inactivo', label: 'Inactivo' },
         { value: 'borrador', label: 'Borrador' },
-        { value: 'publicado', label: 'Publicado' },
-        { value: 'archivado', label: 'Archivado' }
     ]
 
     const columnChunks = computed(() => {

@@ -29,17 +29,11 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
-     let estadoDb;
+    let estadoDb;
     switch ((estado || '').toLowerCase()) {
       case 'activo':
-      case 'publicado':
-        estadoDb = true
-        break
       case 'inactivo':
       case 'borrado':
-      case 'archivado':
-        estadoDb = false
-        break
       default:
         estadoDb = false
     }

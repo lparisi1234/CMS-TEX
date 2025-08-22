@@ -5,7 +5,7 @@ const blogs = [
         titulo: "FITUR 2025, la gran cita del turismo global y el impacto en Tour Experto",
         autor: "Belen Cuevas",
         fecha: "2025-02-19",
-        estado: "publicado",
+        estado: "activo",
         destacado_home: true,
         destino_id: 1,
         categoria_id: 2
@@ -16,7 +16,7 @@ const blogs = [
         titulo: "Consejos de salud para viajes internacionales",
         autor: "Ismael Artigas",
         fecha: "2025-02-08",
-        estado: "publicado",
+        estado: "activo",
         destacado_home: false,
         destino_id: 2,
         categoria_id: 1
@@ -38,7 +38,7 @@ const blogs = [
         titulo: "Guía completa para explorar museos europeos",
         autor: "María García",
         fecha: "2025-02-15",
-        estado: "publicado",
+        estado: "activo",
         destacado_home: false,
         destino_id: 1,
         categoria_id: 3
@@ -60,7 +60,7 @@ const blogs = [
         titulo: "Senderismo en los Pirineos: Una experiencia única",
         autor: "Ana Martínez",
         fecha: "2025-02-10",
-        estado: "archivado",
+        estado: "activo",
         destacado_home: false,
         destino_id: 5,
         categoria_id: 1
