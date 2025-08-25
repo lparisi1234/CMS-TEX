@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
       certificado,
       codigo,
       nro_orden,
-      imagen,
+      img,
       txt_contacto,
       txt_cancelaciones,
     } = await readBody(event)
@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
       certificado === undefined ||
       codigo === undefined ||
       nro_orden === undefined ||
-      imagen === undefined ||
+      img === undefined ||
       txt_contacto === undefined ||
       txt_cancelaciones === undefined 
     ) {
@@ -36,7 +36,7 @@ export default defineEventHandler(async (event) => {
         certificado = $3,
         codigo = $4,
         nro_orden = $5,
-        imagen = $6,
+        img = $6,
         txt_contacto = $7,
         txt_cancelaciones = $8
       WHERE id = $9
@@ -49,7 +49,7 @@ export default defineEventHandler(async (event) => {
       certificado,
       codigo,
       nro_orden,
-      imagen,
+      img,
       txt_contacto,
       txt_cancelaciones,
       id
