@@ -7,21 +7,15 @@ const region = 'us-east-1';
 const secretsClient = new SecretsManagerClient({ region });
 
 async function getDbPool() {
-  // const command = new GetSecretValueCommand({ SecretId: secretName });
-  // const response = await secretsClient.send(command);
-  // const secret = JSON.parse(response.SecretString);
+   command = new GetSecretValueCommand({ SecretId: secretName });
+  const response = await secretsClient.send(command);
+  const secret = JSON.parse(response.SecretString);
 
   const pool = new Pool({
-    // host: "tex2-dev.cluster-c0lq6suu44up.us-east-1.rds.amazonaws.com",
-    // user: "postgres",
-    // password: "Zkw7-XwhYk.V9!0<.5t[7YWjwXdv",
-    // database: "testdb",
-    port: 5432,
-    host: "localhost",
-    user: "postgres",
-    password: "Lioben2000!#",
-    database: "TEX_db",
-
+    host: "tex2-dev.cluster-c0lq6suu44up.us-east-1.rds.amazonaws.com",
+     user: "postgres",
+   password: "secret.password",
+    database: "testdb",
   });
 
   return pool;
