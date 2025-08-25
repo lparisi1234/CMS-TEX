@@ -38,7 +38,7 @@ const tablas = {
                 {
                     key: 'estado',
                     label: 'Estado',
-                    type: 'badge',
+                    type: 'boolean',
                     required: true
                 },
                 {
@@ -78,7 +78,7 @@ const tablas = {
                 {
                     key: 'estado',
                     label: 'Estado',
-                    type: 'badge',
+                    type: 'boolean',
                     required: true
                 }
             ]
@@ -99,7 +99,7 @@ const tablas = {
                 {
                     key: 'estado',
                     label: 'Estado',
-                    type: 'badge',
+                    type: 'boolean',
                     required: true
                 },
                 {
@@ -115,7 +115,7 @@ const tablas = {
                 },
                 {
                     key: 'codigo',
-                    label: 'Código',
+                    label: 'Código Newton',
                     type: 'text',
                     required: true
                 },
@@ -134,6 +134,12 @@ const tablas = {
                     key: 'txt_cancelaciones',
                     label: 'Texto Cancelaciones',
                     type: 'textarea',
+                    required: true
+                },
+                {
+                    key: 'nomenclatura',
+                    label: 'Nomenclatura',
+                    type: 'text',
                     required: true
                 }
             ]
@@ -161,8 +167,13 @@ const tablas = {
             botonTexto: 'Crear nuevo país operativo',
             columns: [
                 {
-                    key: 'numero',
-                    label: 'Número',
+                    key: 'nombre',
+                    label: 'Nombre',
+                    type: 'text'
+                },
+                {
+                    key: 'numero_telefono',
+                    label: 'Número de Teléfono',
                     type: 'text'
                 },
                 {
@@ -176,7 +187,7 @@ const tablas = {
                     type: 'text',
                 },
                 {
-                    key: 'segmento',
+                    key: 'segmentos_id',
                     label: 'Segmento',
                     type: 'select',
                     relatedTable: 'segmentos'
@@ -191,7 +202,7 @@ const tablas = {
             botonTexto: 'Crear nuevo destino',
             columns: [
                 {
-                    key: 'codigo_newton',
+                    key: 'cod_newton',
                     label: 'Código Newton',
                     type: 'number',
                     required: true
@@ -256,7 +267,7 @@ const tablas = {
                 {
                     key: 'estado',
                     label: 'Estado',
-                    type: 'badge',
+                    type: 'boolean',
                     required: true
                 },
                 {
@@ -389,7 +400,7 @@ const tablas = {
                 {
                     key: 'estado',
                     label: 'Estado',
-                    type: 'badge',
+                    type: 'boolean',
                     required: true
                 },
                 {
@@ -451,7 +462,7 @@ const tablas = {
                 {
                     key: 'estado',
                     label: 'Estado',
-                    type: 'badge',
+                    type: 'boolean',
                     required: true
                 },
                 {
@@ -553,7 +564,7 @@ const tablas = {
                 {
                     key: 'estado',
                     label: 'Estado',
-                    type: 'badge',
+                    type: 'boolean',
                     required: true
                 }
             ]
@@ -568,8 +579,8 @@ const tablas = {
                 {
                     key: 'descripcion',
                     label: 'Descripción',
-                        type: 'text',
-                        required: true
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'segundaDescripcion',
@@ -635,11 +646,11 @@ const tablas = {
                 {
                     key: 'estado',
                     label: 'Estado',
-                    type: 'badge',
+                    type: 'boolean',
                     required: true
                 },
                 {
-                    key: 'segmentosExcluidos',
+                    key: 'segmentos_id',
                     label: 'Segmentos Excluidos',
                     type: 'checkbox-multiple',
                     relatedTable: 'segmentos',
@@ -701,7 +712,7 @@ const tablas = {
                     required: true
                 },
                 {
-                    key: 'imagen',
+                    key: 'img',
                     label: 'Imagen',
                     type: 'image',
                     required: true
@@ -766,7 +777,7 @@ const tablas = {
                 {
                     key: 'estado',
                     label: 'Estado',
-                    type: 'badge',
+                    type: 'boolean',
                     required: true
                 },
                 {
@@ -851,7 +862,7 @@ const tablas = {
                 {
                     key: 'estado',
                     label: 'Estado',
-                    type: 'badge'
+                    type: 'boolean'
                 }
             ]
         },
@@ -885,7 +896,7 @@ const tablas = {
                 {
                     key: 'estado',
                     label: 'Estado',
-                    type: 'badge',
+                    type: 'boolean',
                 },
                 {
                     key: 'destacado_home',
@@ -950,7 +961,7 @@ const tablas = {
                 {
                     key: 'estado',
                     label: 'Estado',
-                    type: 'badge',
+                    type: 'boolean',
                     required: true
                 },
                 {

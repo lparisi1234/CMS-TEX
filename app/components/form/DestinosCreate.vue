@@ -8,8 +8,7 @@
         </FormFieldsContainer>
 
         <FormFieldsContainer>
-            <FormSelectField v-model="formData.estado" label="Estado" required :options="badgeOptions"
-                placeholder="Seleccionar estado" />
+            <FormSwitchField v-model="formData.estado" label="Estado" required />
         </FormFieldsContainer>
 
         <div class="flex justify-center items-center flex-wrap gap-8 mt-3">
@@ -48,11 +47,6 @@
                                     :options="selectOptions[column.key] || []"
                                     :placeholder="`Selecciona ${column.label.toLowerCase()}`" />
 
-                                <FormSelectField v-else-if="column.type === 'badge'" :id="`field-${column.key}`"
-                                    v-model="formData[column.key]" :label="column.label" :required="column.required"
-                                    :options="badgeOptions"
-                                    :placeholder="`Seleccionar ${column.label.toLowerCase()}`" />
-
                                 <FormImageField v-else-if="column.type === 'image'" :id="`field-${column.key}`"
                                     v-model="formData[column.key]" :label="column.label" :required="column.required" />
 
@@ -63,6 +57,9 @@
                                 <FormTextField v-else-if="column.type === 'currency'" :id="`field-${column.key}`"
                                     v-model="formData[column.key]" :label="column.label" :required="column.required"
                                     type="number" step="0.01" :placeholder="`Ingresa ${column.label.toLowerCase()}`" />
+
+                                <FormSwitchField v-else-if="column.type === 'boolean'" :id="`field-${column.key}`"
+                                    v-model="formData[column.key]" :label="column.label" :required="column.required" />
                             </template>
                         </FormFieldsContainer>
                         <FormFieldsContainer v-else>
@@ -80,11 +77,6 @@
                                     :options="selectOptions[column.key] || []"
                                     :placeholder="`Selecciona ${column.label.toLowerCase()}`" />
 
-                                <FormSelectField v-else-if="column.type === 'badge'" :id="`field-${column.key}`"
-                                    v-model="formData[column.key]" :label="column.label" :required="column.required"
-                                    :options="badgeOptions"
-                                    :placeholder="`Seleccionar ${column.label.toLowerCase()}`" />
-
                                 <FormImageField v-else-if="column.type === 'image'" :id="`field-${column.key}`"
                                     v-model="formData[column.key]" :label="column.label" :required="column.required" />
 
@@ -95,6 +87,9 @@
                                 <FormTextField v-else-if="column.type === 'currency'" :id="`field-${column.key}`"
                                     v-model="formData[column.key]" :label="column.label" :required="column.required"
                                     type="number" step="0.01" :placeholder="`Ingresa ${column.label.toLowerCase()}`" />
+
+                                <FormSwitchField v-else-if="column.type === 'boolean'" :id="`field-${column.key}`"
+                                    v-model="formData[column.key]" :label="column.label" :required="column.required" />
                             </template>
                         </FormFieldsContainer>
                     </template>
@@ -232,12 +227,6 @@
 <script setup>
 const { success, error } = useNotification()
 
-const badgeOptions = [
-    { value: 'activo', label: 'Activo' },
-    { value: 'inactivo', label: 'Inactivo' },
-    { value: 'borrador', label: 'Borrador' },
-]
-
 const props = defineProps({
     tipo: {
         type: String,
@@ -269,8 +258,8 @@ const loadData = async () => {
         const [destinos, expertos, masVendidos, vueloIncluido, recomendados] = await Promise.all([
             $fetch('/api/destinos/destinos'),
             $fetch('/api/expertos/expertos'),
-            $fetch('/api/mas-vendidos/mas-vendidos').catch(() => []),
-            $fetch('/api/vuelo-incluido/vuelo-incluido').catch(() => []),
+            $fetch('/api/masVendidos/masVendidos').catch(() => []),
+            $fetch('/api/vueloIncluido/vueloIncluido').catch(() => []),
             $fetch('/api/recomendados/recomendados').catch(() => [])
         ])
         
@@ -288,7 +277,7 @@ const loadData = async () => {
 const initFormData = () => {
     const baseData = {
         nombre: '',
-        estado: 'activo'
+        estado: true
     }
 
     if (props.tipo === 'ciudad') {
@@ -339,7 +328,7 @@ const tabs = [
 ]
 
 const detailsColumns = [
-    { key: 'codigo_newton', label: 'Código Newton', type: 'number', required: true },
+    { key: 'cod_newton', label: 'Código Newton', type: 'number', required: true },
     ...(props.tipo === 'pais' ? [{ key: 'regionId', label: 'Región', type: 'select', required: true, }] : []),
     { key: 'nombre', label: 'Nombre', type: 'text', required: true },
     { key: 'url', label: 'URL', type: 'text' },
@@ -348,7 +337,7 @@ const detailsColumns = [
     { key: 'meta_titulo', label: 'Meta Título', type: 'text' },
     { key: 'meta_descripcion', label: 'Meta Descripción', type: 'text' },
     { key: 'meta_keywords', label: 'Meta Keywords', type: 'text' },
-    { key: 'estado', label: 'Estado', type: 'badge', required: true },
+    { key: 'estado', label: 'Estado', type: 'boolean', required: true },
     { key: 'mapa', label: 'Coordenadas del Mapa', type: 'text' },
     { key: 'img', label: 'Imagen', type: 'image' },
     { key: 'video_mobile', label: 'Video Mobile', type: 'image' },

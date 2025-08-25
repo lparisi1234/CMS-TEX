@@ -23,12 +23,10 @@
                 </button>
 
                 <template v-else>
-                    <button @click="handleSave"
-                        class="flex items-center bg-primary text-light rounded-lg p-2">
+                    <button @click="handleSave" class="flex items-center bg-primary text-light rounded-lg p-2">
                         <Icon name="tabler:check" class="w-5 h-5" />
                     </button>
-                    <button @click="handleCancel"
-                        class="flex items-center bg-gray-dark text-light rounded-lg p-2">
+                    <button @click="handleCancel" class="flex items-center bg-gray-dark text-light rounded-lg p-2">
                         <Icon name="tabler:x" class="w-5 h-5" />
                     </button>
                 </template>
@@ -80,7 +78,7 @@ const handleSave = async () => {
     try {
         await $fetch('/api/whatsapp/update', {
             method: 'PUT',
-            body: { whatsapp: editedWhatsapp.value }
+            body: { id: 1, numero: editedWhatsapp.value }
         })
 
         currentWhatsapp.value = editedWhatsapp.value

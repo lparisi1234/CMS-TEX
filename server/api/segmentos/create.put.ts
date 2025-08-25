@@ -1,16 +1,16 @@
 import getDbPool from "../../db"
 
 export default defineEventHandler(async (event) => {
-    try {
+  try {
     const pool = await getDbPool()
     const {
-       descripcion,
-        txt_header,
-        txt_footer,
-        vencimiento_header,
-        estado,
-        codigo_newton,
-        monedaId,
+      descripcion,
+      txt_header,
+      txt_footer,
+      vencimiento_header,
+      estado,
+      codigo_newton,
+      monedaId,
     } = await readBody(event)
 
     if (
@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
       vencimiento_header === undefined ||
       estado === undefined ||
       codigo_newton === undefined ||
-      monedaId === undefined 
+      monedaId === undefined
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
     }
@@ -39,13 +39,13 @@ export default defineEventHandler(async (event) => {
     `;
 
     const values = [
-        descripcion,
-        txt_header,
-        txt_footer,
-        vencimiento_header,
-        estado,
-        codigo_newton,
-        monedaId,
+      descripcion,
+      txt_header,
+      txt_footer,
+      vencimiento_header,
+      estado,
+      codigo_newton,
+      monedaId,
     ];
 
     const result = await pool.query(query, values)

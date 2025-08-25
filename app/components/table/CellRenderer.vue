@@ -3,7 +3,7 @@
         <img :src="value" :alt="column.label" class="w-16 h-16 object-cover rounded-lg" />
     </div>
     <div v-else-if="(column.type === 'text' || column.type === 'textarea') && column.key !== 'subgrupos'"
-        class="w-full max-w-[18.75rem] break-words">
+        class="w-full max-w-[18.75rem] max-h-32 overflow-auto whitespace-pre-wrap break-words">
         <span>{{ value || '-' }}</span>
     </div>
     <span v-else>{{ formatValue(value, column) }}</span>
@@ -83,7 +83,7 @@ const formatValue = (value, column) => {
             return new Intl.NumberFormat('es-AR').format(value)
 
         case 'boolean':
-            return value ? 'Sí' : 'No'
+            return value ? 'Activo' : 'Inactivo'
 
         case 'image':
             return value
