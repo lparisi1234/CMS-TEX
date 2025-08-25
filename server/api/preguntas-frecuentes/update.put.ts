@@ -1,0 +1,47 @@
+import getDbPool from "../../db"
+
+export default defineEventHandler(async (event) => {
+  try {
+    const pool = await getDbPool()
+    const {
+      id,
+      pregunta,
+      respuesta,
+      destino_id
+    } = await readBody(event)
+
+    if (
+      id === undefined ||
+      pregunta === undefined ||
+      respuesta === undefined ||
+      destino_id === undefined
+    ) {
+      return { success: false, message: 'Faltan campos requeridos' }
+    }
+
+    const query = `
+      UPDATE "PreguntasFrecuentes" SET
+        pregunta = $1,
+        respuesta = $2,
+        destino_id = $3
+      WHERE id = $4
+      RETURNING *;
+    `;
+
+    const values = [
+      pregunta,
+      respuesta,
+      destino_id,
+      id
+    ];
+
+    const result = await pool.query(query, values)
+    if (result.rows.length === 0) {
+      return { success: false, message: 'No se encontró la pregunta frecuente para modificar' }
+    }
+    return { success: true, message: 'Pregunta frecuente modificada correctamente', pregunta: result.rows[0] }
+  } catch (error) {
+    console.error('Error modificando pregunta frecuente:', error)
+    return { success: false, message: 'Error modificando pregunta frecuente' }
+  }
+})
