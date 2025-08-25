@@ -6,7 +6,10 @@ export default defineEventHandler(async (event) => {
     const {
       id,
       nombre,
-      descripcion,
+      coordenadas_icono,
+      coordenadas_icono_hover,
+      icono_search,
+      etiqueta_search,
       h2,
       h1,
       meta_titulo,
@@ -28,7 +31,10 @@ export default defineEventHandler(async (event) => {
     if (
       id === undefined ||
       nombre === undefined ||
-      descripcion === undefined ||
+      coordenadas_icono === undefined ||
+      coordenadas_icono_hover === undefined ||
+      icono_search === undefined ||
+      etiqueta_search === undefined ||
       h2 === undefined ||
       h1 === undefined ||
       meta_titulo === undefined ||
@@ -52,30 +58,36 @@ export default defineEventHandler(async (event) => {
     const query = `
       UPDATE "Categoria" SET
         nombre = $1,
-        descripcion = $2,
-        h2 = $3,
-        h1 = $4,
-        meta_titulo = $5,
-        meta_descripcion = $6,
-        meta_keywords = $7,
-        icono = $8,
-        nro_orden = $9,
-        img_carousel = $10,
-        img_search = $11,
-        video_mobile = $12,
-        video_desktop = $13,
-        estado = $14,
-        codigo_newton = $15,
-        "idExperto" = $16,
-        consejo_experto = $17,
-        url = $18
-      WHERE id = $19
+        coordenadas_icono = $2,
+        coordenadas_icono_hover = $3,
+        icono_search = $4,
+        etiqueta_search = $5,
+        h2 = $6,
+        h1 = $7,
+        meta_titulo = $8,
+        meta_descripcion = $9,
+        meta_keywords = $10,
+        icono = $11,
+        nro_orden = $12,
+        img_carousel = $13,
+        img_search = $14,
+        video_mobile = $15,
+        video_desktop = $16,
+        estado = $17,
+        codigo_newton = $18,
+        "idExperto" = $19,
+        consejo_experto = $20,
+        url = $21
+      WHERE id = $22
       RETURNING *;
     `
 
     const values = [
       nombre,
-      descripcion,
+      coordenadas_icono,
+      coordenadas_icono_hover,
+      icono_search,
+      etiqueta_search,
       h2,
       h1,
       meta_titulo,

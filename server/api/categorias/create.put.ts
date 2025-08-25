@@ -5,7 +5,10 @@ export default defineEventHandler(async (event) => {
     const pool = await getDbPool()
     const {
       nombre,
-      descripcion,
+      coordenadas_icono,
+      coordenadas_icono_hover,
+      icono_search,
+      etiqueta_search,
       h2,
       h1,
       meta_titulo,
@@ -26,7 +29,10 @@ export default defineEventHandler(async (event) => {
 
     if (
       nombre === undefined ||
-      descripcion === undefined ||
+      coordenadas_icono === undefined ||
+      coordenadas_icono_hover === undefined ||
+      icono_search === undefined ||
+      etiqueta_search === undefined ||
       h2 === undefined ||
       h1 === undefined ||
       meta_titulo === undefined ||
@@ -50,7 +56,10 @@ export default defineEventHandler(async (event) => {
     const query = `
       INSERT INTO "Categoria" (
         nombre,
-        descripcion,
+        coordenadas_icono,
+        coordenadas_icono_hover,
+        icono_search,
+        etiqueta_search,
         h2,
         h1,
         meta_titulo,
@@ -68,13 +77,16 @@ export default defineEventHandler(async (event) => {
         consejo_experto,
         url
       ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21
       ) RETURNING *;
     `
 
     const values = [
       nombre,
-      descripcion,
+      coordenadas_icono,
+      coordenadas_icono_hover,
+      icono_search,
+      etiqueta_search,
       h2,
       h1,
       meta_titulo,

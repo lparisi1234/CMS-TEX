@@ -142,7 +142,7 @@ const tablas = {
             name: 'Número de WhatsApp',
             slug: 'whatsapp',
             icon: 'brand-whatsapp',
-            endpoint: 'whatsapp',
+            endpoint: 'whatsapp/whatsapp',
             botonTexto: 'Editar número de WhatsApp',
             isSpecialPage: true,
             columns: [
@@ -157,7 +157,7 @@ const tablas = {
             name: 'Países Operativos',
             slug: 'paises-operativos',
             icon: 'flag',
-            endpoint: 'paises-operativos',
+            endpoint: 'paises/paises',
             botonTexto: 'Crear nuevo país operativo',
             columns: [
                 {
@@ -562,7 +562,7 @@ const tablas = {
             name: 'Grupos de Oferta',
             slug: 'grupos-de-oferta',
             icon: 'rosette-discount-check',
-            endpoint: 'grupos-de-oferta',
+            endpoint: 'grupos-de-oferta/grupos-de-oferta',
             botonTexto: 'Crear nuevo grupo de oferta',
             columns: [
                 {
@@ -650,7 +650,7 @@ const tablas = {
             name: 'Qué esperar Categorías',
             slug: 'que-esperar-categorias',
             icon: 'star',
-            endpoint: 'que-esperar-categorias',
+            endpoint: 'que-esperar-categorias/que-esperar-categorias',
             botonTexto: 'Crear nuevo Que Esperar',
             columns: [
                 {
@@ -690,7 +690,7 @@ const tablas = {
             name: 'Destinos destacados Home',
             slug: 'destinos-destacados-home',
             icon: 'world-star',
-            endpoint: 'destinos-destacados-home',
+            endpoint: 'destinos-destacados-home/destinos-destacados-home',
             botonTexto: 'Crear nuevo Destino Destacado Home',
             columns: [
                 {
@@ -730,7 +730,7 @@ const tablas = {
             name: 'Opiniones',
             slug: 'opiniones',
             icon: 'message-chatbot',
-            endpoint: 'opiniones',
+            endpoint: 'opiniones/opiniones',
             botonTexto: 'Crear nueva Opinión',
             columns: [
                 {
@@ -802,7 +802,7 @@ const tablas = {
             name: 'Preguntas Frecuentes',
             slug: 'preguntas-frecuentes',
             icon: 'zoom-question',
-            endpoint: 'preguntas-frecuentes',
+            endpoint: 'preguntas-frecuentes/preguntas-frecuentes',
             botonTexto: 'Crear nueva Pregunta Frecuente',
             columns: [
                 {
@@ -830,7 +830,7 @@ const tablas = {
             name: 'Notas de Prensa',
             slug: 'notas-de-prensa',
             icon: 'notes',
-            endpoint: 'notas-de-prensa',
+            endpoint: 'notadeprensa/notadeprensa',
             botonTexto: 'Crear nueva nota de prensa',
             columns: [
                 {
@@ -931,7 +931,7 @@ const tablas = {
             name: 'Ciudades',
             slug: 'ciudades',
             icon: 'building',
-            endpoint: 'ciudades',
+            endpoint: 'ciudades/ciudades',
             botonTexto: 'Crear nueva ciudad',
             showInNav: false,
             columns: [
