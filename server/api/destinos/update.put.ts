@@ -5,6 +5,7 @@ export default defineEventHandler(async (event) => {
     const pool = await getDbPool()
     const {
       id,
+      cod_newton,
       url,
       nombre,
       h1,
@@ -14,18 +15,19 @@ export default defineEventHandler(async (event) => {
       experto_id,
       consejo_experto,
       img,
-      txt_search,
       meta_titulo,
       meta_descripcion,
       meta_keywords,
       mapa,
       estado,
       nro_orden,
-      desde_precio
+      precio_desde,
+      region_id
     } = await readBody(event)
 
     if (
       id === undefined ||
+      cod_newton === undefined ||
       url === undefined ||
       nombre === undefined ||
       h1 === undefined ||
@@ -35,14 +37,14 @@ export default defineEventHandler(async (event) => {
       experto_id === undefined ||
       consejo_experto === undefined ||
       img === undefined ||
-      txt_search === undefined ||
       meta_titulo === undefined ||
       meta_descripcion === undefined ||
       meta_keywords === undefined ||
       mapa === undefined ||
       estado === undefined ||
       nro_orden === undefined ||
-      desde_precio === undefined
+      precio_desde === undefined ||
+      region_id === undefined
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
     }
@@ -50,28 +52,30 @@ export default defineEventHandler(async (event) => {
     const query = `
       UPDATE "Destinos" SET
         url = $1,
-        nombre = $2,
-        h1 = $3,
-        h2 = $4,
-        video_mobile = $5,
-        video_desktop = $6,
-        experto_id = $7,
-        consejo_experto = $8,
-        img = $9,
-        txt_search = $10,
+        cod_newton =$2,
+        nombre = $3,
+        h1 = $4,
+        h2 = $5,
+        video_mobile = $6,
+        video_desktop = $7,
+        experto_id = $8,
+        consejo_experto = $9,
+        img = $10,
         meta_titulo = $11,
         meta_descripcion = $12,
         meta_keywords = $13,
         mapa = $14,
         estado = $15,
         nro_orden = $16,
-        desde_precio = $17
-      WHERE id = $18
+        precio_desde = $17,
+        region_id = $18
+      WHERE id = $19
       RETURNING *;
     `
 
     const values = [
       url,
+      cod_newton,
       nombre,
       h1,
       h2,
@@ -80,14 +84,14 @@ export default defineEventHandler(async (event) => {
       experto_id,
       consejo_experto,
       img,
-      txt_search,
       meta_titulo,
       meta_descripcion,
       meta_keywords,
       mapa,
       estado,
       nro_orden,
-      desde_precio,
+      precio_desde,
+      region_id,
       id
     ]
 

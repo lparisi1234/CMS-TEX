@@ -3,6 +3,7 @@ export default defineEventHandler(async (event) => {
   try {
     const pool = await getDbPool()
     const {
+      cod_newton,
       url,
       nombre,
       h1,
@@ -12,17 +13,18 @@ export default defineEventHandler(async (event) => {
       experto_id,
       consejo_experto,
       img,
-      txt_search,
       meta_titulo,
       meta_descripcion,
       meta_keywords,
       mapa,
       estado,
       nro_orden,
-      desde_precio
+      precio_desde,
+      region_id
     } = await readBody(event)
 
     if (
+      cod_newton === undefined ||
       url === undefined ||
       nombre === undefined ||
       h1 === undefined ||
@@ -32,20 +34,21 @@ export default defineEventHandler(async (event) => {
       experto_id === undefined ||
       consejo_experto === undefined ||
       img === undefined ||
-      txt_search === undefined ||
       meta_titulo === undefined ||
       meta_descripcion === undefined ||
       meta_keywords === undefined ||
       mapa === undefined ||
       estado === undefined ||
       nro_orden === undefined ||
-      desde_precio === undefined
+      precio_desde === undefined ||
+      region_id === undefined
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
     const query = `
       INSERT INTO "Destinos" (
+        cod_newton,
         url,
         nombre,
         h1,
@@ -62,13 +65,15 @@ export default defineEventHandler(async (event) => {
         mapa,
         estado,
         nro_orden,
-        desde_precio
+        precio_desde,
+        region_id
       ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19
       ) RETURNING *;
     `
 
     const values = [
+      cod_newton,
       url,
       nombre,
       h1,
@@ -78,14 +83,14 @@ export default defineEventHandler(async (event) => {
       experto_id,
       consejo_experto,
       img,
-      txt_search,
       meta_titulo,
       meta_descripcion,
       meta_keywords,
       mapa,
       estado,
       nro_orden,
-      desde_precio
+      precio_desde,
+      region_id
     ]
 
     const result = await pool.query(query, values)
