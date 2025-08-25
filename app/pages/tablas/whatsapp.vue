@@ -47,10 +47,10 @@ const whatsappInput = ref(null)
 
 const loadWhatsappData = async () => {
     try {
-        const data = await $fetch('/api/whatsapp')
+        const data = await $fetch('/api/whatsapp/whatsapp')
         if (data && data.length > 0) {
-            currentWhatsapp.value = data[0].whatsapp || ''
-            editedWhatsapp.value = data[0].whatsapp || ''
+            currentWhatsapp.value = data[0].numero || ''
+            editedWhatsapp.value = data[0].numero || ''
         }
     } catch (err) {
         console.error('Error cargando datos de WhatsApp:', err)
