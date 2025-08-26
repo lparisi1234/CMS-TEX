@@ -14,8 +14,8 @@ async function getDbPool() {
   const pool = new Pool({
     host: "tex2-dev.cluster-c0lq6suu44up.us-east-1.rds.amazonaws.com",
      user: "postgres",
-   password: "secret.password",
-    database: "testdb",
+     password: "86!<JXUYcTOwEm*$u30X3WYXV*]7",
+     database: "testdb",
   });
 
   return pool;
