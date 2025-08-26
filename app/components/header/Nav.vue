@@ -83,10 +83,16 @@ const closeMenu = () => {
 }
 
 const logout = async () => {
-    // Logica logout
-    closeMenu()
-
-    await router.push(ROUTE_NAMES.LOGIN)
+    try {
+        await $fetch('/api/auth/logout', {
+            method: 'POST'
+        })
+    } catch (error) {
+        console.error('Error during logout:', error)
+    } finally {
+        closeMenu()
+        await router.push(ROUTE_NAMES.LOGIN)
+    }
 }
 
 watch(() => router.currentRoute.value.path, () => {

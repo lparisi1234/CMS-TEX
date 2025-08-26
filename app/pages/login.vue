@@ -93,13 +93,25 @@ const handleSubmit = async () => {
     }
 
     try {
-        // Logica login
+        const response = await $fetch('/api/login', {
+            method: 'POST',
+            body: {
+                email: formData.email,
+                password: formData.password
+            }
+        })
 
-        await router.push(ROUTE_NAMES.HOME)
+        if (response.status === 'SUCCESS') {
+            await router.push(ROUTE_NAMES.HOME)
+        }
 
     } catch (error) {
         console.error('Error en login:', error)
-        errors.password = 'Credenciales incorrectas'
+        if (error.statusCode === 401) {
+            errors.password = 'Credenciales incorrectas'
+        } else {
+            errors.password = 'Error al iniciar sesión. Intenta nuevamente.'
+        }
     } finally {
         isLoading.value = false
     }
