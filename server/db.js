@@ -16,6 +16,7 @@ async function getDbPool() {
      user: "postgres",
      password: "86!<JXUYcTOwEm*$u30X3WYXV*]7",
      database: "testdb",
+     port: 5432,
   });
 
   return pool;
