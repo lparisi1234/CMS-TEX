@@ -1,6 +1,8 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
-  // No aplicar middleware en rutas de autenticación
-  if (to.path === '/login') {
+  // No aplicar middleware en rutas específicas
+  const excludedPaths = ['/login', '/health', '/api/health']
+  
+  if (excludedPaths.includes(to.path)) {
     return
   }
 
