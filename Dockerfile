@@ -43,7 +43,7 @@ ENV NITRO_PORT=8080
 ENV NITRO_HOST=0.0.0.0
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:8080/health || exit 1
+  CMD curl -f http://localhost:8080/ || exit 1
 
 # Ejecuta el servidor Nitro generado por Nuxt
 CMD ["node", ".output/server/index.mjs"] 
