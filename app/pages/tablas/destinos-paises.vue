@@ -51,7 +51,7 @@ const regionesMap = computed(() => {
 
 const paisesColumns = [
     {
-        key: 'codigo_newton',
+        key: 'cod_newton',
         label: 'Código Newton',
         type: 'number'
     },

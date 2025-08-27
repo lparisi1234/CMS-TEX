@@ -64,11 +64,9 @@
 <script setup>
 const { success, error } = useNotification()
 
-// Datos reactivos para endpoints
 const destinosData = ref([])
 const ciudadesData = ref([])
 
-// Cargar datos desde endpoints
 const loadData = async () => {
     try {
         const [destinos, ciudades] = await Promise.all([

@@ -43,7 +43,7 @@ const regionesData = computed(() => {
 
 const regionesColumns = [
     {
-        key: 'codigo_newton',
+        key: 'cod_newton',
         label: 'Código Newton',
         type: 'number'
     },
@@ -117,7 +117,7 @@ const regionesColumns = [
     {
         key: 'estado',
         label: 'Estado',
-        type: 'badge'
+        type: 'boolean'
     },
     {
         key: 'nro_orden',

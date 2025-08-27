@@ -5,11 +5,11 @@
         <FormContainer class="gap-4 lg:gap-7">
             <FormFieldsContainer>
                 <FormTextField v-model="formData.email" label="Correo electrónico" id="correo-electronico" type="email"
-                    placeholder="stevejobs" autocomplete="username" :error="errors.email" required
-                    @blur="validateEmail" />
+                    placeholder="stevejobs@apple.com" autocomplete="username" :error="errors.email" required
+                    @blur="validateEmail" @keydown.enter="handleEnterKey" />
 
-                <FormPasswordField v-model="formData.password" label="Contraseña" id="contrasena"
-                    placeholder="Ingresa tu contraseña" :error="errors.password" required @blur="validatePassword" />
+                <FormPasswordField v-model="formData.password" label="Contraseña" id="contrasena" placeholder="********"
+                    :error="errors.password" required @blur="validatePassword" @keydown.enter="handleEnterKey" />
             </FormFieldsContainer>
 
             <NuxtLink to="#" class="text-dark font-light underline">
