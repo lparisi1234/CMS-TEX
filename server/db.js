@@ -14,7 +14,7 @@ async function getDbPool() {
   const pool = new Pool({
      host: "tex2-dev.cluster-c0lq6suu44up.us-east-1.rds.amazonaws.com",
      user: "postgres",
-     password: secret.password,
+     password: "86!<JXUYcTOwEm*$u30X3WYXV*]7",
      database: "testdb",
      port: 5432,
   });
@@ -25,7 +25,7 @@ async function getDbPool() {
 export default getDbPool;
 
 
-///FUNCIONA DE FORMA LOCAL
+// ///FUNCIONA DE FORMA LOCAL
 
 // import { Pool } from 'pg';
 
