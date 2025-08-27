@@ -8,7 +8,8 @@ export default defineEventHandler(async (event) => {
       destino_id,
       segmentos_id,
       nro_orden,
-      precio_desde
+      precio_desde,
+      img
     } = await readBody(event)
 
     if (
@@ -16,7 +17,8 @@ export default defineEventHandler(async (event) => {
       destino_id === undefined ||
       segmentos_id === undefined ||
       nro_orden === undefined ||
-      precio_desde === undefined
+      precio_desde === undefined ||
+      img === undefined
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
     }
@@ -26,8 +28,9 @@ export default defineEventHandler(async (event) => {
         destino_id = $1,
         segmentos_id = $2,
         nro_orden = $3,
-        precio_desde = $4
-      WHERE id = $5
+        precio_desde = $4,
+        img = $5
+      WHERE id = $6
       RETURNING *;
     `;
 
@@ -36,6 +39,7 @@ export default defineEventHandler(async (event) => {
       segmentos_id,
       nro_orden,
       precio_desde,
+      img,
       id
     ];
 

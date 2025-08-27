@@ -499,7 +499,7 @@ const tablas = {
                     type: 'image'
                 },
                 {
-                    key: 'img_mobile',
+                    key: 'imagen_mobile',
                     label: 'Imagen Mobile',
                     type: 'image'
                 },
@@ -519,7 +519,7 @@ const tablas = {
                     type: 'text'
                 },
                 {
-                    key: 'codigo_newton',
+                    key: 'codigonewton',
                     label: 'Código Newton',
                     type: 'number',
                     required: true
@@ -671,7 +671,7 @@ const tablas = {
                     required: true
                 },
                 {
-                    key: 'texto',
+                    key: 'descripcion',
                     label: 'Texto',
                     type: 'text',
                     required: true
@@ -680,7 +680,7 @@ const tablas = {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
-                    required: true
+                    
                 },
                 {
                     key: 'nro_orden',
@@ -689,7 +689,7 @@ const tablas = {
                     required: true
                 },
                 {
-                    key: 'categoriaId',
+                    key: 'categoria_id',
                     label: 'Categoría',
                     type: 'select',
                     relatedTable: 'categorias',
@@ -714,11 +714,11 @@ const tablas = {
                 {
                     key: 'img',
                     label: 'Imagen',
-                    type: 'image',
-                    required: true
+                    type: 'image'
+                    
                 },
                 {
-                    key: 'segmentos_excluidos',
+                    key: 'segmentos_id',
                     label: 'Segmentos Excluidos',
                     type: 'checkbox-multiple',
                     relatedTable: 'segmentos',

@@ -11,7 +11,8 @@ export default defineEventHandler(async (event) => {
       nro_orden,
       img,
       txt_contacto,
-      txt_cancelaciones
+      txt_cancelaciones,
+      nomenclatura
     } = await readBody(event)
 
     if (
@@ -22,7 +23,8 @@ export default defineEventHandler(async (event) => {
       nro_orden === undefined ||
       img === undefined ||
       txt_contacto === undefined ||
-      txt_cancelaciones === undefined
+      txt_cancelaciones === undefined ||
+      nomenclatura === undefined
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
     }
@@ -36,8 +38,9 @@ export default defineEventHandler(async (event) => {
         nro_orden,
         img,
         txt_contacto,
-        txt_cancelaciones
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        txt_cancelaciones,
+        nomenclatura
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING *;
     `;
 
@@ -49,7 +52,8 @@ export default defineEventHandler(async (event) => {
       nro_orden,
       img,
       txt_contacto,
-      txt_cancelaciones
+      txt_cancelaciones,
+      nomenclatura
     ];
 
     const result = await pool.query(query, values)

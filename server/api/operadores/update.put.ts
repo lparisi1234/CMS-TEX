@@ -13,6 +13,7 @@ export default defineEventHandler(async (event) => {
       img,
       txt_contacto,
       txt_cancelaciones,
+      nomenclatura
     } = await readBody(event)
 
     if (
@@ -24,7 +25,8 @@ export default defineEventHandler(async (event) => {
       nro_orden === undefined ||
       img === undefined ||
       txt_contacto === undefined ||
-      txt_cancelaciones === undefined 
+      txt_cancelaciones === undefined ||
+      nomenclatura === undefined 
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
     }
@@ -38,8 +40,9 @@ export default defineEventHandler(async (event) => {
         nro_orden = $5,
         img = $6,
         txt_contacto = $7,
-        txt_cancelaciones = $8
-      WHERE id = $9
+        txt_cancelaciones = $8,
+        nomenclatura = $9
+      WHERE id = $10
       RETURNING *;
     `;
 
@@ -52,6 +55,7 @@ export default defineEventHandler(async (event) => {
       img,
       txt_contacto,
       txt_cancelaciones,
+      nomenclatura,
       id
     ];
 
