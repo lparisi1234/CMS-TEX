@@ -6,20 +6,26 @@ export default defineEventHandler(async (event) => {
     const idToken = getCookie(event, 'IdToken')
 
     if (!accessToken || !idToken) {
-      return { authenticated: false }
+    
+      return { 
+        authenticated: false,
+        message: 'No tokens found'
+      }
     }
+    // FUTURO, verificar expiración
 
-    // Solo verificar que las cookies existan
     return {
       authenticated: true,
       user: {
-        email: 'user@example.com', // Placeholder
+        email: 'user@example.com',
         name: 'Usuario'
       }
     }
 
   } catch (error) {
-    console.error('Error verifying auth:', error)
-    return { authenticated: false }
+    return { 
+      authenticated: false,
+      error: error.message 
+    }
   }
 })
