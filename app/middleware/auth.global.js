@@ -1,5 +1,7 @@
-export default defineNuxtRouteMiddleware(async (to, from) => {
-  // Verificar autenticación para todas las rutas
+export default defineNuxtRouteMiddleware(async (to) => {
+  // Solo ejecutar en el cliente para evitar problemas de hidratación
+  if (process.server) return
+  
   try {
     const response = await $fetch('/api/auth/verify', {
       method: 'GET',
@@ -7,18 +9,18 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         'Content-Type': 'application/json'
       }
     })
- 
-    if (response?.authenticated && to.path === '/login') {   
+    
+    const isAuthenticated = response?.authenticated || false
+    
+    if (isAuthenticated && to.path === '/login') {   
       return navigateTo('/')
     }
 
-    if (!response?.authenticated && to.path !== '/login') {
-    
+    if (!isAuthenticated && to.path !== '/login') {
       return navigateTo('/login')
     }
 
   } catch (error) {
-   
     if (to.path !== '/login') {
       return navigateTo('/login')
     }

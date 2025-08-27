@@ -6,9 +6,7 @@ export const useAuth = () => {
   // Verificar si el usuario está autenticado
   const checkAuth = async () => {
     try {
-      const response = await $fetch('/api/auth/verify', {
-        method: 'GET'
-      })
+      const response = await $fetch('/api/auth/verify')
       
       if (response.authenticated) {
         isAuthenticated.value = true
@@ -29,9 +27,7 @@ export const useAuth = () => {
   // Logout
   const logout = async () => {
     try {
-      await $fetch('/api/auth/logout', {
-        method: 'POST'
-      })
+      await $fetch('/api/auth/logout', { method: 'POST' })
     } catch (error) {
       console.error('Error during logout:', error)
     } finally {
