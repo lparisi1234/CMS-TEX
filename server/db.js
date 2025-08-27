@@ -7,9 +7,9 @@ const region = 'us-east-1';
 const secretsClient = new SecretsManagerClient({ region });
 
 async function getDbPool() {
-   command = new GetSecretValueCommand({ SecretId: secretName });
-  const response = await secretsClient.send(command);
-  const secret = JSON.parse(response.SecretString);
+  // command = new GetSecretValueCommand({ SecretId: secretName });
+  //const response = await secretsClient.send(command);
+  //const secret = JSON.parse(response.SecretString);
 
   const pool = new Pool({
      host: "tex2-dev.cluster-c0lq6suu44up.us-east-1.rds.amazonaws.com",
