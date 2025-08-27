@@ -27,20 +27,20 @@
 
 ///FUNCIONA DE FORMA LOCAL
 
- import { Pool } from 'pg';
+import { Pool } from 'pg';
 
- async function getDbPool() {
-   const pool = new Pool({
-     host: 'tex2-dev.cluster-c0lq6suu44up.us-east-1.rds.amazonaws.com',        
-     user: 'postgres',  
-     password: '86!<JXUYcTOwEm*$u30X3WYXV*]7', 
-     database: 'testdb',     
-     port: 5432,                
-   });
-   return pool;
- }
+async function getDbPool() {
+  const pool = new Pool({
+    host: "localhost",
+    user: "postgres",
+    password: "Lioben2000!#",
+    database: "TEX_db",
+    port: 5432,
+  });
+  return pool;
+}
 
- export default getDbPool;
+export default getDbPool;
 
 
 // host: "localhost",

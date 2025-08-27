@@ -7,10 +7,10 @@
 
         <FormProductosCreate v-else-if="isProductosForm()" @success="handleSuccess" @cancel="handleCancel" />
 
-        <FormCategoriasCreate v-else-if="isCategoriasForm()" :formData="formData" :errors="errors"
+        <FormCategoriasCreate v-else-if="isCategoriasForm()" ref="categoriasCreateRef" :formData="formData" :errors="errors"
             :selectOptions="selectOptions" :loadingOptions="loadingOptions" :badgeOptions="badgeOptions"
             :isSubmitting="isSubmitting" :botonTexto="botonTexto" :detailsColumns="tabla?.columns || []"
-            @submit="handleSubmit" @cancel="handleCancel" />
+            @submit="handleCategoriaSubmit" @cancel="handleCancel" />
 
         <FormLayout @submit="handleSubmit" v-else-if="tabla" class="flex flex-col gap-5">
             <template v-for="(chunk, chunkIndex) in columnChunks" :key="`chunk-${chunkIndex}`">
@@ -104,6 +104,7 @@ const route = useRoute()
 const router = useRouter()
 
 const tablaSlug = route.query.tabla
+const categoriasCreateRef = ref(null)
 
 const {
     formData,
@@ -171,6 +172,16 @@ const handleCancel = () => {
 const handleSubmit = async () => {
     const success = await createItem()
     if (success) {
+        await router.push(`${ROUTE_NAMES.TABLAS}/${tablaSlug}`)
+    }
+}
+
+const handleCategoriaSubmit = async () => {
+    const result = await createItem()
+    if (result && result.success) {
+        if (categoriasCreateRef.value && categoriasCreateRef.value.onCategoriaCreated) {
+            await categoriasCreateRef.value.onCategoriaCreated(result)
+        }
         await router.push(`${ROUTE_NAMES.TABLAS}/${tablaSlug}`)
     }
 }

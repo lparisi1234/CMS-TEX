@@ -231,17 +231,17 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
             const dataToSubmit = prepareDataForSubmit()
             const endpointBase = tabla.endpoint.split('/')[0]
             
-            await $fetch(`/api/${endpointBase}/create`, {
+            const result = await $fetch(`/api/${endpointBase}/create`, {
                 method: 'PUT',
                 body: dataToSubmit
             })
 
             success(`${tabla.name} creado exitosamente`)
-            return true
+            return result
         } catch (err) {
             console.error('Error al crear:', err)
             error(`Error al crear ${tabla.name}`)
-            return false
+            return { success: false }
         } finally {
             isSubmitting.value = false
         }

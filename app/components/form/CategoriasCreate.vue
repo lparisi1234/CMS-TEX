@@ -49,7 +49,7 @@
                 <div class="flex flex-col gap-5">
                     <TableLayout :data="displaySubgrupos" :columns="subgruposColumns" :table-name="'Subgrupos'"
                         :show-actions="true" :empty-state-text="'No hay subgrupos creados'" @edit="handleEditSubgrupo"
-                        @delete="handleDeleteSubgrupo" />
+                        @delete="handleDeleteSubgrupo" :loading="isDeletingSubgrupo" />
 
                     <div class="flex justify-start">
                         <ButtonPrimary @click.prevent.stop="openCreateModal" type="button">
@@ -98,8 +98,9 @@
                         class="!bg-gray-mid !text-dark">
                         Cancelar
                     </ButtonPrimary>
-                    <ButtonPrimary type="submit">
-                        {{ isEditingSubgrupo ? 'Actualizar' : 'Crear' }}
+                    <ButtonPrimary type="submit" :disabled="isSubmittingSubgrupo">
+                        {{ isSubmittingSubgrupo ? (isEditingSubgrupo ? 'Actualizando...' : 'Creando...') :
+                            (isEditingSubgrupo ? 'Actualizar' : 'Crear') }}
                     </ButtonPrimary>
                 </div>
             </form>
@@ -143,7 +144,9 @@ const props = defineProps({
     }
 })
 
-const emit = defineEmits(['submit', 'cancel'])
+const emit = defineEmits(['submit', 'cancel', 'categoria-created'])
+
+const { success, error } = useNotification()
 
 const tabs = [
     { id: 'detalle', label: 'Detalle' },
@@ -153,6 +156,7 @@ const tabs = [
 const showModal = ref(false)
 const isEditingSubgrupo = ref(false)
 const editingSubgrupoIndex = ref(-1)
+const editingSubgrupoId = ref(null)
 const modalSubgrupo = ref({
     nombre: '',
     nro_orden: 1,
@@ -163,6 +167,8 @@ const modalErrors = ref({
     nro_orden: '',
     productos: ''
 })
+const isSubmittingSubgrupo = ref(false)
+const isDeletingSubgrupo = ref(false)
 
 const detailsColumnChunks = computed(() => {
     const filteredColumns = props.detailsColumns.filter(column => column.key !== 'subgrupos')
@@ -195,8 +201,10 @@ const subgruposColumns = [
     }
 ]
 
+const subgruposFromDb = ref([])
+
 const displaySubgrupos = computed(() => {
-    const subgrupos = props.formData.subgrupos || []
+    const subgrupos = subgruposFromDb.value || []
 
     if (!Array.isArray(subgrupos)) {
         console.warn('Los subgrupos no son un array:', subgrupos)
@@ -205,13 +213,41 @@ const displaySubgrupos = computed(() => {
 
     return subgrupos.map(subgrupo => ({
         ...subgrupo,
-        productos: Array.isArray(subgrupo.productos)
-            ? (subgrupo.productos.length > 0
-                ? subgrupo.productos.map(id => String(id)).join(' ')
+        productos: Array.isArray(subgrupo.productos_ids)
+            ? (subgrupo.productos_ids.length > 0
+                ? subgrupo.productos_ids.map(id => String(id)).join(' ')
                 : 'Sin productos')
-            : String(subgrupo.productos || 'Sin productos')
+            : String(subgrupo.productos_ids || 'Sin productos')
     }))
 })
+
+const loadSubgrupos = async (forceFromDatabase = false) => {
+    try {
+        if (props.formData.id) {
+            if (!forceFromDatabase && props.formData.subgrupos && Array.isArray(props.formData.subgrupos) && props.formData.subgrupos.length > 0) {
+                subgruposFromDb.value = props.formData.subgrupos
+            } else {
+                const response = await $fetch('/api/subgrupo-cat/subgrupo-cat')
+                if (response.success) {
+                    const filteredSubgrupos = response.subgrupos.filter(sub => sub.categoria_id === props.formData.id)
+                    subgruposFromDb.value = filteredSubgrupos
+                    
+                    // Actualizar también formData.subgrupos para mantener sincronización
+                    if (props.formData.subgrupos) {
+                        props.formData.subgrupos = filteredSubgrupos
+                    }
+                } else {
+                    subgruposFromDb.value = []
+                }
+            }
+        } else {
+            subgruposFromDb.value = props.formData.subgrupos || []
+        }
+    } catch (err) {
+        console.error('Error cargando subgrupos:', err)
+        subgruposFromDb.value = props.formData.subgrupos || []
+    }
+}
 
 const openCreateModal = (event) => {
     if (event) {
@@ -221,9 +257,10 @@ const openCreateModal = (event) => {
 
     isEditingSubgrupo.value = false
     editingSubgrupoIndex.value = -1
+    editingSubgrupoId.value = null
     modalSubgrupo.value = {
         nombre: '',
-        nro_orden: (props.formData.subgrupos?.length || 0) + 1,
+        nro_orden: (subgruposFromDb.value?.length || 0) + 1,
         productos_text: ''
     }
     modalErrors.value = {
@@ -234,31 +271,42 @@ const openCreateModal = (event) => {
     showModal.value = true
 }
 
-const handleEditSubgrupo = (subgrupo, index) => {
+const handleEditSubgrupo = (subgrupo) => {
     nextTick(() => {
         editSubgrupo(subgrupo)
     })
 }
 
-const handleDeleteSubgrupo = (subgrupo, index) => {
+const handleDeleteSubgrupo = (subgrupo) => {
     deleteSubgrupo(subgrupo)
 }
 
 const editSubgrupo = (subgrupo) => {
-    const index = props.formData.subgrupos.findIndex(s => s.id === subgrupo.id)
-    if (index !== -1) {
-        isEditingSubgrupo.value = true
-        editingSubgrupoIndex.value = index
+    const originalSubgrupo = subgruposFromDb.value.find(s => s.id === subgrupo.id)
 
-        const originalSubgrupo = props.formData.subgrupos[index]
+    if (originalSubgrupo) {
+        isEditingSubgrupo.value = true
+        editingSubgrupoId.value = originalSubgrupo.id
+
+        let nroOrden = originalSubgrupo.nro_orden
+        if (typeof nroOrden === 'string') {
+            nroOrden = parseInt(nroOrden) || 1
+        }
+
+        let productosText = ''
+        if (Array.isArray(originalSubgrupo.productos_ids)) {
+            productosText = originalSubgrupo.productos_ids.join(' ')
+        } else if (originalSubgrupo.productos_ids) {
+            productosText = String(originalSubgrupo.productos_ids)
+        }
 
         modalSubgrupo.value = {
             nombre: originalSubgrupo.nombre || '',
-            nro_orden: originalSubgrupo.nro_orden || 1,
-            productos_text: Array.isArray(originalSubgrupo.productos)
-                ? originalSubgrupo.productos.join(' ')
-                : (originalSubgrupo.productos || '')
+            nro_orden: nroOrden,
+            productos_text: productosText
         }
+
+
         modalErrors.value = {
             nombre: '',
             nro_orden: '',
@@ -273,6 +321,7 @@ const closeModal = () => {
     showModal.value = false
     isEditingSubgrupo.value = false
     editingSubgrupoIndex.value = -1
+    editingSubgrupoId.value = null
     modalSubgrupo.value = {
         nombre: '',
         nro_orden: 1,
@@ -313,47 +362,140 @@ const validateSubgrupo = () => {
     return isValid
 }
 
-const saveSubgrupo = () => {
+const saveSubgrupo = async () => {
     if (!validateSubgrupo()) {
         return
     }
 
-    const productos = modalSubgrupo.value.productos_text
-        ? modalSubgrupo.value.productos_text
-            .split(/\s+/)
-            .map(id => id.trim())
-            .filter(id => id.length > 0)
-        : []
+    isSubmittingSubgrupo.value = true
 
-    const subgrupoData = {
-        id: isEditingSubgrupo.value
-            ? props.formData.subgrupos[editingSubgrupoIndex.value].id
-            : Date.now(),
-        nombre: modalSubgrupo.value.nombre.trim(),
-        nro_orden: parseInt(modalSubgrupo.value.nro_orden),
-        productos: productos
+    try {
+        const productos_ids = modalSubgrupo.value.productos_text
+            ? modalSubgrupo.value.productos_text
+                .split(/\s+/)
+                .map(id => id.trim())
+                .filter(id => id.length > 0)
+            : []
+
+        if (isEditingSubgrupo.value) {
+            const originalSubgrupo = subgruposFromDb.value.find(s => s.id === editingSubgrupoId.value)
+            const categoriaId = props.formData.id || originalSubgrupo?.categoria_id
+
+            const subgrupoData = {
+                id: editingSubgrupoId.value,
+                nombre: modalSubgrupo.value.nombre.trim(),
+                categoria_id: categoriaId,
+                nro_orden: parseInt(modalSubgrupo.value.nro_orden),
+                productos_ids: productos_ids
+            }
+
+
+            if (!categoriaId) {
+                error('No se pudo obtener el ID de la categoría')
+                return
+            }
+
+            if (!editingSubgrupoId.value) {
+                error('No se pudo obtener el ID del subgrupo')
+                return
+            }
+
+            const response = await $fetch('/api/subgrupo-cat/update', {
+                method: 'PUT',
+                body: subgrupoData
+            })
+
+
+            if (response.success) {
+                success('Subgrupo actualizado correctamente')
+                
+                // Recargar desde la base de datos para estar seguros
+                await loadSubgrupos(true)
+            } else {
+                error(response.message || 'Error actualizando subgrupo')
+            }
+        } else {
+            if (props.formData.id) {
+                const subgrupoData = {
+                    nombre: modalSubgrupo.value.nombre.trim(),
+                    categoria_id: props.formData.id,
+                    nro_orden: parseInt(modalSubgrupo.value.nro_orden),
+                    productos_ids: productos_ids
+                }
+
+                const response = await $fetch('/api/subgrupo-cat/create', {
+                    method: 'PUT',
+                    body: subgrupoData
+                })
+
+                if (response.success) {
+                    success('Subgrupo creado correctamente')
+
+                    // Recargar los subgrupos desde la base de datos para estar seguros
+                    await loadSubgrupos(true)
+                } else {
+                    error(response.message || 'Error creando subgrupo')
+                }
+            } else {
+                const subgrupoData = {
+                    id: Date.now(),
+                    nombre: modalSubgrupo.value.nombre.trim(),
+                    nro_orden: parseInt(modalSubgrupo.value.nro_orden),
+                    productos_ids: productos_ids
+                }
+
+                if (!props.formData.subgrupos) {
+                    props.formData.subgrupos = []
+                }
+
+                props.formData.subgrupos.push(subgrupoData)
+                
+                // Recargar para mostrar el nuevo subgrupo sin duplicar
+                await loadSubgrupos()
+            }
+        }
+
+        closeModal()
+    } catch (err) {
+        console.error('Error guardando subgrupo:', err)
+        error('Error guardando subgrupo')
+    } finally {
+        isSubmittingSubgrupo.value = false
     }
-
-    if (!props.formData.subgrupos) {
-        props.formData.subgrupos = []
-    }
-
-    if (isEditingSubgrupo.value) {
-        props.formData.subgrupos[editingSubgrupoIndex.value] = subgrupoData
-    } else {
-        props.formData.subgrupos.push(subgrupoData)
-    }
-
-    closeModal('form-submitted')
 }
 
-const deleteSubgrupo = (subgrupo) => {
-    const index = props.formData.subgrupos.findIndex(s => s.id === subgrupo.id)
-    if (index !== -1) {
-        props.formData.subgrupos.splice(index, 1)
-        props.formData.subgrupos.forEach((sub, idx) => {
-            sub.nro_orden = idx + 1
+const deleteSubgrupo = async (subgrupo) => {
+    isDeletingSubgrupo.value = true
+
+    try {
+        const response = await $fetch('/api/subgrupo-cat/delete', {
+            method: 'DELETE',
+            body: { id: subgrupo.id }
         })
+
+        if (response.success) {
+            success('Subgrupo eliminado correctamente')
+            
+            // Actualizar localmente para que desaparezca inmediatamente
+            const index = subgruposFromDb.value.findIndex(s => s.id === subgrupo.id)
+            if (index !== -1) {
+                subgruposFromDb.value.splice(index, 1)
+            }
+            
+            if (props.formData.subgrupos) {
+                const formIndex = props.formData.subgrupos.findIndex(s => s.id === subgrupo.id)
+                if (formIndex !== -1) {
+                    props.formData.subgrupos.splice(formIndex, 1)
+                }
+            }
+        } else {
+            error(response.message || 'Error eliminando subgrupo')
+        }
+    } catch (err) {
+        console.error('Error eliminando subgrupo:', err)
+        error('Error eliminando subgrupo')
+    } finally {
+        isDeletingSubgrupo.value = false
     }
 }
 
@@ -361,23 +503,30 @@ const handleSubmit = () => {
     emit('submit')
 }
 
-onMounted(() => {
-    if (!props.formData.subgrupos) {
-        props.formData.subgrupos = []
+const onCategoriaCreated = async (result) => {
+    if (result && result.success && result.categoria && result.categoria.id) {
+        props.formData.id = result.categoria.id
+        await loadSubgrupos()
     }
+}
 
-    if (!Array.isArray(props.formData.subgrupos)) {
-        props.formData.subgrupos = []
-    }
-
-    if (props.formData.subgrupos.length > 0) {
-        props.formData.subgrupos.forEach(subgrupo => {
-            if (!Array.isArray(subgrupo.productos)) {
-                subgrupo.productos = []
-            } else {
-                subgrupo.productos = subgrupo.productos.map(id => String(id))
-            }
-        })
-    }
+defineExpose({
+    onCategoriaCreated
 })
+
+onMounted(async () => {
+    await loadSubgrupos()
+})
+
+watch(() => props.formData.id, async (newId) => {
+    if (newId) {
+        await loadSubgrupos()
+    }
+}, { immediate: true })
+
+watch(() => props.formData.subgrupos, async (newSubgrupos) => {
+    if (newSubgrupos && Array.isArray(newSubgrupos)) {
+        await loadSubgrupos()
+    }
+}, { immediate: true, deep: true })
 </script>

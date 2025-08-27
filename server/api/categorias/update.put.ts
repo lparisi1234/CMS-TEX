@@ -25,7 +25,8 @@ export default defineEventHandler(async (event) => {
       codigo_newton,
       idExperto,
       consejo_experto,
-      url
+      url,
+      subgrupos
     } = await readBody(event)
 
     if (
@@ -107,11 +108,72 @@ export default defineEventHandler(async (event) => {
       id
     ]
 
-    const result = await pool.query(query, values)
-    if (result.rows.length === 0) {
-      return { success: false, message: 'No se encontró la categoría para modificar' }
+    // Iniciar transacción
+    const client = await pool.connect()
+    
+    try {
+      await client.query('BEGIN')
+      
+      // 1. Actualizar la categoría
+      const result = await client.query(query, values)
+      if (result.rows.length === 0) {
+        await client.query('ROLLBACK')
+        return { success: false, message: 'No se encontró la categoría para modificar' }
+      }
+      
+      const categoriaActualizada = result.rows[0]
+      
+      // 2. Si hay subgrupos y son nuevos (IDs temporales), crearlos
+      if (subgrupos && Array.isArray(subgrupos) && subgrupos.length > 0) {
+        for (const subgrupo of subgrupos) {
+          // Solo crear subgrupos con IDs temporales (muy altos)
+          if (subgrupo.id && subgrupo.id > Date.now() - 10000000) {
+            const createSubgrupoQuery = `
+              INSERT INTO "Subgrupos_cat" (
+                nombre,
+                categoria_id,
+                nro_orden
+              ) VALUES (
+                $1, $2, $3
+              ) RETURNING *;
+            `
+            
+            const subgrupoValues = [
+              subgrupo.nombre,
+              categoriaActualizada.id,
+              subgrupo.nro_orden
+            ]
+            
+            const subgrupoResult = await client.query(createSubgrupoQuery, subgrupoValues)
+            const subgrupoCreado = subgrupoResult.rows[0]
+            
+            // 3. Si el subgrupo tiene productos_ids, crear las relaciones
+            if (subgrupo.productos_ids && Array.isArray(subgrupo.productos_ids) && subgrupo.productos_ids.length > 0) {
+              for (const producto_id of subgrupo.productos_ids) {
+                await client.query(`
+                  INSERT INTO "SubGrupo_prod" (
+                    producto_id,
+                    subgrupo_cat_id,
+                    subgrupo_dst_id
+                  ) VALUES (
+                    $1, $2, $3
+                  );
+                `, [producto_id, subgrupoCreado.id, null])
+              }
+            }
+          }
+        }
+      }
+      
+      await client.query('COMMIT')
+      return { success: true, message: 'Categoría modificada correctamente', categoria: categoriaActualizada }
+      
+    } catch (error) {
+      await client.query('ROLLBACK')
+      throw error
+    } finally {
+      client.release()
     }
-    return { success: true, message: 'Categoría modificada correctamente', categoria: result.rows[0] }
   } catch (error) {
     console.error('Error modificando categoría:', error)
     return { success: false, message: 'Error modificando categoría' }
