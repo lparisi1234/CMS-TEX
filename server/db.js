@@ -27,20 +27,20 @@
 
 ///FUNCIONA DE FORMA LOCAL
 
- import { Pool } from 'pg';
+import { Pool } from 'pg';
 
- async function getDbPool() {
-   const pool = new Pool({
-     host: 'localhost',        
-     user: 'postgres',  
-     password: 'root',
-     database: 'dbtest',     
-     port: 5432,                
-   });
-   return pool;
- }
+async function getDbPool() {
+  const pool = new Pool({
+    host: "localhost",
+    user: "postgres",
+    password: "Lioben2000!#",
+    database: "TEX_db",
+    port: 5432,
+  });
+  return pool;
+}
 
- export default getDbPool;
+export default getDbPool;
 
 
 // host: "localhost",

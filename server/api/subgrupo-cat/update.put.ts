@@ -11,13 +11,20 @@ export default defineEventHandler(async (event) => {
       productos_ids
     } = await readBody(event)
 
-    if (
-      id === undefined ||
-      nombre === undefined ||
-      categoria_id === undefined ||
-      nro_orden === undefined
-    ) {
-      return { success: false, message: 'Faltan campos requeridos' }
+    if (id === undefined || id === null) {
+      return { success: false, message: 'ID es requerido' }
+    }
+    
+    if (nombre === undefined || nombre === null || nombre.trim() === '') {
+      return { success: false, message: 'Nombre es requerido' }
+    }
+    
+    if (categoria_id === undefined || categoria_id === null) {
+      return { success: false, message: 'ID de categoría es requerido' }
+    }
+    
+    if (nro_orden === undefined || nro_orden === null || nro_orden < 1) {
+      return { success: false, message: 'Número de orden debe ser mayor a 0' }
     }
 
     // Iniciar transacción
@@ -55,7 +62,7 @@ export default defineEventHandler(async (event) => {
       // 3. Si hay productos_ids, crear las nuevas relaciones en subgrupos_prod
       if (productos_ids && productos_ids.length > 0) {
         const createRelacionQuery = `
-          INSERT INTO "Subgrupos_prod" (
+          INSERT INTO "SubGrupo_prod" (
             producto_id,
             subgrupo_cat_id,
             subgrupo_dst_id

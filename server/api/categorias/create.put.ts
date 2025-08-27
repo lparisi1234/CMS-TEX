@@ -24,7 +24,8 @@ export default defineEventHandler(async (event) => {
       codigo_newton,
       idExperto,
       consejo_experto,
-      url
+      url,
+      subgrupos
     } = await readBody(event)
 
     if (
@@ -105,8 +106,64 @@ export default defineEventHandler(async (event) => {
       url
     ]
 
-    const result = await pool.query(query, values)
-    return { success: true, message: 'Categoría creada correctamente', categoria: result.rows[0] }
+    // Iniciar transacción
+    const client = await pool.connect()
+    
+    try {
+      await client.query('BEGIN')
+      
+      // 1. Crear la categoría
+      const result = await client.query(query, values)
+      const categoriaCreada = result.rows[0]
+      
+      // 2. Si hay subgrupos, crearlos
+      if (subgrupos && Array.isArray(subgrupos) && subgrupos.length > 0) {
+        for (const subgrupo of subgrupos) {
+          const createSubgrupoQuery = `
+            INSERT INTO "Subgrupos_cat" (
+              nombre,
+              categoria_id,
+              nro_orden
+            ) VALUES (
+              $1, $2, $3
+            ) RETURNING *;
+          `
+          
+          const subgrupoValues = [
+            subgrupo.nombre,
+            categoriaCreada.id,
+            subgrupo.nro_orden
+          ]
+          
+          const subgrupoResult = await client.query(createSubgrupoQuery, subgrupoValues)
+          const subgrupoCreado = subgrupoResult.rows[0]
+          
+          // 3. Si el subgrupo tiene productos_ids, crear las relaciones
+          if (subgrupo.productos_ids && Array.isArray(subgrupo.productos_ids) && subgrupo.productos_ids.length > 0) {
+            for (const producto_id of subgrupo.productos_ids) {
+              await client.query(`
+                INSERT INTO "SubGrupo_prod" (
+                  producto_id,
+                  subgrupo_cat_id,
+                  subgrupo_dst_id
+                ) VALUES (
+                  $1, $2, $3
+                );
+              `, [producto_id, subgrupoCreado.id, null])
+            }
+          }
+        }
+      }
+      
+      await client.query('COMMIT')
+      return { success: true, message: 'Categoría creada correctamente', categoria: categoriaCreada }
+      
+    } catch (error) {
+      await client.query('ROLLBACK')
+      throw error
+    } finally {
+      client.release()
+    }
   } catch (error) {
     console.error('Error creando categoría:', error)
     return { success: false, message: 'Error creando categoría' }

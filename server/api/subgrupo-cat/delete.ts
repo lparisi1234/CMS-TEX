@@ -11,13 +11,13 @@ export default defineEventHandler(async (event) => {
 
     // Iniciar transacción
     const client = await pool.connect()
-    
+
     try {
       await client.query('BEGIN')
 
       // 1. Eliminar todas las relaciones en subgrupos_prod
       await client.query(`
-        DELETE FROM "Subgrupos_prod" 
+        DELETE FROM "SubGrupo_prod" 
         WHERE subgrupo_cat_id = $1
       `, [id])
 
@@ -35,8 +35,8 @@ export default defineEventHandler(async (event) => {
 
       await client.query('COMMIT')
 
-      return { 
-        success: true, 
+      return {
+        success: true,
         message: 'Subgrupo de categoría eliminado correctamente',
         subgrupo: deleteResult.rows[0]
       }
