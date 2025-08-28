@@ -30,7 +30,16 @@ RUN npx nuxt prepare && npm run build
 FROM base AS runner
 WORKDIR /app
 ENV NODE_ENV=production
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y \
+    curl \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Instalar AWS CLI v2
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
+    && unzip awscliv2.zip \
+    && ./aws/install \
+    && rm -rf awscliv2.zip aws
 # Usuario no-root
 RUN groupadd -g 1001 nodejs && useradd -u 1001 -g 1001 -s /usr/sbin/nologin nodejs
 
