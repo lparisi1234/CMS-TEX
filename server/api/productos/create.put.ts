@@ -31,33 +31,12 @@ export default defineEventHandler(async (event) => {
 
     if (
       nombreprod === undefined ||
-      h1 === undefined ||
-      img === undefined ||
-      imagen_mobile === undefined ||
-      video_mapa_mobile === undefined ||
-      video_mapa_desktop === undefined ||
-      podcast === undefined ||
-      codigonewton === undefined ||
-      url === undefined ||
-      cantidad_estrellas === undefined ||
-      cantidadAport === undefined ||
-      consejo_experto === undefined ||
-      expertoId === undefined ||
-      meta_titulo === undefined ||
-      meta_descripcion === undefined ||
-      estado === undefined ||
-      sticker === undefined ||
-      duracion === undefined ||
-      iniciafinaliza === undefined ||
-      precio === undefined ||
-      precioTachado === undefined ||
-      salidas === undefined ||
-      aereo_incluido === undefined
+      codigonewton === undefined
     ) {
-      return { success: false, message: 'Faltan campos requeridos' }
+      return { success: false, message: 'Nombre del producto y código Newton son requeridos' }
     }
 
-    const estadoDB = estado === "activo" ? true : false;
+    const estadoDB = estado === "Activo" ? true : false;
     const aereoIncluidoDB = aereo_incluido === "si" ? true : false;
 
     const query = `
@@ -90,28 +69,28 @@ export default defineEventHandler(async (event) => {
     `;
 
     const values = [
-      nombreprod,
-      h1,
-      img,
-      imagen_mobile,
-      video_mapa_mobile,
-      video_mapa_desktop,
-      podcast,
+      nombreprod || '',
+      h1 || '',
+      img || '',
+      imagen_mobile || '',
+      video_mapa_mobile || '',
+      video_mapa_desktop || '',
+      podcast || '',
       codigonewton,
-      url,
-      cantidad_estrellas,
-      cantidadAport,
-      consejo_experto,
-      expertoId,
-      meta_titulo,
-      meta_descripcion,
+      url || '',
+      cantidad_estrellas || 5,
+      cantidadAport || 0,
+      consejo_experto || '',
+      expertoId || null,
+      meta_titulo || '',
+      meta_descripcion || '',
       estadoDB,
-      sticker,
-      duracion,
-      iniciafinaliza,
-      precio,
-      precioTachado,
-      salidas,
+      sticker || '',
+      duracion || '',
+      iniciafinaliza || '',
+      precio || 0,
+      precioTachado || 0,
+      salidas || '',
       aereoIncluidoDB
     ];
 

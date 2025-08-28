@@ -57,7 +57,9 @@ const productos = ref([])
 const loadProductos = async () => {
     try {
         const data = await $fetch('/api/productos/productos')
+        console.log('Productos cargados:', data)
         productos.value = data || []
+        console.log('Productos en estado:', productos.value)
     } catch (err) {
         console.error('Error cargando productos:', err)
         error('Error al cargar los productos')
@@ -74,7 +76,7 @@ const filteredProductos = computed(() => {
     const searchValue = searchCodigoNewton.value.toString().toLowerCase()
 
     return productos.value.filter(producto => {
-        const codigoNewton = producto.codigo_newton?.toString().toLowerCase() || ''
+        const codigoNewton = producto.codigonewton?.toString().toLowerCase() || ''
         const nombre = producto.nombreprod?.toLowerCase() || ''
 
         return codigoNewton.includes(searchValue) || nombre.includes(searchValue)

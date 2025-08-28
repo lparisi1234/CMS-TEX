@@ -6,9 +6,9 @@
                     <FormFieldsContainer>
                         <FormTextField v-model="formData.nombreprod" id="nombreprod" label="Nombre del Producto"
                             required placeholder="Ingresa el nombre del producto" :error="errors.nombreprod" />
-                        <FormTextField v-model="formData.codigo_newton" id="codigo_newton" label="Código Newton"
+                        <FormTextField v-model="formData.codigonewton" id="codigonewton" label="Código Newton"
                             type="text" required placeholder="Código único del producto"
-                            :error="errors.codigo_newton" />
+                            :error="errors.codigonewton" />
                     </FormFieldsContainer>
 
                     <FormFieldsContainer>
@@ -187,7 +187,7 @@ const formData = ref({
     video_mapa_mobile: '',
     video_mapa_desktop: '',
     podcast: '',
-    codigo_newton: '',
+    codigonewton: '',
     url: '',
     cantidad_estrellas: 5,
     cantidadAport: 0,
@@ -383,6 +383,11 @@ const deleteSeccion = (seccion) => {
 
 const handleSubmit = async () => {
 
+    if (!formData.value.nombreprod || !formData.value.codigonewton) {
+        error('Por favor completa todos los campos requeridos')
+        return
+    }
+
     isSubmitting.value = true
 
     try {
@@ -394,20 +399,41 @@ const handleSubmit = async () => {
             dataToSubmit.id = `3/${lastDigits}`
         }
 
-        dataToSubmit.cantidad_estrellas = parseInt(dataToSubmit.cantidad_estrellas)
-        dataToSubmit.cantidadAport = parseInt(dataToSubmit.cantidadAport)
-        dataToSubmit.precio_total = parseFloat(dataToSubmit.precio_total) || 0
+        // Convertir tipos de datos
+        dataToSubmit.cantidad_estrellas = parseInt(dataToSubmit.cantidad_estrellas) || 5
+        dataToSubmit.cantidadAport = parseInt(dataToSubmit.cantidadAport) || 0
+        dataToSubmit.expertoId = dataToSubmit.expertoId ? parseInt(dataToSubmit.expertoId) : null
 
-        if (props.isEditing) {
-            // PUT ?
+        if (props.isEditing && props.editingData?.id) {
+            dataToSubmit.id = props.editingData.id
+            const result = await $fetch('/api/productos/update', {
+                method: 'PUT',
+                body: dataToSubmit
+            })
+            
+            if (result.success) {
+                success('Producto actualizado correctamente')
+                emit('success')
+            } else {
+                error(result.message || 'Error al actualizar el producto')
+            }
         } else {
-            // POST ?
+            const result = await $fetch('/api/productos/create', {
+                method: 'PUT',
+                body: dataToSubmit
+            })
+            
+            if (result.success) {
+                success('Producto creado correctamente')
+                emit('success')
+            } else {
+                error(result.message || 'Error al crear el producto')
+            }
         }
-
-        emit('success')
 
     } catch (error) {
         console.error('Error al procesar producto:', error)
+        error('Error al procesar el producto')
     } finally {
         isSubmitting.value = false
     }
