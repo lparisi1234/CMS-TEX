@@ -47,7 +47,7 @@ const tabla = {
             type: 'text'
         },
         {
-            key: 'texto',
+            key: 'descripcion',
             label: 'Texto',
             type: 'text'
         },
@@ -62,7 +62,7 @@ const tabla = {
             type: 'number'
         },
         {
-            key: 'categoriaId',
+            key: 'categoria_id',
             label: 'Categoría',
             type: 'select',
             relatedTable: 'categorias'
@@ -107,7 +107,7 @@ const filteredData = computed(() => {
     if (!selectedCategoriaId.value) return []
 
     return queEsperarData.value.filter(item =>
-        item.categoriaId.toString() === selectedCategoriaId.value
+        (item.categoria_id ?? item.categoriaId)?.toString() === selectedCategoriaId.value
     )
 })
 

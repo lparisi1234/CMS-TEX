@@ -5,21 +5,19 @@ export default defineEventHandler(async (event) => {
     const pool = await getDbPool()
     const {
       id,
-      region_id,
       categoria_id,
       titulo,
       descripcion,
       img,
+      region_id,
       nro_orden
     } = await readBody(event)
 
     if (
       id === undefined ||
-      region_id === undefined ||
       categoria_id === undefined ||
       titulo === undefined ||
       descripcion === undefined ||
-      img === undefined ||
       nro_orden === undefined
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
@@ -27,22 +25,22 @@ export default defineEventHandler(async (event) => {
 
     const query = `
       UPDATE "QueEsperar" SET
-        region_id = $1,
-        categoria_id = $2,
+        categoria_id = $1,
+        region_id = COALESCE($2, region_id),
         titulo = $3,
         descripcion = $4,
-        img = $5,
+        img = COALESCE($5, img),
         nro_orden = $6
       WHERE id = $7
       RETURNING *;
     `;
 
     const values = [
-      region_id,
       categoria_id,
+      region_id ?? null,
       titulo,
       descripcion,
-      img,
+      img ?? null,
       nro_orden,
       id
     ];

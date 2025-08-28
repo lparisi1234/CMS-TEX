@@ -4,7 +4,6 @@ export default defineEventHandler(async (event) => {
   try {
     const pool = await getDbPool()
     const {
-      region_id,
       categoria_id,
       titulo,
       descripcion,
@@ -13,11 +12,9 @@ export default defineEventHandler(async (event) => {
     } = await readBody(event)
 
     if (
-      region_id === undefined ||
       categoria_id === undefined ||
       titulo === undefined ||
       descripcion === undefined ||
-      img === undefined ||
       nro_orden === undefined
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
@@ -25,22 +22,20 @@ export default defineEventHandler(async (event) => {
 
     const query = `
       INSERT INTO "QueEsperar" (
-        region_id,
         categoria_id,
         titulo,
         descripcion,
         img,
         nro_orden
-      ) VALUES ($1, $2, $3, $4, $5, $6)
+      ) VALUES ($1, $2, $3, $4, $5)
       RETURNING *;
     `;
 
     const values = [
-      region_id,
       categoria_id,
       titulo,
       descripcion,
-      img,
+      img ?? null,
       nro_orden
     ];
 
