@@ -7,7 +7,7 @@ const region = 'us-east-1';
 const secretsClient = new SecretsManagerClient({ region });
 
 async function getDbPool() {
-  command = new GetSecretValueCommand({ SecretId: secretName });
+  const command = new GetSecretValueCommand({ SecretId: secretName });
   const response = await secretsClient.send(command);
   const secret = JSON.parse(response.SecretString);
 
