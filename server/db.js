@@ -12,10 +12,11 @@ async function getDbPool() {
   //const secret = JSON.parse(response.SecretString);
 
   const pool = new Pool({
-    host: "localhost",
+    host: "tex2-dev.cluster-c0lq6suu44up.us-east-1.rds.amazonaws.com",
     user: "postgres",
-    password: "Lioben2000!#",
-    database: "TEX_db",
+    password: "86!<JXUYcTOwEm*$u30X3WYXV*]7",
+    database: "testdb",
+    port: 5432,
   });
 
   return pool;
