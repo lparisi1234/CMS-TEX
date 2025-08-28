@@ -37,7 +37,7 @@ onMounted(() => {
 })
 
 const paisesData = computed(() => {
-    return destinosData.value.filter(destino => destino.regionId)
+    return destinosData.value.filter(destino => !destino.regionId)
 })
 
 const regionesMap = computed(() => {
