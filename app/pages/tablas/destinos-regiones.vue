@@ -24,7 +24,7 @@ const loadData = async () => {
             $fetch('/api/destinos/destinos'),
             $fetch('/api/expertos/expertos')
         ])
-        
+
         destinosData.value = destinosResponse || []
         expertosData.value = expertosResponse || []
     } catch (err) {
@@ -123,6 +123,11 @@ const regionesColumns = [
         key: 'nro_orden',
         label: 'Número de Orden',
         type: 'number'
+    },
+    {
+        key: 'subgrupos',
+        label: 'Subgrupos',
+        type: 'array'
     },
 ]
 

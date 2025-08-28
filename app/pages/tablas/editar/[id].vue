@@ -220,9 +220,15 @@ const handleSubmit = async () => {
 onMounted(async () => {
     if (tabla) {
         await loadSelectOptions()
-        await loadExistingData()
+        const loadedData = await loadExistingData()
 
         if (isDestinosForm() && formData.value) {
+            if (loadedData && loadedData.id) {
+                formData.value.id = loadedData.id
+            } else if (itemId) {
+                formData.value.id = parseInt(itemId)
+            }
+
             editingData.value = { ...formData.value }
         }
     }

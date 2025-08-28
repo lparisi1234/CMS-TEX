@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
 
       // 1. Eliminar todas las relaciones en subgrupos_prod
       await client.query(`
-        DELETE FROM "Subgrupos_prod" 
+        DELETE FROM "SubGrupo_prod" 
         WHERE subgrupo_dst_id = $1
       `, [id])
 

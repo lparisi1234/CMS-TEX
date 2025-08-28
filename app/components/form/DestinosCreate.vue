@@ -2,13 +2,13 @@
     <FormLayout v-if="tipo === 'ciudad'" @submit="handleSubmit" class="flex flex-col gap-5">
         <FormFieldsContainer>
             <FormTextField v-model="formData.nombre" label="Nombre" required
-                placeholder="Ingresa el nombre de la ciudad" id="ciudad-nombre" />
+                placeholder="Ingresa el nombre de la ciudad" id="ciudad-nombre" :error="errors.nombre" />
             <FormSelectField v-model="formData.paises_id" label="País" required :options="paisesOptions"
-                placeholder="Seleccionar país" />
+                placeholder="Seleccionar país" :error="errors.paises_id" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
-            <FormSwitchField v-model="formData.estado" label="Estado" required />
+            <FormSwitchField v-model="formData.estado" label="Estado" required :error="errors.estado" />
         </FormFieldsContainer>
 
         <div class="flex justify-center items-center flex-wrap gap-8 mt-3">
@@ -31,65 +31,42 @@
         <TabsLayout :tabs="tabs">
             <template #detalle>
                 <div class="flex flex-col gap-5">
-                    <template v-for="(chunk, chunkIndex) in detailsColumnChunks" :key="`chunk-${chunkIndex}`">
-                        <FormFieldsContainer v-if="chunk.length === 1">
+                    <template v-for="chunk in detailsColumnChunks" :key="chunk[0].key">
+                        <FormFieldsContainer>
                             <template v-for="column in chunk" :key="column.key">
                                 <FormTextField v-if="column.type === 'text'" :id="`field-${column.key}`"
                                     v-model="formData[column.key]" :label="column.label" :required="column.required"
+                                    :error="errors[column.key]"
                                     :placeholder="`Ingresa ${column.label.toLowerCase()}`" />
 
                                 <FormTextareaField v-else-if="column.type === 'textarea'" :id="`field-${column.key}`"
                                     v-model="formData[column.key]" :label="column.label" :required="column.required"
-                                    :placeholder="`Ingresa ${column.label.toLowerCase()}`" :rows="4" />
-
-                                <FormSelectField v-else-if="column.type === 'select'" :id="`field-${column.key}`"
-                                    v-model="formData[column.key]" :label="column.label" :required="column.required"
-                                    :options="selectOptions[column.key] || []"
-                                    :placeholder="`Selecciona ${column.label.toLowerCase()}`" />
-
-                                <FormImageField v-else-if="column.type === 'image'" :id="`field-${column.key}`"
-                                    v-model="formData[column.key]" :label="column.label" :required="column.required" />
+                                    :error="errors[column.key]" :placeholder="`Ingresa ${column.label.toLowerCase()}`"
+                                    :rows="4" />
 
                                 <FormTextField v-else-if="column.type === 'number'" :id="`field-${column.key}`"
                                     v-model="formData[column.key]" :label="column.label" :required="column.required"
-                                    type="number" :placeholder="`Ingresa ${column.label.toLowerCase()}`" />
-
-                                <FormTextField v-else-if="column.type === 'currency'" :id="`field-${column.key}`"
-                                    v-model="formData[column.key]" :label="column.label" :required="column.required"
-                                    type="number" step="0.01" :placeholder="`Ingresa ${column.label.toLowerCase()}`" />
-
-                                <FormSwitchField v-else-if="column.type === 'boolean'" :id="`field-${column.key}`"
-                                    v-model="formData[column.key]" :label="column.label" :required="column.required" />
-                            </template>
-                        </FormFieldsContainer>
-                        <FormFieldsContainer v-else>
-                            <template v-for="column in chunk" :key="column.key">
-                                <FormTextField v-if="column.type === 'text'" :id="`field-${column.key}`"
-                                    v-model="formData[column.key]" :label="column.label" :required="column.required"
+                                    :error="errors[column.key]" type="number"
                                     :placeholder="`Ingresa ${column.label.toLowerCase()}`" />
 
-                                <FormTextareaField v-else-if="column.type === 'textarea'" :id="`field-${column.key}`"
-                                    v-model="formData[column.key]" :label="column.label" :required="column.required"
-                                    :placeholder="`Ingresa ${column.label.toLowerCase()}`" :rows="4" />
-
                                 <FormSelectField v-else-if="column.type === 'select'" :id="`field-${column.key}`"
                                     v-model="formData[column.key]" :label="column.label" :required="column.required"
-                                    :options="selectOptions[column.key] || []"
+                                    :error="errors[column.key]" :options="selectOptions[column.key] || []"
+                                    :loading="loadingOptions[column.key]"
                                     :placeholder="`Selecciona ${column.label.toLowerCase()}`" />
 
+                                <FormSelectField v-else-if="column.type === 'badge'" :id="`field-${column.key}`"
+                                    v-model="formData[column.key]" :label="column.label" :required="column.required"
+                                    :error="errors[column.key]" :options="badgeOptions"
+                                    :placeholder="`Seleccionar ${column.label.toLowerCase()}`" />
+
                                 <FormImageField v-else-if="column.type === 'image'" :id="`field-${column.key}`"
-                                    v-model="formData[column.key]" :label="column.label" :required="column.required" />
-
-                                <FormTextField v-else-if="column.type === 'number'" :id="`field-${column.key}`"
                                     v-model="formData[column.key]" :label="column.label" :required="column.required"
-                                    type="number" :placeholder="`Ingresa ${column.label.toLowerCase()}`" />
-
-                                <FormTextField v-else-if="column.type === 'currency'" :id="`field-${column.key}`"
-                                    v-model="formData[column.key]" :label="column.label" :required="column.required"
-                                    type="number" step="0.01" :placeholder="`Ingresa ${column.label.toLowerCase()}`" />
+                                    :error="errors[column.key]" />
 
                                 <FormSwitchField v-else-if="column.type === 'boolean'" :id="`field-${column.key}`"
-                                    v-model="formData[column.key]" :label="column.label" :required="column.required" />
+                                    v-model="formData[column.key]" :label="column.label" :required="column.required"
+                                    :error="errors[column.key]" />
                             </template>
                         </FormFieldsContainer>
                     </template>
@@ -139,7 +116,7 @@
 
                     <TableLayout :data="displaySubgrupos" :columns="subgruposColumns" :table-name="'Subgrupos'"
                         :show-actions="true" :empty-state-text="'No hay subgrupos creados'" @edit="handleEditSubgrupo"
-                        @delete="handleDeleteSubgrupo" />
+                        @delete="handleDeleteSubgrupo" :loading="isDeletingSubgrupo" />
 
                     <div class="flex justify-start">
                         <ButtonPrimary @click.prevent.stop="openCreateModal" type="button">
@@ -171,57 +148,61 @@
             <form @submit.prevent="saveSubgrupo" class="flex flex-col gap-4">
                 <FormFieldsContainer>
                     <FormTextField id="modal-nombre" v-model="modalSubgrupo.nombre" label="Nombre del Subgrupo"
-                        placeholder="Ingresa el nombre del subgrupo" :required="true" />
+                        placeholder="Ingresa el nombre del subgrupo" :required="true" :error="modalErrors.nombre" />
 
                     <FormTextField id="modal-orden" v-model="modalSubgrupo.nro_orden" label="Número de Orden"
-                        type="number" placeholder="Ingresa el orden" :required="true" />
+                        type="number" placeholder="Ingresa el orden" :required="true" :error="modalErrors.nro_orden" />
                 </FormFieldsContainer>
 
                 <FormFieldsContainer>
                     <FormTextareaField id="modal-productos" v-model="modalSubgrupo.productos_text"
                         label="Productos (IDs separados por espacios)" placeholder="Ej: 3/2500254 3/2500298 3/2500314"
-                        :rows="3" />
+                        :rows="3" :required="false" :error="modalErrors.productos" />
                 </FormFieldsContainer>
 
                 <div class="flex justify-center gap-5 mt-2">
-                    <ButtonPrimary @click.prevent="closeModal" type="button" class="!bg-gray-mid !text-dark">
-                        Cancelar
-                    </ButtonPrimary>
-                    <ButtonPrimary type="submit">
-                        {{ isEditingSubgrupo ? 'Actualizar' : 'Crear' }}
-                    </ButtonPrimary>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div v-if="showTablaEspecialModal"
-        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-        @click="handleTablaEspecialModalBackgroundClick">
-        <div class="w-full max-w-[56rem] flex flex-col gap-6 bg-light rounded-[20px] p-12" @click.stop>
-            <HeadingH2 class="text-center">
-                Editar {{ currentTablaEspecialName }}
-            </HeadingH2>
-
-            <form @submit.prevent="saveTablaEspecial" class="flex flex-col gap-4">
-                <FormFieldsContainer>
-                    <FormTextareaField id="tabla-especial-productos" v-model="modalTablaEspecial.productos_text"
-                        label="Productos (IDs separados por espacios)" placeholder="Ej: 3/2500254 3/2500298 3/2500314"
-                        :rows="5" />
-                </FormFieldsContainer>
-
-                <div class="flex justify-center gap-5 mt-2">
-                    <ButtonPrimary @click.prevent="closeTablaEspecialModal" type="button"
+                    <ButtonPrimary @click.prevent="closeModal('cancel-button')" type="button"
                         class="!bg-gray-mid !text-dark">
                         Cancelar
                     </ButtonPrimary>
-                    <ButtonPrimary type="submit">
-                        Actualizar
+                    <ButtonPrimary type="submit" :disabled="isSubmittingSubgrupo">
+                        {{ isSubmittingSubgrupo ? (isEditingSubgrupo ? 'Actualizando...' : 'Creando...') :
+                            (isEditingSubgrupo ? 'Actualizar' : 'Crear') }}
                     </ButtonPrimary>
                 </div>
             </form>
         </div>
     </div>
+
+    <Teleport to="body">
+        <div v-if="showTablaEspecialModal"
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            @click="handleTablaEspecialModalBackgroundClick">
+            <div class="w-full max-w-[56rem] flex flex-col gap-6 bg-light rounded-[20px] p-12" @click.stop>
+                <HeadingH2 class="text-center">
+                    Editar {{ currentTablaEspecialName }}
+                </HeadingH2>
+
+                <div class="flex flex-col gap-4">
+                    <FormFieldsContainer>
+                        <FormTextareaField id="tabla-especial-productos" v-model="modalTablaEspecial.productos_text"
+                            label="Productos (IDs separados por espacios)"
+                            placeholder="Ej: 3/2500254 3/2500298 3/2500314" :rows="5" />
+                    </FormFieldsContainer>
+
+                    <div class="flex justify-center gap-5 mt-2">
+                        <ButtonPrimary @click.prevent.stop="closeTablaEspecialModal" type="button"
+                            class="!bg-gray-mid !text-dark">
+                            Cancelar
+                        </ButtonPrimary>
+                        <ButtonPrimary @click.prevent.stop="saveTablaEspecial" type="button">
+                            Actualizar
+                        </ButtonPrimary>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </Teleport>
 </template>
 
 <script setup>
@@ -240,19 +221,55 @@ const props = defineProps({
     editingData: {
         type: Object,
         default: null
+    },
+    formData: {
+        type: Object,
+        required: false,
+        default: () => ({})
+    },
+    errors: {
+        type: Object,
+        required: false,
+        default: () => ({})
+    },
+    selectOptions: {
+        type: Object,
+        required: false,
+        default: () => ({})
+    },
+    loadingOptions: {
+        type: Object,
+        required: false,
+        default: () => ({})
+    },
+    badgeOptions: {
+        type: Array,
+        required: false,
+        default: () => []
+    },
+    isSubmitting: {
+        type: Boolean,
+        default: false
+    },
+    botonTexto: {
+        type: String,
+        default: 'Crear destino'
+    },
+    detailsColumns: {
+        type: Array,
+        required: false,
+        default: () => []
     }
 })
 
-const emit = defineEmits(['success', 'cancel'])
+const emit = defineEmits(['submit', 'success', 'cancel'])
 
-// Datos reactivos para endpoints
 const destinosData = ref([])
 const expertosData = ref([])
 const masVendidosData = ref([])
 const vueloIncluidoData = ref([])
 const recomendadosData = ref([])
 
-// Cargar datos desde endpoints
 const loadData = async () => {
     try {
         const [destinos, expertos, masVendidos, vueloIncluido, recomendados] = await Promise.all([
@@ -262,7 +279,7 @@ const loadData = async () => {
             $fetch('/api/vueloIncluido/vueloIncluido').catch(() => []),
             $fetch('/api/recomendados/recomendados').catch(() => [])
         ])
-        
+
         destinosData.value = destinos || []
         expertosData.value = expertos || []
         masVendidosData.value = masVendidos || []
@@ -289,6 +306,8 @@ const initFormData = () => {
 
     const fullData = {
         ...baseData,
+        id: null,
+        cod_newton: '',
         url: '',
         h1: '',
         h2: '',
@@ -302,7 +321,7 @@ const initFormData = () => {
         meta_keywords: '',
         mapa: '',
         nro_orden: '',
-        desde_precio: '',
+        precio_desde: '',
         masVendidos: [],
         vueloIncluido: [],
         recomendados: [],
@@ -343,6 +362,7 @@ const detailsColumns = [
     { key: 'video_mobile', label: 'Video Mobile', type: 'image' },
     { key: 'video_desktop', label: 'Video Desktop', type: 'image' },
     { key: 'nro_orden', label: 'Número de Orden', type: 'number' },
+    { key: 'precio_desde', label: 'Precio Desde', type: 'currency' },
     { key: 'experto_id', label: 'Experto', type: 'select' },
     { key: 'consejo_experto', label: 'Consejo del Experto', type: 'textarea', fullWidth: true },
 ]
@@ -350,22 +370,12 @@ const detailsColumns = [
 const detailsColumnChunks = computed(() => {
     if (props.tipo === 'ciudad') return []
 
+    const filteredColumns = detailsColumns.filter(column => column.key !== 'subgrupos')
+    const chunkSize = 2
     const chunks = []
-
-    for (let i = 0; i < detailsColumns.length; i++) {
-        const column = detailsColumns[i]
-
-        if (column.fullWidth) {
-            chunks.push([column])
-        } else {
-            if (chunks.length === 0 || chunks[chunks.length - 1].length === 2 || chunks[chunks.length - 1][0].fullWidth) {
-                chunks.push([column])
-            } else {
-                chunks[chunks.length - 1].push(column)
-            }
-        }
+    for (let i = 0; i < filteredColumns.length; i += chunkSize) {
+        chunks.push(filteredColumns.slice(i, i + chunkSize))
     }
-
     return chunks
 })
 
@@ -395,9 +405,9 @@ const paisesOptions = computed(() => {
 })
 
 const setupSelectOptions = () => {
-    selectOptions.value = {
-        experto_id: expertosOptions.value,
-        ...(props.tipo === 'pais' && { regionId: regionesOptions.value })
+    selectOptions.value.experto_id = expertosOptions.value
+    if (props.tipo === 'pais') {
+        selectOptions.value.regionId = regionesOptions.value
     }
 }
 
@@ -527,20 +537,45 @@ const saveTablaEspecial = () => {
 const showModal = ref(false)
 const isEditingSubgrupo = ref(false)
 const editingSubgrupoIndex = ref(-1)
+const editingSubgrupoId = ref(null)
 const modalSubgrupo = ref({
     nombre: '',
     nro_orden: 1,
     productos_text: ''
 })
+const modalErrors = ref({
+    nombre: '',
+    nro_orden: '',
+    productos: ''
+})
+const isSubmittingSubgrupo = ref(false)
+const isDeletingSubgrupo = ref(false)
 
 const subgruposColumns = [
-    { key: 'nombre', label: 'Subgrupo', type: 'text', required: true },
-    { key: 'nro_orden', label: 'Número de Orden', type: 'number', required: true },
-    { key: 'productos', label: 'Productos', type: 'array-ids', required: false }
+    {
+        key: 'nombre',
+        label: 'Subgrupo',
+        type: 'text',
+        required: true
+    },
+    {
+        key: 'nro_orden',
+        label: 'Número de Orden',
+        type: 'number',
+        required: true
+    },
+    {
+        key: 'productos',
+        label: 'Productos',
+        type: 'array-ids',
+        required: false
+    }
 ]
 
+const subgruposFromDb = ref([])
+
 const displaySubgrupos = computed(() => {
-    const subgrupos = formData.value.subgrupos || []
+    const subgrupos = subgruposFromDb.value || []
 
     if (!Array.isArray(subgrupos)) {
         return []
@@ -548,13 +583,40 @@ const displaySubgrupos = computed(() => {
 
     return subgrupos.map(subgrupo => ({
         ...subgrupo,
-        productos: Array.isArray(subgrupo.productos)
-            ? (subgrupo.productos.length > 0
-                ? subgrupo.productos.map(id => String(id)).join(' ')
+        productos: Array.isArray(subgrupo.productos_ids)
+            ? (subgrupo.productos_ids.length > 0
+                ? subgrupo.productos_ids.map(id => String(id)).join(' ')
                 : 'Sin productos')
-            : String(subgrupo.productos || 'Sin productos')
+            : String(subgrupo.productos_ids || 'Sin productos')
     }))
 })
+
+const loadSubgrupos = async (forceFromDatabase = false) => {
+    try {
+        if (formData.value.id) {
+            if (!forceFromDatabase && formData.value.subgrupos && Array.isArray(formData.value.subgrupos) && formData.value.subgrupos.length > 0) {
+                subgruposFromDb.value = formData.value.subgrupos
+            } else {
+                const response = await $fetch('/api/subgrupo-dst/subgrupo-dst')
+                if (response.success) {
+                    const filteredSubgrupos = response.subgrupos.filter(sub => sub.destino_id === formData.value.id)
+                    subgruposFromDb.value = filteredSubgrupos
+
+                    if (formData.value.subgrupos) {
+                        formData.value.subgrupos = filteredSubgrupos
+                    }
+                } else {
+                    subgruposFromDb.value = []
+                }
+            }
+        } else {
+            subgruposFromDb.value = formData.value.subgrupos || []
+        }
+    } catch (err) {
+        console.error('Error cargando subgrupos:', err)
+        subgruposFromDb.value = formData.value.subgrupos || []
+    }
+}
 
 const openCreateModal = (event) => {
     if (event) {
@@ -564,181 +626,379 @@ const openCreateModal = (event) => {
 
     isEditingSubgrupo.value = false
     editingSubgrupoIndex.value = -1
+    editingSubgrupoId.value = null
     modalSubgrupo.value = {
         nombre: '',
-        nro_orden: (formData.value.subgrupos?.length || 0) + 1,
+        nro_orden: (subgruposFromDb.value?.length || 0) + 1,
         productos_text: ''
+    }
+    modalErrors.value = {
+        nombre: '',
+        nro_orden: '',
+        productos: ''
     }
     showModal.value = true
 }
 
-const handleEditSubgrupo = (subgrupo, index) => {
+const handleEditSubgrupo = (subgrupo) => {
     nextTick(() => {
         editSubgrupo(subgrupo)
     })
 }
 
-const handleDeleteSubgrupo = (subgrupo, index) => {
+const handleDeleteSubgrupo = (subgrupo) => {
     deleteSubgrupo(subgrupo)
 }
 
 const editSubgrupo = (subgrupo) => {
-    const index = formData.value.subgrupos.findIndex(s => s.id === subgrupo.id)
-    if (index !== -1) {
-        isEditingSubgrupo.value = true
-        editingSubgrupoIndex.value = index
+    const originalSubgrupo = subgruposFromDb.value.find(s => s.id === subgrupo.id)
 
-        const originalSubgrupo = formData.value.subgrupos[index]
+    if (!originalSubgrupo) return
 
-        modalSubgrupo.value = {
-            nombre: originalSubgrupo.nombre || '',
-            nro_orden: originalSubgrupo.nro_orden || 1,
-            productos_text: Array.isArray(originalSubgrupo.productos)
-                ? originalSubgrupo.productos.join(' ')
-                : (originalSubgrupo.productos || '')
-        }
+    isEditingSubgrupo.value = true
+    editingSubgrupoId.value = originalSubgrupo.id
 
-        showModal.value = true
+    const nroOrden = typeof originalSubgrupo.nro_orden === 'string'
+        ? parseInt(originalSubgrupo.nro_orden) || 1
+        : originalSubgrupo.nro_orden
+
+    const productosText = Array.isArray(originalSubgrupo.productos_ids)
+        ? originalSubgrupo.productos_ids.join(' ')
+        : String(originalSubgrupo.productos_ids || '')
+
+    modalSubgrupo.value = {
+        nombre: originalSubgrupo.nombre || '',
+        nro_orden: nroOrden,
+        productos_text: productosText
     }
+
+    modalErrors.value = {
+        nombre: '',
+        nro_orden: '',
+        productos: ''
+    }
+
+    showModal.value = true
 }
 
 const closeModal = () => {
     showModal.value = false
     isEditingSubgrupo.value = false
     editingSubgrupoIndex.value = -1
+    editingSubgrupoId.value = null
     modalSubgrupo.value = {
         nombre: '',
         nro_orden: 1,
         productos_text: ''
     }
+    modalErrors.value = {
+        nombre: '',
+        nro_orden: '',
+        productos: ''
+    }
 }
 
 const handleModalBackgroundClick = (event) => {
     if (event.target === event.currentTarget) {
+        closeModal('background-click')
+    }
+}
+
+const validateSubgrupo = () => {
+    modalErrors.value = {
+        nombre: '',
+        nro_orden: '',
+        productos: ''
+    }
+
+    let isValid = true
+
+    if (!modalSubgrupo.value.nombre.trim()) {
+        modalErrors.value.nombre = 'El nombre es requerido'
+        isValid = false
+    }
+
+    if (!modalSubgrupo.value.nro_orden || modalSubgrupo.value.nro_orden < 1) {
+        modalErrors.value.nro_orden = 'El número de orden debe ser mayor a 0'
+        isValid = false
+    }
+
+    return isValid
+}
+
+
+const saveSubgrupo = async () => {
+    if (!validateSubgrupo()) {
+        return
+    }
+
+    isSubmittingSubgrupo.value = true
+
+    try {
+        const productos_ids = modalSubgrupo.value.productos_text
+            ? modalSubgrupo.value.productos_text
+                .split(/\s+/)
+                .map(id => id.trim())
+                .filter(id => id.length > 0)
+            : []
+
+        if (isEditingSubgrupo.value) {
+            const originalSubgrupo = subgruposFromDb.value.find(s => s.id === editingSubgrupoId.value)
+            const destinoId = formData.value.id || originalSubgrupo?.destino_id
+
+            const subgrupoData = {
+                id: editingSubgrupoId.value,
+                nombre: modalSubgrupo.value.nombre.trim(),
+                destino_id: destinoId,
+                nro_orden: parseInt(modalSubgrupo.value.nro_orden),
+                productos_ids: productos_ids
+            }
+
+            if (!destinoId) {
+                error('No se pudo obtener el ID del destino')
+                return
+            }
+
+            if (!editingSubgrupoId.value) {
+                error('No se pudo obtener el ID del subgrupo')
+                return
+            }
+
+            const response = await $fetch('/api/subgrupo-dst/update', {
+                method: 'PUT',
+                body: subgrupoData
+            })
+
+            if (response.success) {
+                success('Subgrupo actualizado correctamente')
+
+                await loadSubgrupos(true)
+            } else {
+                error(response.message || 'Error actualizando subgrupo')
+            }
+        } else {
+            if (formData.value.id) {
+                const subgrupoData = {
+                    nombre: modalSubgrupo.value.nombre.trim(),
+                    destino_id: formData.value.id,
+                    nro_orden: parseInt(modalSubgrupo.value.nro_orden),
+                    productos_ids: productos_ids
+                }
+
+                const response = await $fetch('/api/subgrupo-dst/create', {
+                    method: 'PUT',
+                    body: subgrupoData
+                })
+
+                if (response.success) {
+                    success('Subgrupo creado correctamente')
+
+                    await loadSubgrupos(true)
+                } else {
+                    error(response.message || 'Error creando subgrupo')
+                }
+            } else {
+                const subgrupoData = {
+                    id: Date.now(),
+                    nombre: modalSubgrupo.value.nombre.trim(),
+                    nro_orden: parseInt(modalSubgrupo.value.nro_orden),
+                    productos_ids: productos_ids
+                }
+
+                if (!formData.value.subgrupos) {
+                    formData.value.subgrupos = []
+                }
+
+                formData.value.subgrupos.push(subgrupoData)
+
+                await loadSubgrupos()
+            }
+        }
+
         closeModal()
+    } catch (err) {
+        console.error('Error guardando subgrupo:', err)
+        error('Error guardando subgrupo')
+    } finally {
+        isSubmittingSubgrupo.value = false
     }
 }
 
-const saveSubgrupo = () => {
-    if (!modalSubgrupo.value.nombre.trim()) return
+const deleteSubgrupo = async (subgrupo) => {
+    isDeletingSubgrupo.value = true
 
-    const productos = modalSubgrupo.value.productos_text
-        ? modalSubgrupo.value.productos_text
-            .split(/\s+/)
-            .map(id => id.trim())
-            .filter(id => id.length > 0)
-        : []
-
-    const subgrupoData = {
-        id: isEditingSubgrupo.value
-            ? formData.value.subgrupos[editingSubgrupoIndex.value].id
-            : Date.now(),
-        nombre: modalSubgrupo.value.nombre.trim(),
-        nro_orden: parseInt(modalSubgrupo.value.nro_orden),
-        productos: productos
-    }
-
-    if (!formData.value.subgrupos) {
-        formData.value.subgrupos = []
-    }
-
-    if (isEditingSubgrupo.value) {
-        formData.value.subgrupos[editingSubgrupoIndex.value] = subgrupoData
-    } else {
-        formData.value.subgrupos.push(subgrupoData)
-    }
-
-    closeModal()
-}
-
-const deleteSubgrupo = (subgrupo) => {
-    const index = formData.value.subgrupos.findIndex(s => s.id === subgrupo.id)
-    if (index !== -1) {
-        formData.value.subgrupos.splice(index, 1)
-        formData.value.subgrupos.forEach((sub, idx) => {
-            sub.nro_orden = idx + 1
+    try {
+        const response = await $fetch('/api/subgrupo-dst/delete', {
+            method: 'DELETE',
+            body: { id: subgrupo.id }
         })
+
+        if (response.success) {
+            success('Subgrupo eliminado correctamente')
+
+            const index = subgruposFromDb.value.findIndex(s => s.id === subgrupo.id)
+            if (index !== -1) {
+                subgruposFromDb.value.splice(index, 1)
+            }
+
+            if (formData.value.subgrupos) {
+                const formIndex = formData.value.subgrupos.findIndex(s => s.id === subgrupo.id)
+                if (formIndex !== -1) {
+                    formData.value.subgrupos.splice(formIndex, 1)
+                }
+            }
+        } else {
+            error(response.message || 'Error eliminando subgrupo')
+        }
+    } catch (err) {
+        console.error('Error eliminando subgrupo:', err)
+        error('Error eliminando subgrupo')
+    } finally {
+        isDeletingSubgrupo.value = false
     }
 }
 
 const handleSubmit = async () => {
-    isSubmitting.value = true
-
-    try {
-        const dataToSubmit = { ...formData.value }
-
-        if (props.tipo === 'region') {
-            delete dataToSubmit.regionId
+    console.log('🚨 handleSubmit disparado')
+    if (props.tipo === 'ciudad') {
+        if (!formData.value.nombre || !formData.value.paises_id) {
+            error('Por favor completa todos los campos requeridos')
+            return
         }
 
-        if (!props.isEditing) {
-            dataToSubmit.masVendidos = ['3/2500254', '3/2500298', '3/2500314', '3/2505535', '3/2505171', '2/61478', '2/61477']
-            dataToSubmit.vueloIncluido = ['3/2500254', '3/2500298', '3/2500314', '3/2505535', '3/2505171', '2/61478', '2/61477']
-            dataToSubmit.recomendados = ['3/2500254', '3/2500298', '3/2500314', '3/2505535', '3/2505171', '2/61478', '2/61477']
+        isSubmitting.value = true
 
-            if (dataToSubmit.subgrupos.length === 0) {
-                dataToSubmit.subgrupos = [
-                    {
-                        id: 1,
-                        nombre: 'Viajes por España, Italia y Francia',
-                        nro_orden: 1,
-                        productos: ['3/2500254', '3/2500298', '3/2500314', '3/2505535', '3/2505171', '2/61478', '2/61477']
-                    }
-                ]
+        try {
+            const ciudadData = {
+                ...formData.value,
+                estado: formData.value.estado ? 1 : 0,
+                paises_id: parseInt(formData.value.paises_id)
             }
+
+            if (props.isEditing && props.editingData?.id) {
+                await $fetch('/api/ciudades/update', {
+                    method: 'PUT',
+                    body: { ...ciudadData, id: props.editingData.id }
+                })
+                success('Ciudad actualizada correctamente')
+            } else {
+                await $fetch('/api/ciudades/create', {
+                    method: 'PUT',
+                    body: ciudadData
+                })
+                success('Ciudad creada correctamente')
+            }
+
+            emit('success')
+        } catch (err) {
+            console.error('Error:', err)
+            error('Error al procesar la ciudad')
+        } finally {
+            isSubmitting.value = false
+        }
+    } else {
+        if (!formData.value.nombre || !formData.value.cod_newton) {
+            error('Por favor completa todos los campos requeridos')
+            return
         }
 
-        if (props.isEditing) {
-            // PUT ?
-        } else {
-            // POST ?
+
+        isSubmitting.value = true
+
+        try {
+            const destinoData = {
+                ...formData.value,
+                estado: formData.value.estado ? 1 : 0,
+                cod_newton: formData.value.cod_newton ? parseInt(formData.value.cod_newton) : null,
+                nro_orden: formData.value.nro_orden ? parseInt(formData.value.nro_orden) : null,
+                precio_desde: (formData.value.precio_desde && formData.value.precio_desde !== '') ? parseFloat(formData.value.precio_desde) : null,
+                experto_id: formData.value.experto_id ? parseInt(formData.value.experto_id) : null,
+                region_id: formData.value.regionId ? parseInt(formData.value.regionId) : null,
+                subgrupos: formData.value.subgrupos || []
+            }
+
+
+            if (props.isEditing && props.editingData?.id) {
+                destinoData.id = props.editingData.id
+                await $fetch('/api/destinos/update', {
+                    method: 'PUT',
+                    body: destinoData
+                })
+                success('Destino actualizado correctamente')
+            } else {
+                const result = await $fetch('/api/destinos/create', {
+                    method: 'PUT',
+                    body: destinoData
+                })
+                if (result && result.success && result.destino && result.destino.id) {
+                    formData.value.id = result.destino.id
+                    await nextTick()
+                    await loadSubgrupos(true)
+                    await nextTick()
+                }
+
+                success('Destino creado correctamente')
+            }
+
+            emit('success')
+        } catch (err) {
+            console.error('Error:', err)
+            error('Error al procesar el destino')
+        } finally {
+            isSubmitting.value = false
         }
-
-        emit('success')
-
-    } catch (error) {
-        console.error('Error al procesar destino:', error)
-    } finally {
-        isSubmitting.value = false
     }
 }
+
+const onDestinoCreated = async (result) => {
+    if (result && result.success && result.destino && result.destino.id) {
+        formData.value.id = result.destino.id
+        await loadSubgrupos()
+    }
+}
+
+defineExpose({
+    onDestinoCreated
+})
+
+onMounted(async () => {
+    await loadData()
+    await nextTick()
+    setupSelectOptions()
+    await loadSubgrupos()
+})
+
 
 watch(() => props.editingData, (newData) => {
     if (newData && props.isEditing) {
         Object.keys(formData.value).forEach(key => {
             if (newData.hasOwnProperty(key)) {
-                formData.value[key] = newData[key]
+                if (key === 'estado') {
+                    formData.value[key] = newData[key] == 1 || newData[key] === true
+                } else if (key === 'regionId' && newData.region_id) {
+                    formData.value[key] = newData.region_id
+                } else if (key === 'id') {
+                    formData.value[key] = newData[key]
+                } else {
+                    formData.value[key] = newData[key] || ''
+                }
             }
         })
 
-        const destinoEncontrado = destinosData.value.find(d => d.id === newData.id)
-        if (destinoEncontrado && destinoEncontrado.subgrupos) {
-            formData.value.subgrupos = [...destinoEncontrado.subgrupos]
+        if (newData.id) {
+            formData.value.id = newData.id
+        }
+
+        if (newData.subgrupos) {
+            formData.value.subgrupos = newData.subgrupos
+            loadSubgrupos()
         }
     }
 }, { immediate: true })
 
-onMounted(async () => {
-    await loadData()
-    setupSelectOptions()
-
-    if (!formData.value.masVendidos) formData.value.masVendidos = []
-    if (!formData.value.vueloIncluido) formData.value.vueloIncluido = []
-    if (!formData.value.recomendados) formData.value.recomendados = []
-    if (!formData.value.subgrupos) formData.value.subgrupos = []
-
-    if (!Array.isArray(formData.value.subgrupos)) {
-        formData.value.subgrupos = []
+watch(() => formData.value.subgrupos, async (newSubgrupos) => {
+    if (newSubgrupos && Array.isArray(newSubgrupos)) {
+        await loadSubgrupos()
     }
-
-    if (formData.value.subgrupos.length > 0) {
-        formData.value.subgrupos.forEach(subgrupo => {
-            if (!Array.isArray(subgrupo.productos)) {
-                subgrupo.productos = []
-            } else {
-                subgrupo.productos = subgrupo.productos.map(id => String(id))
-            }
-        })
-    }
-})
+}, { immediate: true, deep: true })
 </script>

@@ -20,28 +20,14 @@ export default defineEventHandler(async (event) => {
       estado,
       nro_orden,
       precio_desde,
-      region_id
+      region_id,
+      subgrupos
     } = await readBody(event)
 
     if (
       cod_newton === undefined ||
-      url === undefined ||
       nombre === undefined ||
-      h1 === undefined ||
-      h2 === undefined ||
-      video_mobile === undefined ||
-      video_desktop === undefined ||
-      experto_id === undefined ||
-      consejo_experto === undefined ||
-      img === undefined ||
-      meta_titulo === undefined ||
-      meta_descripcion === undefined ||
-      meta_keywords === undefined ||
-      mapa === undefined ||
-      estado === undefined ||
-      nro_orden === undefined ||
-      precio_desde === undefined ||
-      region_id === undefined
+      estado === undefined
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
     }
@@ -58,7 +44,6 @@ export default defineEventHandler(async (event) => {
         experto_id,
         consejo_experto,
         img,
-        txt_search,
         meta_titulo,
         meta_descripcion,
         meta_keywords,
@@ -68,7 +53,7 @@ export default defineEventHandler(async (event) => {
         precio_desde,
         region_id
       ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18
       ) RETURNING *;
     `
 
@@ -93,8 +78,64 @@ export default defineEventHandler(async (event) => {
       region_id
     ]
 
-    const result = await pool.query(query, values)
-    return { success: true, message: 'Destino creado correctamente', destino: result.rows[0] }
+    // Iniciar transacción
+    const client = await pool.connect()
+    
+    try {
+      await client.query('BEGIN')
+      
+      // 1. Crear el destino
+      const result = await client.query(query, values)
+      const destinoCreado = result.rows[0]
+      
+      // 2. Si hay subgrupos, crearlos
+      if (subgrupos && Array.isArray(subgrupos) && subgrupos.length > 0) {
+        for (const subgrupo of subgrupos) {
+          const createSubgrupoQuery = `
+            INSERT INTO "Subgrupos_dst" (
+              nombre,
+              destino_id,
+              nro_orden
+            ) VALUES (
+              $1, $2, $3
+            ) RETURNING *;
+          `
+          
+          const subgrupoValues = [
+            subgrupo.nombre,
+            destinoCreado.id,
+            subgrupo.nro_orden
+          ]
+          
+          const subgrupoResult = await client.query(createSubgrupoQuery, subgrupoValues)
+          const subgrupoCreado = subgrupoResult.rows[0]
+          
+          // 3. Si el subgrupo tiene productos_ids, crear las relaciones
+          if (subgrupo.productos_ids && Array.isArray(subgrupo.productos_ids) && subgrupo.productos_ids.length > 0) {
+            for (const producto_id of subgrupo.productos_ids) {
+              await client.query(`
+                INSERT INTO "SubGrupo_prod" (
+                  producto_id,
+                  subgrupo_cat_id,
+                  subgrupo_dst_id
+                ) VALUES (
+                  $1, $2, $3
+                );
+              `, [producto_id, null, subgrupoCreado.id])
+            }
+          }
+        }
+      }
+      
+      await client.query('COMMIT')
+      return { success: true, message: 'Destino creado correctamente', destino: destinoCreado }
+      
+    } catch (error) {
+      await client.query('ROLLBACK')
+      throw error
+    } finally {
+      client.release()
+    }
   } catch (error) {
     console.error('Error creando destino:', error)
     return { success: false, message: 'Error creando destino' }

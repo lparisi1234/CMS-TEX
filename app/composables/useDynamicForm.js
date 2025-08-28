@@ -167,6 +167,8 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
                     }
                 })
 
+                formData.value.id = item.id
+
                 return item
             }
 

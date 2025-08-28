@@ -7,10 +7,10 @@
 
         <FormProductosCreate v-else-if="isProductosForm()" @success="handleSuccess" @cancel="handleCancel" />
 
-        <FormCategoriasCreate v-else-if="isCategoriasForm()" ref="categoriasCreateRef" :formData="formData" :errors="errors"
-            :selectOptions="selectOptions" :loadingOptions="loadingOptions" :badgeOptions="badgeOptions"
-            :isSubmitting="isSubmitting" :botonTexto="botonTexto" :detailsColumns="tabla?.columns || []"
-            @submit="handleCategoriaSubmit" @cancel="handleCancel" />
+        <FormCategoriasCreate v-else-if="isCategoriasForm()" ref="categoriasCreateRef" :formData="formData"
+            :errors="errors" :selectOptions="selectOptions" :loadingOptions="loadingOptions"
+            :badgeOptions="badgeOptions" :isSubmitting="isSubmitting" :botonTexto="botonTexto"
+            :detailsColumns="tabla?.columns || []" @submit="handleCategoriaSubmit" @cancel="handleCancel" />
 
         <FormLayout @submit="handleSubmit" v-else-if="tabla" class="flex flex-col gap-5">
             <template v-for="(chunk, chunkIndex) in columnChunks" :key="`chunk-${chunkIndex}`">

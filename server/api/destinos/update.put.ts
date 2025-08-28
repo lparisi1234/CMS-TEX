@@ -22,31 +22,11 @@ export default defineEventHandler(async (event) => {
       estado,
       nro_orden,
       precio_desde,
-      region_id
+      region_id,
     } = await readBody(event)
 
-    if (
-      id === undefined ||
-      cod_newton === undefined ||
-      url === undefined ||
-      nombre === undefined ||
-      h1 === undefined ||
-      h2 === undefined ||
-      video_mobile === undefined ||
-      video_desktop === undefined ||
-      experto_id === undefined ||
-      consejo_experto === undefined ||
-      img === undefined ||
-      meta_titulo === undefined ||
-      meta_descripcion === undefined ||
-      meta_keywords === undefined ||
-      mapa === undefined ||
-      estado === undefined ||
-      nro_orden === undefined ||
-      precio_desde === undefined ||
-      region_id === undefined
-    ) {
-      return { success: false, message: 'Faltan campos requeridos' }
+    if (id === undefined) {
+      return { success: false, message: 'ID es requerido para actualizar' }
     }
 
     const query = `
@@ -95,11 +75,31 @@ export default defineEventHandler(async (event) => {
       id
     ]
 
-    const result = await pool.query(query, values)
-    if (result.rows.length === 0) {
-      return { success: false, message: 'No se encontró el destino para modificar' }
+    // Iniciar transacción
+    const client = await pool.connect()
+    
+    try {
+      await client.query('BEGIN')
+      
+      // 1. Actualizar el destino
+      const result = await client.query(query, values)
+      if (result.rows.length === 0) {
+        await client.query('ROLLBACK')
+        return { success: false, message: 'No se encontró el destino para modificar' }
+      }
+      
+      const destinoActualizado = result.rows[0]
+      
+      
+      await client.query('COMMIT')
+      return { success: true, message: 'Destino modificado correctamente', destino: destinoActualizado }
+      
+    } catch (error) {
+      await client.query('ROLLBACK')
+      throw error
+    } finally {
+      client.release()
     }
-    return { success: true, message: 'Destino modificado correctamente', destino: result.rows[0] }
   } catch (error) {
     console.error('Error modificando destino:', error)
     return { success: false, message: 'Error modificando destino' }

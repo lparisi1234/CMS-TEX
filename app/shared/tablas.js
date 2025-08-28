@@ -298,6 +298,11 @@ const tablas = {
                     label: 'Consejo Experto',
                     type: 'textarea'
                 },
+                {
+                    key: 'subgrupos',
+                    label: 'Subgrupos',
+                    type: 'array',
+                },
             ]
         },
         {

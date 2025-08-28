@@ -23,7 +23,7 @@ const loadData = async () => {
             $fetch('/api/destinos/destinos'),
             $fetch('/api/expertos/expertos')
         ])
-        
+
         destinosData.value = destinosResponse || []
         expertosData.value = expertosResponse || []
     } catch (err) {
@@ -137,6 +137,11 @@ const paisesColumns = [
         label: 'Región',
         type: 'select',
         relatedTable: 'regiones'
+    },
+    {
+        key: 'subgrupos',
+        label: 'Subgrupos',
+        type: 'array'
     }
 ]
 
