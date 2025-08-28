@@ -23,6 +23,9 @@ export default defineEventHandler(async (event) => {
       nro_orden,
       precio_desde,
       region_id,
+      masVendidos,
+      vueloIncluido,
+      recomendados,
     } = await readBody(event)
 
     if (id === undefined) {
@@ -89,8 +92,27 @@ export default defineEventHandler(async (event) => {
       }
       
       const destinoActualizado = result.rows[0]
-      
-      
+
+      // 2. Reemplazar listas especiales si vienen en el payload
+      const replaceList = async (tableName: string, productos: any[] | undefined) => {
+        if (!productos) return
+        await client.query(`DELETE FROM "${tableName}" WHERE destino_id = $1`, [id])
+        if (Array.isArray(productos)) {
+          for (const productoId of productos) {
+            await client.query(`
+              INSERT INTO "${tableName}" (
+                "ProductoId",
+                destino_id
+              ) VALUES ($1, $2);
+            `, [productoId, id])
+          }
+        }
+      }
+
+      await replaceList('MasVendidos_dst', masVendidos)
+      await replaceList('VuelosIncluidos_dst', vueloIncluido)
+      await replaceList('Recomendados_dst', recomendados)
+
       await client.query('COMMIT')
       return { success: true, message: 'Destino modificado correctamente', destino: destinoActualizado }
       

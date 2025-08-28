@@ -21,7 +21,10 @@ export default defineEventHandler(async (event) => {
       nro_orden,
       precio_desde,
       region_id,
-      subgrupos
+      subgrupos,
+      masVendidos,
+      vueloIncluido,
+      recomendados
     } = await readBody(event)
 
     if (
@@ -126,6 +129,23 @@ export default defineEventHandler(async (event) => {
           }
         }
       }
+
+      // 3. Insertar listas especiales (una fila por producto)
+      const insertListItems = async (tableName: string, productos: any[] | undefined) => {
+        if (!productos || !Array.isArray(productos)) return
+        for (const productoId of productos) {
+          await client.query(`
+            INSERT INTO "${tableName}" (
+              "ProductoId",
+              destino_id
+            ) VALUES ($1, $2);
+          `, [productoId, destinoCreado.id])
+        }
+      }
+
+      await insertListItems('MasVendidos_dst', masVendidos)
+      await insertListItems('VuelosIncluidos_dst', vueloIncluido)
+      await insertListItems('Recomendados_dst', recomendados)
       
       await client.query('COMMIT')
       return { success: true, message: 'Destino creado correctamente', destino: destinoCreado }

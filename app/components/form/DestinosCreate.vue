@@ -441,8 +441,10 @@ const getTablaEspecialData = (tipo, destinoId) => {
             break
     }
 
-    const found = sourceData.find(item => item.destino_id === destinoId)
-    return found ? found.productos : []
+    if (!Array.isArray(sourceData)) return []
+    return sourceData
+        .filter(item => item.destino_id === destinoId)
+        .map(item => item.ProductoId)
 }
 
 const masVendidosDisplay = computed(() => {
@@ -914,7 +916,10 @@ const handleSubmit = async () => {
                 precio_desde: (formData.value.precio_desde && formData.value.precio_desde !== '') ? parseFloat(formData.value.precio_desde) : null,
                 experto_id: formData.value.experto_id ? parseInt(formData.value.experto_id) : null,
                 region_id: formData.value.regionId ? parseInt(formData.value.regionId) : null,
-                subgrupos: formData.value.subgrupos || []
+                subgrupos: formData.value.subgrupos || [],
+                masVendidos: Array.isArray(formData.value.masVendidos) ? formData.value.masVendidos : [],
+                vueloIncluido: Array.isArray(formData.value.vueloIncluido) ? formData.value.vueloIncluido : [],
+                recomendados: Array.isArray(formData.value.recomendados) ? formData.value.recomendados : []
             }
 
 
