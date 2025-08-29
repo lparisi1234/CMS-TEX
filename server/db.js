@@ -49,7 +49,7 @@ async function getDbPool() {
       host: "tex2-dev.cluster-c0lq6suu44up.us-east-1.rds.amazonaws.com",
       user: username,
       password: password,
-      database: "testdb",
+      database: "TEX_db",
       port: 5432,
     });
 
