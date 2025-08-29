@@ -146,7 +146,7 @@ const paisesColumns = [
 ]
 
 const relatedData = computed(() => ({
-    regiones: destinosData.value.filter(destino => !destino.regionId),
+    regiones: destinosData.value.filter(destino => !destino.region_id),
     expertos: expertosData.value
 }))
 

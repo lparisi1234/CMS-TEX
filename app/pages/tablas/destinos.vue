@@ -28,7 +28,6 @@
                 </div>
             </div>
 
-            <!-- REVISAR -->
             <div v-if="searchQuery && searchResults.length > 0"
                 class="bg-light border border-gray-200 rounded-lg shadow-sm max-h-64 overflow-y-auto mt-4">
                 <div v-for="result in searchResults" :key="`${result.type}-${result.id}`"
@@ -42,12 +41,12 @@
                                 (Código: {{ result.codigo_newton }})
                             </span>
                             <span class="ml-2 text-xs px-2 py-1 rounded"
-                                :class="result.type === 'destino' ? (result.regionId ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800') : 'bg-purple-100 text-purple-800'">
-                                {{ result.type === 'destino' ? (result.regionId ? 'País' : 'Región') : 'Ciudad' }}
+                                :class="result.type === 'destino' ? (result.region_id ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800') : 'bg-purple-100 text-purple-800'">
+                                {{ result.type === 'destino' ? (result.region_id ? 'País' : 'Región') : 'Ciudad' }}
                             </span>
                         </div>
                         <div class="text-sm text-gray-500">
-                            {{ result.type === 'destino' ? (result.regionId ? 'Destino País' : 'Destino Región') : `País
+                            {{ result.type === 'destino' ? (result.region_id ? 'Destino País' : 'Destino Región') : `País
                             ID: ${result.paises_id || 'N/A'}` }}
                         </div>
                     </div>
@@ -121,7 +120,7 @@ const handleSearch = () => {
 
 const goToResult = (result) => {
     if (result.type === 'destino') {
-        if (result.regionId) {
+        if (result.region_id) {
             navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.DESTINOS_PAISES}/${result.id}`)
         } else {
             navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.DESTINOS_REGIONES}/${result.id}`)

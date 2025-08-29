@@ -89,7 +89,7 @@ const destinos = [
         mapa: '46.2276,2.2137',
         estado: 'Activo',
         nro_orden: 3,
-        regionId: 10,
+        region_id: 10,
         subgrupos: [
             {
                 id: 6,
@@ -123,7 +123,7 @@ const destinos = [
         mapa: '55.3781,-3.4360',
         estado: 'Activo',
         nro_orden: 4,
-        regionId: 10,
+        region_id: 10,
         subgrupos: [
             {
                 id: 8,
@@ -157,7 +157,7 @@ const destinos = [
         mapa: '41.8719,12.5674',
         estado: 'Activo',
         nro_orden: 5,
-        regionId: 10,
+        region_id: 10,
         subgrupos: [
             {
                 id: 10,
@@ -191,7 +191,7 @@ const destinos = [
         mapa: '40.4637,-3.7492',
         estado: 'Activo',
         nro_orden: 6,
-        regionId: 10,
+        region_id: 10,
         subgrupos: [
             {
                 id: 12,
@@ -231,7 +231,7 @@ const destinos = [
         mapa: '-38.4161,-63.6167',
         estado: 'Activo',
         nro_orden: 7,
-        regionId: 11,
+        region_id: 11,
         subgrupos: [
             {
                 id: 15,

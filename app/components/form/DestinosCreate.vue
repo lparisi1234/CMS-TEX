@@ -329,7 +329,7 @@ const initFormData = () => {
     }
 
     if (props.tipo === 'pais') {
-        fullData.regionId = ''
+        fullData.region_id = ''
     }
 
     return fullData
@@ -348,7 +348,7 @@ const tabs = [
 
 const detailsColumns = [
     { key: 'cod_newton', label: 'Código Newton', type: 'number', required: true },
-    ...(props.tipo === 'pais' ? [{ key: 'regionId', label: 'Región', type: 'select', required: true, }] : []),
+    ...(props.tipo === 'pais' ? [{ key: 'region_id', label: 'Región', type: 'select', required: true, }] : []),
     { key: 'nombre', label: 'Nombre', type: 'text', required: true },
     { key: 'url', label: 'URL', type: 'text' },
     { key: 'h1', label: 'H1', type: 'text' },
@@ -388,7 +388,7 @@ const expertosOptions = computed(() => {
 
 const regionesOptions = computed(() => {
     return destinosData.value
-        .filter(destino => !destino.regionId)
+        .filter(destino => !destino.region_id)
         .map(region => ({
             value: region.id,
             label: region.nombre
@@ -397,7 +397,7 @@ const regionesOptions = computed(() => {
 
 const paisesOptions = computed(() => {
     return destinosData.value
-        .filter(destino => destino.regionId)
+        .filter(destino => destino.region_id)
         .map(pais => ({
             value: pais.id,
             label: pais.nombre
@@ -407,7 +407,7 @@ const paisesOptions = computed(() => {
 const setupSelectOptions = () => {
     selectOptions.value.experto_id = expertosOptions.value
     if (props.tipo === 'pais') {
-        selectOptions.value.regionId = regionesOptions.value
+        selectOptions.value.region_id = regionesOptions.value
     }
 }
 
@@ -861,7 +861,6 @@ const deleteSubgrupo = async (subgrupo) => {
 }
 
 const handleSubmit = async () => {
-    console.log('🚨 handleSubmit disparado')
     if (props.tipo === 'ciudad') {
         if (!formData.value.nombre || !formData.value.paises_id) {
             error('Por favor completa todos los campos requeridos')
@@ -915,7 +914,7 @@ const handleSubmit = async () => {
                 nro_orden: formData.value.nro_orden ? parseInt(formData.value.nro_orden) : null,
                 precio_desde: (formData.value.precio_desde && formData.value.precio_desde !== '') ? parseFloat(formData.value.precio_desde) : null,
                 experto_id: formData.value.experto_id ? parseInt(formData.value.experto_id) : null,
-                region_id: formData.value.regionId ? parseInt(formData.value.regionId) : null,
+                region_id: formData.value.region_id ? parseInt(formData.value.region_id) : null,
                 subgrupos: formData.value.subgrupos || [],
                 masVendidos: Array.isArray(formData.value.masVendidos) ? formData.value.masVendidos : [],
                 vueloIncluido: Array.isArray(formData.value.vueloIncluido) ? formData.value.vueloIncluido : [],
@@ -980,8 +979,8 @@ watch(() => props.editingData, (newData) => {
             if (newData.hasOwnProperty(key)) {
                 if (key === 'estado') {
                     formData.value[key] = newData[key] == 1 || newData[key] === true
-                } else if (key === 'regionId' && newData.region_id) {
-                    formData.value[key] = newData.region_id
+                } else if (key === 'region_id') {
+                    formData.value[key] = newData.region_id || ''
                 } else if (key === 'id') {
                     formData.value[key] = newData[key]
                 } else {

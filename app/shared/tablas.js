@@ -281,7 +281,7 @@ const tablas = {
                     type: 'currency'
                 },
                 {
-                    key: 'regionId',
+                    key: 'region_id',
                     label: 'Región',
                     type: 'select',
                     relatedTable: 'destinos'
@@ -952,7 +952,7 @@ const tablas = {
             showInNav: false,
             columns: [
                 {
-                    key: 'codigo_newton',
+                    key: 'cod_newton',
                     label: 'Código Newton',
                     type: 'number',
                     required: true
@@ -970,7 +970,7 @@ const tablas = {
                     required: true
                 },
                 {
-                    key: 'paises_id',
+                    key: 'destino_id',
                     label: 'País',
                     type: 'select',
                     relatedTable: 'destinos',

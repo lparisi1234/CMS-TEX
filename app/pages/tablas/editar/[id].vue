@@ -150,7 +150,7 @@ const getDestinoTipo = () => {
     }
 
     if (editingData.value) {
-        if (editingData.value.regionId) {
+        if (editingData.value.region_id) {
             return 'pais'
         } else {
             return 'region'
@@ -229,7 +229,7 @@ onMounted(async () => {
                 formData.value.id = parseInt(itemId)
             }
 
-            editingData.value = { ...formData.value }
+            editingData.value = loadedData || { ...formData.value }
         }
     }
 })

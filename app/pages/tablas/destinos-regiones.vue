@@ -38,7 +38,7 @@ onMounted(() => {
 })
 
 const regionesData = computed(() => {
-    return destinosData.value.filter(destino => !destino.regionId)
+    return destinosData.value.filter(destino => !destino.region_id)
 })
 
 const regionesColumns = [
