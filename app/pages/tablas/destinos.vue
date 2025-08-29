@@ -96,7 +96,7 @@ const handleSearch = () => {
 
     destinosData.value.forEach(destino => {
         const matchesName = destino.nombre.toLowerCase().includes(query)
-        const matchesCode = destino.codigo_newton.toString().includes(query)
+        const matchesCode = destino.cod_newton.toString().includes(query)
 
         if (matchesName || matchesCode) {
             results.push({
