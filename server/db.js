@@ -43,8 +43,8 @@ async function getDbPool() {
     if (!password) {
       throw new Error('No se encontró la contraseña en el secret');
     }
-    
 
+    
     const pool = new Pool({
       host: "tex2-dev.cluster-c0lq6suu44up.us-east-1.rds.amazonaws.com",
       user: username,
