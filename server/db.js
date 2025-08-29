@@ -1,28 +1,67 @@
-import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
-import { Pool } from 'pg';
+import {
+  SecretsManagerClient,
+  GetSecretValueCommand,
+} from "@aws-sdk/client-secrets-manager";
+import { Pool } from "pg"; // Asegúrate de importar Pool
 
-const secretName = "rds!cluster-006274a9-499c-42fd-8ee4-16da7a66ab2a";
-const region = 'us-east-1';
+const secret_name = "rds!cluster-006274a9-499c-42fd-8ee4-16da7a66ab2a";
+const client = new SecretsManagerClient({
+  region: "us-east-1",
+});
 
-const secretsClient = new SecretsManagerClient({ region });
+// Función para obtener el secret de AWS
+async function getSecret() {
+  try {
+    const response = await client.send(
+      new GetSecretValueCommand({
+        SecretId: secret_name,
+        VersionStage: "AWSCURRENT",
+      })
+    );
+    
+    // Parsear el JSON del secret
+    const secret = JSON.parse(response.SecretString);
+    
 
+    return secret;
+  } catch (error) {
+    console.error("Error obteniendo el secret:", error);
+    throw error;
+  }
+}
+
+// Función para crear el pool de conexiones
 async function getDbPool() {
-  //const command = new GetSecretValueCommand({ SecretId: secretName });
-  //const response = await secretsClient.send(command);
-  //const secret = JSON.parse(response.SecretString);
+  try {
+    // Obtener las credenciales del secret
+    const credentials = await getSecret();
+    
+    // Asegurar que la contraseña sea un string
+    const password = String(credentials.password || credentials.pass || '');
+    const username = String(credentials.username || credentials.user || 'postgres');
+    
+    if (!password) {
+      throw new Error('No se encontró la contraseña en el secret');
+    }
+    
 
-  const pool = new Pool({
-    host: "tex2-dev.cluster-c0lq6suu44up.us-east-1.rds.amazonaws.com",
-    user: "postgres",
-    password: "86!<JXUYcTOwEm*$u30X3WYXV*]7",
-    database: "testdb",
-    port: 5432,
-  });
+    const pool = new Pool({
+      host: "tex2-dev.cluster-c0lq6suu44up.us-east-1.rds.amazonaws.com",
+      user: username,
+      password: password,
+      database: "testdb",
+      port: 5432,
+    });
 
-  return pool;
+    return pool;
+  } catch (error) {
+    console.error("Error creando el pool de conexiones:", error);
+    throw error;
+  }
 }
 
 export default getDbPool;
+
 
 
 // ///FUNCIONA DE FORMA LOCAL
