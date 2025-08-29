@@ -37,11 +37,11 @@ onMounted(() => {
 })
 
 const paisesData = computed(() => {
-    return destinosData.value.filter(destino => !destino.regionId)
+    return destinosData.value.filter(destino => destino.region_id)
 })
 
 const regionesMap = computed(() => {
-    const regiones = destinosData.value.filter(destino => !destino.regionId)
+    const regiones = destinosData.value.filter(destino => !destino.region_id)
     const map = {}
     regiones.forEach(region => {
         map[region.id] = region.nombre
@@ -133,7 +133,7 @@ const paisesColumns = [
         type: 'number'
     },
     {
-        key: 'regionId',
+        key: 'region_id',
         label: 'Región',
         type: 'select',
         relatedTable: 'regiones'
