@@ -157,7 +157,7 @@ const processFile = async (file) => {
         fileSize.value = formatFileSize(file.size)
         fileType.value = file.name.split('.').pop()?.toLowerCase() || ''
 
-        await simulateUpload(file)
+        await uploadFile(file)
 
         if (showError.value) {
             showError.value = false
