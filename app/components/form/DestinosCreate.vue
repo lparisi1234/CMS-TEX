@@ -500,14 +500,31 @@ const handleEditTablaEspecial = (tipo, item) => {
     currentTablaEspecial.value = tipo
     currentTablaEspecialName.value = item.nombre
 
-    let productos = formData.value[tipo] || []
-
-    if (props.isEditing && productos.length === 0 && props.editingData?.id) {
-        productos = getTablaEspecialData(tipo, props.editingData.id)
-        formData.value[tipo] = productos
+    // Asegurarse de que los datos existentes estén cargados para TODAS las secciones
+    if (props.isEditing && props.editingData?.id) {
+        // Cargar datos de más vendidos si no están cargados
+        if (!formData.value.masVendidos || formData.value.masVendidos.length === 0) {
+            formData.value.masVendidos = masVendidosData.value
+                .filter(item => item.destino_id === props.editingData.id)
+                .map(item => item.ProductoId)
+        }
+        
+        // Cargar datos de vuelo incluido si no están cargados
+        if (!formData.value.vueloIncluido || formData.value.vueloIncluido.length === 0) {
+            formData.value.vueloIncluido = vueloIncluidoData.value
+                .filter(item => item.destino_id === props.editingData.id)
+                .map(item => item.ProductoId)
+        }
+        
+        // Cargar datos de recomendados si no están cargados
+        if (!formData.value.recomendados || formData.value.recomendados.length === 0) {
+            formData.value.recomendados = recomendadosData.value
+                .filter(item => item.destino_id === props.editingData.id)
+                .map(item => item.ProductoId)
+        }
     }
 
-    modalTablaEspecial.value.productos_text = productos.join(' ')
+    modalTablaEspecial.value.productos_text = formData.value[tipo]?.join(' ') || ''
     showTablaEspecialModal.value = true
 }
 
@@ -525,14 +542,39 @@ const handleTablaEspecialModalBackgroundClick = (event) => {
 }
 
 const saveTablaEspecial = () => {
-    const productos = modalTablaEspecial.value.productos_text
+    // Obtener los productos del modal
+    const nuevosProductos = modalTablaEspecial.value.productos_text
         ? modalTablaEspecial.value.productos_text
             .split(/\s+/)
             .map(id => id.trim())
             .filter(id => id.length > 0)
         : []
 
-    formData.value[currentTablaEspecial.value] = productos
+    // Actualizar solo la sección específica sin tocar las otras
+    switch (currentTablaEspecial.value) {
+        case 'masVendidos':
+            formData.value = {
+                ...formData.value,
+                masVendidos: nuevosProductos,
+                _masVendidosModified: true // Flag para indicar modificación
+            }
+            break
+        case 'vueloIncluido':
+            formData.value = {
+                ...formData.value,
+                vueloIncluido: nuevosProductos,
+                _vueloIncluidoModified: true // Flag para indicar modificación
+            }
+            break
+        case 'recomendados':
+            formData.value = {
+                ...formData.value,
+                recomendados: nuevosProductos,
+                _recomendadosModified: true // Flag para indicar modificación
+            }
+            break
+    }
+
     closeTablaEspecialModal()
 }
 
@@ -915,12 +957,24 @@ const handleSubmit = async () => {
                 precio_desde: (formData.value.precio_desde && formData.value.precio_desde !== '') ? parseFloat(formData.value.precio_desde) : null,
                 experto_id: formData.value.experto_id ? parseInt(formData.value.experto_id) : null,
                 region_id: formData.value.region_id ? parseInt(formData.value.region_id) : null,
-                subgrupos: formData.value.subgrupos || [],
-                masVendidos: Array.isArray(formData.value.masVendidos) ? formData.value.masVendidos : [],
-                vueloIncluido: Array.isArray(formData.value.vueloIncluido) ? formData.value.vueloIncluido : [],
-                recomendados: Array.isArray(formData.value.recomendados) ? formData.value.recomendados : []
+                subgrupos: formData.value.subgrupos || []
             }
 
+            // Solo incluir los arrays que fueron modificados
+            if (formData.value._masVendidosModified) {
+                destinoData.masVendidos = formData.value.masVendidos || []
+            }
+            if (formData.value._vueloIncluidoModified) {
+                destinoData.vueloIncluido = formData.value.vueloIncluido || []
+            }
+            if (formData.value._recomendadosModified) {
+                destinoData.recomendados = formData.value.recomendados || []
+            }
+
+            // Limpiar flags temporales
+            delete destinoData._masVendidosModified
+            delete destinoData._vueloIncluidoModified
+            delete destinoData._recomendadosModified
 
             if (props.isEditing && props.editingData?.id) {
                 destinoData.id = props.editingData.id
@@ -970,6 +1024,7 @@ onMounted(async () => {
     await nextTick()
     setupSelectOptions()
     await loadSubgrupos()
+    await loadRelatedProducts() // Agregar esta línea
 })
 
 
