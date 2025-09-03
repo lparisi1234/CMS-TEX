@@ -155,7 +155,8 @@ const tablas = {
                 {
                     key: 'whatsapp',
                     label: 'Whatsapp',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
             ]
         },
@@ -169,7 +170,8 @@ const tablas = {
                 {
                     key: 'nombre',
                     label: 'Nombre',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'numero_telefono',
@@ -179,18 +181,21 @@ const tablas = {
                 {
                     key: 'img',
                     label: 'Imagen',
-                    type: 'image'
+                    type: 'image',
+                    required: true
                 },
                 {
                     key: 'pais_apertura',
                     label: 'País Apertura',
                     type: 'text',
+                    required: true
                 },
                 {
                     key: 'segmentos_id',
                     label: 'Segmento',
                     type: 'select',
-                    relatedTable: 'segmentos'
+                    relatedTable: 'segmentos',
+                    required: true
                 },
             ]
         },
@@ -210,7 +215,8 @@ const tablas = {
                 {
                     key: 'url',
                     label: 'URL',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'nombre',
@@ -221,48 +227,56 @@ const tablas = {
                 {
                     key: 'h1',
                     label: 'H1',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'h2',
                     label: 'H2',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'meta_titulo',
                     label: 'Meta Título',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'meta_descripcion',
                     label: 'Meta Descripción',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'meta_keywords',
                     label: 'Meta Keywords',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'video_mobile',
                     label: 'Video Mobile',
-                    type: 'image'
+                    type: 'image',
+                    required: true
                 },
                 {
                     key: 'video_desktop',
                     label: 'Video Desktop',
-                    type: 'image'
+                    type: 'image',
+                    required: true
                 },
                 {
                     key: 'img',
                     label: 'Imagen',
-                    type: 'image'
+                    type: 'image',
+                    required: true
                 },
-
                 {
                     key: 'mapa',
                     label: 'Coordenadas',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'estado',
@@ -276,11 +290,6 @@ const tablas = {
                     type: 'number'
                 },
                 {
-                    key: 'desde_precio',
-                    label: 'Precio Desde',
-                    type: 'currency'
-                },
-                {
                     key: 'region_id',
                     label: 'Región',
                     type: 'select',
@@ -291,12 +300,14 @@ const tablas = {
                     label: 'Experto',
                     type: 'select',
                     relatedTable: 'expertos',
-                    displayField: 'nombre'
+                    displayField: 'nombre',
+                    required: true
                 },
                 {
                     key: 'consejo_experto',
                     label: 'Consejo Experto',
-                    type: 'textarea'
+                    type: 'textarea',
+                    required: true
                 },
                 {
                     key: 'subgrupos',
@@ -524,7 +535,7 @@ const tablas = {
                     type: 'text'
                 },
                 {
-                    key: 'codigonewton',
+                    key: 'cod_newton',
                     label: 'Código Newton',
                     type: 'number',
                     required: true
@@ -685,7 +696,7 @@ const tablas = {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
-                    
+                    required: true
                 },
                 {
                     key: 'nro_orden',
@@ -719,8 +730,8 @@ const tablas = {
                 {
                     key: 'img',
                     label: 'Imagen',
-                    type: 'image'
-                    
+                    type: 'image',
+                    required: true
                 },
                 {
                     key: 'segmentos_id',
@@ -852,22 +863,26 @@ const tablas = {
                 {
                     key: 'descripcion',
                     label: 'Descripción',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'img',
                     label: 'Imagen',
-                    type: 'image'
+                    type: 'image',
+                    required: true
                 },
                 {
                     key: 'url',
                     label: 'URL',
-                    type: 'text'
+                    type: 'text',
+                    required: true
                 },
                 {
                     key: 'estado',
                     label: 'Estado',
-                    type: 'boolean'
+                    type: 'boolean',
+                    required: true
                 }
             ]
         },
@@ -882,26 +897,31 @@ const tablas = {
                     key: 'titulo',
                     label: 'Título',
                     type: 'text',
+                    required: true
                 },
                 {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
+                    required: true
                 },
                 {
                     key: 'autor',
                     label: 'Autor',
                     type: 'text',
+                    required: true
                 },
                 {
                     key: 'fecha',
                     label: 'Fecha',
                     type: 'date',
+                    required: true
                 },
                 {
                     key: 'estado',
                     label: 'Estado',
                     type: 'boolean',
+                    required: true
                 },
                 {
                     key: 'destacado_home',
