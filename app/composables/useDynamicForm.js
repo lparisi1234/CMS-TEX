@@ -151,7 +151,8 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
                             if (typeof value === 'string' && value) {
                                 formData.value[column.key] = value.split(',').map(v => v.trim()).filter(Boolean)
                             } else if (Array.isArray(value)) {
-                                formData.value[column.key] = value
+                                // Asegurar que todos los valores sean strings para los checkboxes
+                                formData.value[column.key] = value.map(v => String(v)).filter(v => v !== 'null' && v !== 'undefined')
                             } else {
                                 formData.value[column.key] = []
                             }

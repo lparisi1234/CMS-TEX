@@ -1,9 +1,11 @@
 import getDbPool from "../../db"
 
 export default defineEventHandler(async (event) => {
+  const pool = await getDbPool()
+  const client = await pool.connect()
+
   try {
-    const pool = await getDbPool()
-    const {
+      const {
       id,
       descripcion,
       titulo,
@@ -39,6 +41,8 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
+     await client.query('BEGIN');
+
     let estadoDb;
     switch ((estado || '').toString().toLowerCase()) {
       case 'activo':
@@ -52,7 +56,7 @@ export default defineEventHandler(async (event) => {
         estadoDb = false
     }
 
-    const query = `
+    const queryGrupoOferta = `
       UPDATE "GrupoDeOferta" SET
         descripcion = $1,
         titulo = $2,
@@ -65,13 +69,12 @@ export default defineEventHandler(async (event) => {
         nro_orden = $9,
         url = $10,
         estado = $11,
-        segmentos_id = $12,
-        descuento_id = $13
-      WHERE id = $14
+        descuento_id = $12
+      WHERE id = $13
       RETURNING *;
     `;
 
-    const values = [
+    const resultadoGrupoOferta = await client.query(queryGrupoOferta, [
       descripcion,
       titulo,
       subtitulo,
@@ -83,18 +86,43 @@ export default defineEventHandler(async (event) => {
       nro_orden,
       url,
       estadoDb,
-      segmentos_id,
       descuento_id,
       id
-    ];
+    ]);
 
-    const result = await pool.query(query, values)
-    if (result.rows.length === 0) {
-      return { success: false, message: 'No se encontró el grupo de oferta para modificar' }
+    if (resultadoGrupoOferta.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return { success: false, message: 'El registro no se encontró.' };
     }
-    return { success: true, message: 'Grupo de oferta modificado correctamente', grupo: result.rows[0] }
+
+    const queryDeleteSegmentos = `
+      DELETE FROM "GrupoDeOferta_Segmento"
+      WHERE grupodeoferta_id = $1;
+    `;
+    await client.query(queryDeleteSegmentos, [id]);
+
+    if (segmentos_id && Array.isArray(segmentos_id) && segmentos_id.length > 0) {
+      const queryInsertSegmentos = `
+        INSERT INTO "GrupoDeOferta_Segmento" (grupodeoferta_id, segmento_id) VALUES ($1, $2);
+      `;
+      for (const segmentoId of segmentos_id) {
+        await client.query(queryInsertSegmentos, [id, parseInt(segmentoId)]);
+      }
+    }
+
+    await client.query('COMMIT');
+
+    return {
+      success: true,
+      message: 'Grupo de oferta actualizado correctamente.',
+      destino: { ...resultadoGrupoOferta.rows[0], segmentos_id }
+    };
+
   } catch (error) {
-    console.error('Error modificando grupo de oferta:', error)
-    return { success: false, message: 'Error modificando grupo de oferta' }
+    await client.query('ROLLBACK'); // Deshacer los cambios en caso de error
+    console.error('Error actualizando grupo de oferta:', error);
+    return { success: false, message: 'Error actualizando grupo de oferta.' };
+  } finally {
+    client.release();
   }
 })
