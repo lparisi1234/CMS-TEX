@@ -7,8 +7,7 @@
                         <FormTextField v-model="formData.nombreprod" id="nombreprod" label="Nombre del Producto"
                             required placeholder="Ingresa el nombre del producto" :error="errors.nombreprod" />
                         <FormTextField v-model="formData.codigonewton" id="codigonewton" label="Código Newton"
-                            type="text" required placeholder="Código único del producto"
-                            :error="errors.codigonewton" />
+                            type="text" required placeholder="Código único del producto" :error="errors.codigonewton" />
                     </FormFieldsContainer>
 
                     <FormFieldsContainer>
@@ -139,20 +138,18 @@
 <script setup>
 const { success, error } = useNotification()
 
-// Datos reactivos para endpoints
 const segmentosData = ref([])
 const expertosData = ref([])
 const productosData = ref([])
 
-// Cargar datos desde endpoints
 const loadData = async () => {
     try {
         const [segmentos, expertos, productos] = await Promise.all([
             $fetch('/api/segmentos/segmentos'),
-            $fetch('/api/expertos/expertos'),  
+            $fetch('/api/expertos/expertos'),
             $fetch('/api/productos/productos')
         ])
-        
+
         segmentosData.value = segmentos || []
         expertosData.value = expertos || []
         productosData.value = productos || []
@@ -187,7 +184,7 @@ const formData = ref({
     video_mapa_mobile: '',
     video_mapa_desktop: '',
     podcast: '',
-    codigonewton: '',
+    cod_newton: '',
     url: '',
     cantidad_estrellas: 5,
     cantidadAport: 0,
@@ -196,7 +193,7 @@ const formData = ref({
     meta_titulo: '',
     meta_descripcion: '',
     precio_total: 0,
-    estado: 'Activo',
+    estado: '',
     segmentos_excluidos: [],
     secciones: []
 })
@@ -399,7 +396,6 @@ const handleSubmit = async () => {
             dataToSubmit.id = `3/${lastDigits}`
         }
 
-        // Convertir tipos de datos
         dataToSubmit.cantidad_estrellas = parseInt(dataToSubmit.cantidad_estrellas) || 5
         dataToSubmit.cantidadAport = parseInt(dataToSubmit.cantidadAport) || 0
         dataToSubmit.expertoId = dataToSubmit.expertoId ? parseInt(dataToSubmit.expertoId) : null
@@ -410,7 +406,7 @@ const handleSubmit = async () => {
                 method: 'PUT',
                 body: dataToSubmit
             })
-            
+
             if (result.success) {
                 success('Producto actualizado correctamente')
                 emit('success')
@@ -422,7 +418,7 @@ const handleSubmit = async () => {
                 method: 'PUT',
                 body: dataToSubmit
             })
-            
+
             if (result.success) {
                 success('Producto creado correctamente')
                 emit('success')
@@ -453,7 +449,11 @@ const loadProductData = async () => {
                             ? [...producto[key]]
                             : []
                     } else {
-                        formData.value[key] = producto[key]
+                        if (key === 'estado' && typeof producto[key] === 'boolean') {
+                            formData.value[key] = producto[key] ? 'Activo' : 'Inactivo'
+                        } else {
+                            formData.value[key] = producto[key]
+                        }
                     }
                 }
             })
@@ -466,7 +466,11 @@ const loadProductData = async () => {
                         ? [...props.editingData[key]]
                         : []
                 } else {
-                    formData.value[key] = props.editingData[key]
+                    if (key === 'estado' && typeof props.editingData[key] === 'boolean') {
+                        formData.value[key] = props.editingData[key] ? 'Activo' : 'Inactivo'
+                    } else {
+                        formData.value[key] = props.editingData[key]
+                    }
                 }
             }
         })

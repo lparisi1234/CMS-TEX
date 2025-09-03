@@ -1024,7 +1024,6 @@ onMounted(async () => {
     await nextTick()
     setupSelectOptions()
     await loadSubgrupos()
-    await loadRelatedProducts() // Agregar esta línea
 })
 
 

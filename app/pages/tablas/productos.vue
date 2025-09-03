@@ -18,11 +18,11 @@
             </div>
 
             <div v-if="searchCodigoNewton && filteredProductos.length > 0" class="flex flex-col gap-2 mt-4">
-                <div v-for="producto in filteredProductos.slice(0, 10)" :key="producto.codigo_newton"
+                <div v-for="producto in filteredProductos.slice(0, 10)" :key="producto.cod_newton"
                     class="flex justify-between items-center bg-white border rounded-lg shadow-sm p-4">
                     <div>
                         <p class="font-semibold">{{ producto.nombreprod }}</p>
-                        <p class="text-sm text-gray-dark">Código Newton: {{ producto.codigo_newton }}</p>
+                        <p class="text-sm text-gray-dark">Código Newton: {{ producto.cod_newton }}</p>
                     </div>
                     <div class="flex gap-2">
                         <button @click="handleEdit(producto)" class="bg-secondary text-light rounded text-sm px-3 py-2">
@@ -57,9 +57,7 @@ const productos = ref([])
 const loadProductos = async () => {
     try {
         const data = await $fetch('/api/productos/productos')
-        console.log('Productos cargados:', data)
         productos.value = data || []
-        console.log('Productos en estado:', productos.value)
     } catch (err) {
         console.error('Error cargando productos:', err)
         error('Error al cargar los productos')

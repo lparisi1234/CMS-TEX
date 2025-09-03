@@ -38,7 +38,7 @@
                             <span class="font-medium">{{ result.nombre }}</span>
                             <!-- Mostrar código Newton si es un destino -->
                             <span v-if="result.type === 'destino'" class="ml-2 text-xs text-gray-500">
-                                (Código: {{ result.codigo_newton }})
+                                (Código: {{ result.cod_newton }})
                             </span>
                             <span class="ml-2 text-xs px-2 py-1 rounded"
                                 :class="result.type === 'destino' ? (result.region_id ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800') : 'bg-purple-100 text-purple-800'">
