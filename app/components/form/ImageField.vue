@@ -167,7 +167,6 @@ const simulateUpload = async (file) => {
     }
 }
 
-
 const removeImage = () => {
     imagePreview.value = ''
     fileName.value = ''
@@ -193,54 +192,4 @@ watchEffect(() => {
         showError.value = true
     }
 })
-
-const uploadFile = async (file) => {
-  uploading.value = true
-  uploadProgress.value = 0
-  emit('upload-start', file)
-
-  try {
-    // Convertir el archivo a DataURL (base64)
-    const reader = new FileReader()
-    const dataUrl = await new Promise((resolve, reject) => {
-      reader.onload = () => resolve(reader.result)
-      reader.onerror = reject
-      reader.readAsDataURL(file)
-    })
-
-    // Hacer la request a tu endpoint
-    const res = await fetch('/api/notas-de-prensa/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        descripcion: "Descripción de prueba",
-        img: dataUrl,   // 👈 acá mandás la imagen base64
-        url: "https://ejemplo.com",
-        estado: "activo"
-      })
-    })
-
-    const result = await res.json()
-
-    if (!result.success) {
-      throw new Error(result.message || 'Error en la subida')
-    }
-
-    // El backend devuelve la URL final en S3
-    const finalUrl = result.blog.img
-
-    imagePreview.value = finalUrl
-    emit('update:modelValue', finalUrl)
-    emit('upload-complete', finalUrl)
-  } catch (err) {
-    emit('upload-error', err.message)
-    console.error('Error subiendo archivo:', err)
-  } finally {
-    uploading.value = false
-    uploadProgress.value = 100
-  }
-}
-
 </script>
