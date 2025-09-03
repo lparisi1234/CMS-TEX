@@ -53,79 +53,94 @@ const paisesColumns = [
     {
         key: 'cod_newton',
         label: 'Código Newton',
-        type: 'number'
+        type: 'number',
+        required: true
     },
     {
         key: 'url',
         label: 'URL',
-        type: 'text'
+        type: 'text',
+        required: true
     },
     {
         key: 'nombre',
         label: 'Nombre',
-        type: 'text'
+        type: 'text',
+        required: true
     },
     {
         key: 'h1',
         label: 'H1',
-        type: 'text'
+        type: 'text',
+        required: true
     },
     {
         key: 'h2',
         label: 'H2',
-        type: 'text'
+        type: 'text',
+        required: true
     },
     {
         key: 'video_mobile',
         label: 'Video Mobile',
-        type: 'image'
+        type: 'image',
+        required: true
     },
     {
         key: 'video_desktop',
         label: 'Video Desktop',
-        type: 'image'
+        type: 'image',
+        required: true
     },
     {
         key: 'experto_id',
         label: 'Experto',
         type: 'select',
         relatedTable: 'expertos',
-        displayField: 'nombre'
+        displayField: 'nombre',
+        required: true
     },
     {
         key: 'consejo_experto',
         label: 'Consejo Experto',
-        type: 'text'
+        type: 'text',
+        required: true
     },
     {
         key: 'img',
         label: 'Imagen',
-        type: 'image'
+        type: 'image',
+        required: true
     },
     {
         key: 'meta_titulo',
         label: 'Meta Título',
-        type: 'text'
+        type: 'text',
+        required: true
     },
     {
         key: 'meta_descripcion',
         label: 'Meta Descripción',
-        type: 'text'
+        type: 'text',
+        required: true
     },
     {
         key: 'meta_keywords',
         label: 'Meta Keywords',
-        type: 'text'
+        type: 'text',
+        required: true
     },
     {
         key: 'mapa',
         label: 'Coordenadas',
-        type: 'text'
+        type: 'text',
+        required: true
     },
     {
         key: 'estado',
         label: 'Estado',
-        type: 'badge'
+        type: 'badge',
+        required: true
     },
     {
         key: 'nro_orden',
@@ -136,7 +151,8 @@ const paisesColumns = [
         key: 'region_id',
         label: 'Región',
         type: 'select',
-        relatedTable: 'regiones'
+        relatedTable: 'regiones',
+        required: true
     },
     {
         key: 'subgrupos',

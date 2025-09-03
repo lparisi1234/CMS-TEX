@@ -11,7 +11,8 @@
                     placeholder="Selecciona una categoría" />
             </div>
             <div class="flex gap-2">
-                <ButtonPrimary @click="handleSearch" :disabled="!selectedCategoriaId" class="h-[3.375rem] !px-4 sm:!px-12">
+                <ButtonPrimary @click="handleSearch" :disabled="!selectedCategoriaId"
+                    class="h-[3.375rem] !px-4 sm:!px-12">
                     Buscar
                 </ButtonPrimary>
             </div>
@@ -39,33 +40,39 @@ const tabla = {
         {
             key: 'id',
             label: 'ID',
-            type: 'number'
+            type: 'number',
+            required: true
         },
         {
             key: 'titulo',
             label: 'Título',
-            type: 'text'
+            type: 'text',
+            required: true
         },
         {
             key: 'descripcion',
             label: 'Texto',
-            type: 'text'
+            type: 'text',
+            required: true
         },
         {
             key: 'img',
             label: 'Imagen',
-            type: 'image'
+            type: 'image',
+            required: true
         },
         {
             key: 'nro_orden',
             label: 'Número de Orden',
-            type: 'number'
+            type: 'number',
+            required: true
         },
         {
             key: 'categoria_id',
             label: 'Categoría',
             type: 'select',
-            relatedTable: 'categorias'
+            relatedTable: 'categorias',
+            required: true
         }
     ]
 }
@@ -83,7 +90,7 @@ const loadData = async () => {
             $fetch('/api/que-esperar-categorias/que-esperar-categorias'),
             $fetch('/api/categorias/categorias')
         ])
-        
+
         queEsperarData.value = queEsperarResponse || []
         categoriasData.value = categoriasResponse || []
     } catch (err) {
