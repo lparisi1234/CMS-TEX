@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
         const deleteResponse = await $fetch('/api/delete-image', {
           method: 'POST',
           body: { imageUrl: notadeprensa.img }
-        })
+        }) as { success: boolean }
         
         if (deleteResponse.success) {
           console.log('Imagen eliminada de S3:', notadeprensa.img)

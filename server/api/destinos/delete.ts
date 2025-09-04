@@ -8,6 +8,14 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'ID requerido' }
     }
 
+    // Primero obtener la imagen antes de eliminar el registro
+    const result = await pool.query('SELECT img FROM "Destinos" WHERE id = $1', [id])
+    const destino = result.rows[0]
+    
+    if (!destino) {
+      return { success: false, message: 'Destino no encontrado' }
+    }
+
     // Iniciar transacción
     const client = await pool.connect()
     
@@ -25,6 +33,25 @@ export default defineEventHandler(async (event) => {
       await client.query('DELETE FROM "Destinos" WHERE id = $1', [id])
 
       await client.query('COMMIT')
+
+      // Eliminar la imagen de S3 si existe (después de la transacción)
+      if (destino.img) {
+        try {
+          const deleteResponse = await $fetch('/api/delete-image', {
+            method: 'POST',
+            body: { imageUrl: destino.img }
+          }) as { success: boolean }
+          
+          if (deleteResponse.success) {
+            console.log('Imagen eliminada de S3:', destino.img)
+          } else {
+            console.warn('No se pudo eliminar la imagen de S3:', destino.img)
+          }
+        } catch (error) {
+          console.warn('Error eliminando imagen de S3:', error)
+        }
+      }
+
       return { success: true, message: 'Destino eliminado correctamente' }
 
     } catch (error) {

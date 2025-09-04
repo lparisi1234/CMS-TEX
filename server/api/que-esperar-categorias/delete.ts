@@ -7,7 +7,36 @@ export default defineEventHandler(async (event) => {
     if (!id) {
       return { success: false, message: 'ID requerido' }
     }
+
+    // Primero obtener la imagen antes de eliminar el registro
+    const result = await pool.query('SELECT img FROM "QueEsperar" WHERE id = $1', [id])
+    const queEsperar = result.rows[0]
+    
+    if (!queEsperar) {
+      return { success: false, message: 'Que esperar no encontrado' }
+    }
+
+    // Eliminar el registro de la base de datos
     await pool.query('DELETE FROM "QueEsperar" WHERE id = $1', [id])
+
+    // Eliminar la imagen de S3 si existe
+    if (queEsperar.img) {
+      try {
+        const deleteResponse = await $fetch('/api/delete-image', {
+          method: 'POST',
+          body: { imageUrl: queEsperar.img }
+        }) as { success: boolean }
+        
+        if (deleteResponse.success) {
+          console.log('Imagen eliminada de S3:', queEsperar.img)
+        } else {
+          console.warn('No se pudo eliminar la imagen de S3:', queEsperar.img)
+        }
+      } catch (error) {
+        console.warn('Error eliminando imagen de S3:', error)
+      }
+    }
+
     return { success: true, message: 'Que esperar eliminado correctamente' }
   } catch (error) {
     console.error('Error eliminando que esperar:', error)

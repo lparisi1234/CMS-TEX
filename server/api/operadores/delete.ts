@@ -7,7 +7,36 @@ export default defineEventHandler(async (event) => {
     if (!id) {
       return { success: false, message: 'ID requerido' }
     }
+
+    // Primero obtener la imagen antes de eliminar el registro
+    const result = await pool.query('SELECT img FROM "Operador" WHERE id = $1', [id])
+    const operador = result.rows[0]
+    
+    if (!operador) {
+      return { success: false, message: 'Operador no encontrado' }
+    }
+
+    // Eliminar el registro de la base de datos
     await pool.query('DELETE FROM "Operador" WHERE id = $1', [id])
+
+    // Eliminar la imagen de S3 si existe
+    if (operador.img) {
+      try {
+        const deleteResponse = await $fetch('/api/delete-image', {
+          method: 'POST',
+          body: { imageUrl: operador.img }
+        }) as { success: boolean }
+        
+        if (deleteResponse.success) {
+          console.log('Imagen eliminada de S3:', operador.img)
+        } else {
+          console.warn('No se pudo eliminar la imagen de S3:', operador.img)
+        }
+      } catch (error) {
+        console.warn('Error eliminando imagen de S3:', error)
+      }
+    }
+
     return { success: true, message: 'Operador eliminado correctamente' }
   } catch (error) {
     console.error('Error eliminando Operador:', error)
