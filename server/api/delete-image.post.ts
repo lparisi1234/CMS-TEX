@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
     // Extraer la ruta S3 de la URL
     // URL: https://tex2-static-images-prd.s3.amazonaws.com/carpeta/archivo.jpg
     // Ruta S3: s3://tex2-static-images-prd/carpeta/archivo.jpg
-    const urlParts = imageUrl.split('.s3.amazonaws.com/')
+    const urlParts = imageUrl.split('.s3.us-east-1.amazonaws.com/')
     if (urlParts.length !== 2) {
       throw createError({
         statusCode: 400,
