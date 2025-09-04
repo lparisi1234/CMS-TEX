@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
     }
 
     
-    const estadoDB = estado === "activo" ? true : false;
+    const estadoDB = estado === true ? true : false;
 
     const query = `
       INSERT INTO "NotaBlog" (
