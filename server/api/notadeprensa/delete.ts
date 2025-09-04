@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
     await pool.query('DELETE FROM "NotaDePrensa" WHERE id = $1', [id])
 
     // Eliminar la imagen de S3 si existe
-    if (notadeprensa.img && notadeprensa.img.includes('.s3.amazonaws.com/')) {
+    if (notadeprensa.img) {
       try {
         const deleteResponse = await $fetch('/api/delete-image', {
           method: 'POST',
