@@ -41,6 +41,14 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
+    // Primero obtener las imágenes anteriores antes de la transacción
+    const oldResult = await pool.query('SELECT img_desktop, img_tablet, img_mobile FROM "GrupoDeOferta" WHERE id = $1', [id])
+    const oldGrupoOferta = oldResult.rows[0]
+    
+    if (!oldGrupoOferta) {
+      return { success: false, message: 'Grupo de oferta no encontrado' }
+    }
+
      await client.query('BEGIN');
 
     let estadoDb;
@@ -111,6 +119,33 @@ export default defineEventHandler(async (event) => {
     }
 
     await client.query('COMMIT');
+
+    // Función auxiliar para eliminar imagen de S3
+    const deleteImageFromS3 = async (imageUrl: string) => {
+      if (!imageUrl) return
+      
+      try {
+        const deleteResponse = await $fetch('/api/delete-image', {
+          method: 'POST',
+          body: { imageUrl }
+        }) as { success: boolean }
+        
+        if (deleteResponse.success) {
+          console.log('Imagen anterior eliminada de S3:', imageUrl)
+        } else {
+          console.warn('No se pudo eliminar la imagen anterior de S3:', imageUrl)
+        }
+      } catch (error) {
+        console.warn('Error eliminando imagen anterior de S3:', error)
+      }
+    }
+
+    // Eliminar las imágenes anteriores de S3 si son diferentes a las nuevas (después de la transacción)
+    await Promise.all([
+      oldGrupoOferta.img_desktop !== img_desktop ? deleteImageFromS3(oldGrupoOferta.img_desktop) : Promise.resolve(),
+      oldGrupoOferta.img_tablet !== img_tablet ? deleteImageFromS3(oldGrupoOferta.img_tablet) : Promise.resolve(),
+      oldGrupoOferta.img_mobile !== img_mobile ? deleteImageFromS3(oldGrupoOferta.img_mobile) : Promise.resolve()
+    ])
 
     return {
       success: true,

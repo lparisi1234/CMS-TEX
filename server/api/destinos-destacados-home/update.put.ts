@@ -26,6 +26,14 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
+    // Primero obtener la imagen anterior antes de la transacción
+    const oldResult = await pool.query('SELECT img FROM "DestinoHome" WHERE id = $1', [id])
+    const oldDestinoHome = oldResult.rows[0]
+    
+    if (!oldDestinoHome) {
+      return { success: false, message: 'Destino destacado no encontrado' }
+    }
+
     await client.query('BEGIN');
 
     const queryDestinoHome = `
@@ -67,6 +75,24 @@ export default defineEventHandler(async (event) => {
     }
 
     await client.query('COMMIT');
+
+    // Eliminar la imagen anterior de S3 si es diferente a la nueva (después de la transacción)
+    if (oldDestinoHome.img && oldDestinoHome.img !== img) {
+      try {
+        const deleteResponse = await $fetch('/api/delete-image', {
+          method: 'POST',
+          body: { imageUrl: oldDestinoHome.img }
+        }) as { success: boolean }
+        
+        if (deleteResponse.success) {
+          console.log('Imagen anterior eliminada de S3:', oldDestinoHome.img)
+        } else {
+          console.warn('No se pudo eliminar la imagen anterior de S3:', oldDestinoHome.img)
+        }
+      } catch (error) {
+        console.warn('Error eliminando imagen anterior de S3:', error)
+      }
+    }
 
     return {
       success: true,

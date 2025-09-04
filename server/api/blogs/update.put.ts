@@ -29,6 +29,14 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
+    // Primero obtener la imagen anterior antes de actualizar
+    const oldResult = await pool.query('SELECT img FROM "NotaBlog" WHERE id = $1', [id])
+    const oldBlog = oldResult.rows[0]
+    
+    if (!oldBlog) {
+      return { success: false, message: 'Blog no encontrado' }
+    }
+
     let estadoDb;
     switch ((estado || '').toLowerCase()) {
       case 'activo':
@@ -68,6 +76,25 @@ export default defineEventHandler(async (event) => {
     if (result.rows.length === 0) {
       return { success: false, message: 'No se encontró el blog para modificar' }
     }
+
+    // Eliminar la imagen anterior de S3 si es diferente a la nueva
+    if (oldBlog.img && oldBlog.img !== img) {
+      try {
+        const deleteResponse = await $fetch('/api/delete-image', {
+          method: 'POST',
+          body: { imageUrl: oldBlog.img }
+        }) as { success: boolean }
+        
+        if (deleteResponse.success) {
+          console.log('Imagen anterior eliminada de S3:', oldBlog.img)
+        } else {
+          console.warn('No se pudo eliminar la imagen anterior de S3:', oldBlog.img)
+        }
+      } catch (error) {
+        console.warn('Error eliminando imagen anterior de S3:', error)
+      }
+    }
+
     return { success: true, message: 'Blog modificado correctamente', blog: result.rows[0] }
   } catch (error) {
     console.error('Error modificando blog:', error)

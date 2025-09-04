@@ -23,6 +23,14 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
+    // Primero obtener la imagen anterior antes de actualizar
+    const oldResult = await pool.query('SELECT img FROM "PaisesOperativos" WHERE id = $1', [id])
+    const oldPais = oldResult.rows[0]
+    
+    if (!oldPais) {
+      return { success: false, message: 'País no encontrado' }
+    }
+
     const query = `
       UPDATE "PaisesOperativos" SET
         nombre = $1,
@@ -47,6 +55,25 @@ export default defineEventHandler(async (event) => {
     if (result.rows.length === 0) {
       return { success: false, message: 'No se encontró el país para modificar' }
     }
+
+    // Eliminar la imagen anterior de S3 si es diferente a la nueva
+    if (oldPais.img && oldPais.img !== img) {
+      try {
+        const deleteResponse = await $fetch('/api/delete-image', {
+          method: 'POST',
+          body: { imageUrl: oldPais.img }
+        }) as { success: boolean }
+        
+        if (deleteResponse.success) {
+          console.log('Imagen anterior eliminada de S3:', oldPais.img)
+        } else {
+          console.warn('No se pudo eliminar la imagen anterior de S3:', oldPais.img)
+        }
+      } catch (error) {
+        console.warn('Error eliminando imagen anterior de S3:', error)
+      }
+    }
+
     return { success: true, message: 'País modificado correctamente', pais: result.rows[0] }
   } catch (error) {
     console.error('Error modificando país:', error)

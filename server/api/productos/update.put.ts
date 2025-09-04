@@ -38,6 +38,14 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'ID, nombre del producto y código Newton son requeridos' }
     }
 
+    // Primero obtener las imágenes anteriores antes de actualizar
+    const oldResult = await pool.query('SELECT img, imagen_mobile FROM "Producto" WHERE id = $1', [id])
+    const oldProducto = oldResult.rows[0]
+    
+    if (!oldProducto) {
+      return { success: false, message: 'Producto no encontrado' }
+    }
+
     let estadoDb;
     switch ((estado || '').toLowerCase()) {
       case 'activo':
@@ -123,6 +131,33 @@ export default defineEventHandler(async (event) => {
     if (result.rows.length === 0) {
       return { success: false, message: 'No se encontró el producto para modificar' }
     }
+
+    // Función auxiliar para eliminar imagen de S3
+    const deleteImageFromS3 = async (imageUrl: string) => {
+      if (!imageUrl) return
+      
+      try {
+        const deleteResponse = await $fetch('/api/delete-image', {
+          method: 'POST',
+          body: { imageUrl }
+        }) as { success: boolean }
+        
+        if (deleteResponse.success) {
+          console.log('Imagen anterior eliminada de S3:', imageUrl)
+        } else {
+          console.warn('No se pudo eliminar la imagen anterior de S3:', imageUrl)
+        }
+      } catch (error) {
+        console.warn('Error eliminando imagen anterior de S3:', error)
+      }
+    }
+
+    // Eliminar las imágenes anteriores de S3 si son diferentes a las nuevas
+    await Promise.all([
+      oldProducto.img !== img ? deleteImageFromS3(oldProducto.img) : Promise.resolve(),
+      oldProducto.imagen_mobile !== imagen_mobile ? deleteImageFromS3(oldProducto.imagen_mobile) : Promise.resolve()
+    ])
+
     return { success: true, message: 'Producto modificado correctamente', producto: result.rows[0] }
   } catch (error) {
     console.error('Error modificando producto:', error)

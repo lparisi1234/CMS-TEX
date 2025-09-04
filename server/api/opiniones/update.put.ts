@@ -33,6 +33,14 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
+    // Primero obtener la imagen anterior antes de actualizar
+    const oldResult = await pool.query('SELECT img FROM "Opinion" WHERE id = $1', [id])
+    const oldOpinion = oldResult.rows[0]
+    
+    if (!oldOpinion) {
+      return { success: false, message: 'Opinión no encontrada' }
+    }
+
     
     let estadoDb;    
     switch ((estado || "").toString().toLowerCase()) {
@@ -94,6 +102,25 @@ export default defineEventHandler(async (event) => {
     if (result.rows.length === 0) {
       return { success: false, message: 'No se encontró la opinión para modificar' }
     }
+
+    // Eliminar la imagen anterior de S3 si es diferente a la nueva
+    if (oldOpinion.img && oldOpinion.img !== img) {
+      try {
+        const deleteResponse = await $fetch('/api/delete-image', {
+          method: 'POST',
+          body: { imageUrl: oldOpinion.img }
+        }) as { success: boolean }
+        
+        if (deleteResponse.success) {
+          console.log('Imagen anterior eliminada de S3:', oldOpinion.img)
+        } else {
+          console.warn('No se pudo eliminar la imagen anterior de S3:', oldOpinion.img)
+        }
+      } catch (error) {
+        console.warn('Error eliminando imagen anterior de S3:', error)
+      }
+    }
+
     return { success: true, message: 'Opinión modificada correctamente', opinion: result.rows[0] }
   } catch (error) {
     console.error('Error modificando opinión:', error)

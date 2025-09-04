@@ -56,6 +56,14 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
+    // Primero obtener las imágenes anteriores antes de la transacción
+    const oldResult = await pool.query('SELECT img_carousel, img_search FROM "Categoria" WHERE id = $1', [id])
+    const oldCategoria = oldResult.rows[0]
+    
+    if (!oldCategoria) {
+      return { success: false, message: 'Categoría no encontrada' }
+    }
+
     const query = `
       UPDATE "Categoria" SET
         nombre = $1,
@@ -166,6 +174,33 @@ export default defineEventHandler(async (event) => {
       }
       
       await client.query('COMMIT')
+
+      // Función auxiliar para eliminar imagen de S3
+      const deleteImageFromS3 = async (imageUrl: string) => {
+        if (!imageUrl) return
+        
+        try {
+          const deleteResponse = await $fetch('/api/delete-image', {
+            method: 'POST',
+            body: { imageUrl }
+          }) as { success: boolean }
+          
+          if (deleteResponse.success) {
+            console.log('Imagen anterior eliminada de S3:', imageUrl)
+          } else {
+            console.warn('No se pudo eliminar la imagen anterior de S3:', imageUrl)
+          }
+        } catch (error) {
+          console.warn('Error eliminando imagen anterior de S3:', error)
+        }
+      }
+
+      // Eliminar las imágenes anteriores de S3 si son diferentes a las nuevas (después de la transacción)
+      await Promise.all([
+        oldCategoria.img_carousel !== img_carousel ? deleteImageFromS3(oldCategoria.img_carousel) : Promise.resolve(),
+        oldCategoria.img_search !== img_search ? deleteImageFromS3(oldCategoria.img_search) : Promise.resolve()
+      ])
+
       return { success: true, message: 'Categoría modificada correctamente', categoria: categoriaActualizada }
       
     } catch (error) {

@@ -21,6 +21,14 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
+    // Primero obtener la imagen anterior antes de actualizar
+    const oldResult = await pool.query('SELECT img FROM "Descuentos" WHERE id = $1', [id])
+    const oldDescuento = oldResult.rows[0]
+    
+    if (!oldDescuento) {
+      return { success: false, message: 'Descuento no encontrado' }
+    }
+
     const query = `
       UPDATE "Descuentos" SET
         nombre = $1,
@@ -43,7 +51,26 @@ export default defineEventHandler(async (event) => {
     if (result.rows.length === 0) {
       return { success: false, message: 'No se encontró Descuentos para modificar' }
     }
-    return { success: true, message: 'Descuentos modificado correctamente', blog: result.rows[0] }
+
+    // Eliminar la imagen anterior de S3 si es diferente a la nueva
+    if (oldDescuento.img && oldDescuento.img !== img) {
+      try {
+        const deleteResponse = await $fetch('/api/delete-image', {
+          method: 'POST',
+          body: { imageUrl: oldDescuento.img }
+        }) as { success: boolean }
+        
+        if (deleteResponse.success) {
+          console.log('Imagen anterior eliminada de S3:', oldDescuento.img)
+        } else {
+          console.warn('No se pudo eliminar la imagen anterior de S3:', oldDescuento.img)
+        }
+      } catch (error) {
+        console.warn('Error eliminando imagen anterior de S3:', error)
+      }
+    }
+
+    return { success: true, message: 'Descuento modificado correctamente', descuento: result.rows[0] }
   } catch (error) {
     console.error('Error modificando Descuentos:', error)
     return { success: false, message: 'Error modificando Descuentos' }
