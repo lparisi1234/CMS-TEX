@@ -219,6 +219,9 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
 
             if (column.type === 'number' || column.type === 'currency') {
                 dataToSubmit[column.key] = value ? Number(value) : null
+            } else if (column.type === 'image') {
+                // Asegurar que los campos de imagen se incluyan como strings
+                dataToSubmit[column.key] = value || ''
             }
         })
 
