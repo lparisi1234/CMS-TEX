@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
 
     // Comando AWS S3 CP
     const bucketName = 'tex2-static-images-prd'
-    const s3Key = `notas-de-prensa/imagen/${uniqueFileName}`
+    const s3Key = `notas-de-prensa/${uniqueFileName}`
     const s3Url = `s3://${bucketName}/${s3Key}`
     
     const command = `aws s3 cp "${tempFilePath}" "${s3Url}"`
@@ -57,11 +57,13 @@ export default defineEventHandler(async (event) => {
     }
 
     console.log('AWS CLI output:', stdout)
+    
+    const objectUrl = `https://${bucketName}.s3.us-east-1.amazonaws.com/${s3Key}`
 
     return {
       success: true,
       message: 'Imagen subida exitosamente',
-      s3Url: s3Url,
+      s3Url: objectUrl,
       fileName: uniqueFileName,
       stdout: stdout
     }
