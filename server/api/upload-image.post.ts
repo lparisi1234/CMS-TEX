@@ -69,11 +69,12 @@ export default defineEventHandler(async (event) => {
     }
 
   } catch (error) {
+    const typedError = error as { statusCode?: number; statusMessage?: string };
     console.error('Error en upload-image:', error)
     
     throw createError({
-      statusCode: error.statusCode || 500,
-      statusMessage: error.statusMessage || 'Error interno del servidor'
+      statusCode: typedError.statusCode || 500,
+      statusMessage: typedError.statusMessage || 'Error interno del servidor'
     })
   }
 })

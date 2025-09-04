@@ -1,21 +1,30 @@
 import getDbPool from "../../db"
+import { readMultipartFormData } from 'h3'
 
 export default defineEventHandler(async (event) => {
     try {
     const pool = await getDbPool()
-    const {
-      descripcion,
-      img,
-      url,
-      estado
-    } = await readBody(event)
 
-    if (
-      descripcion === undefined ||
-      img === undefined ||
-      url === undefined ||
-      estado === undefined
-    ) {
+    const formData = await readMultipartFormData(event)
+
+    let descripcion, img, estado, url; 
+    if (formData) {
+      for (const field of formData) {
+        if (field.name === 'descripcion') {
+          descripcion = field.data.toString('utf8');
+        } else if (field.name === 'img') {
+          img = field.data.toString('utf8');
+        } else if (field.name === 'estado') {
+          estado = field.data.toString('utf8');
+        } else if (field.name === 'url') {
+          url = field.data.toString('utf8');
+        }
+      }
+    }
+
+    // Validar que los campos existan
+    if (!descripcion || !img || !estado) {
+      // Ahora validamos solo los campos necesarios
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
