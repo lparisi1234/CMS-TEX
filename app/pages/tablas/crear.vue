@@ -65,7 +65,7 @@
 
                         <FormImageField v-else-if="column.type === 'image'" :id="`field-${column.key}`"
                             v-model="formData[column.key]" :label="column.label" :required="column.required"
-                            :error="errors[column.key]" />
+                            :error="errors[column.key]" :targetFolder="tabla.slug" />
 
                         <FormFileField v-else-if="column.type === 'file'" :id="`field-${column.key}`"
                             v-model="formData[column.key]" :label="column.label" :required="column.required"

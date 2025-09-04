@@ -63,6 +63,10 @@ const props = defineProps({
     maxSize: {
         type: Number,
         default: 5 * 1024 * 1024 // 5MB por defecto
+    },
+    targetFolder: {
+        type: String,
+        required: true
     }
 })
 
@@ -151,6 +155,7 @@ const simulateUpload = async (file) => {
         // Crear FormData para enviar la imagen
         const formData = new FormData()
         formData.append('image', file)
+        formData.append('targetFolder', props.targetFolder)
 
         // Subir imagen a S3 usando nuestro endpoint
         const response = await $fetch('/api/upload-image', {

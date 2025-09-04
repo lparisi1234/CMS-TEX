@@ -2,6 +2,7 @@ import { exec } from 'child_process'
 import { promisify } from 'util'
 import { writeFile, unlink } from 'fs/promises'
 import { join } from 'path'
+import { tmpdir } from 'os'
 import { randomUUID } from 'crypto'
 
 const execAsync = promisify(exec)
@@ -31,7 +32,7 @@ export default defineEventHandler(async (event) => {
     // Generar nombre único para el archivo
     const fileExtension = imageFile.filename?.split('.').pop() || 'jpg'
     const uniqueFileName = `${randomUUID()}.${fileExtension}`
-    const tempFilePath = join('/tmp', uniqueFileName)
+    const tempFilePath = join(tmpdir(), uniqueFileName)
 
     // Guardar archivo temporalmente
     await writeFile(tempFilePath, imageFile.data)

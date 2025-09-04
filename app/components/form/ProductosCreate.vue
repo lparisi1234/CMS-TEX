@@ -26,16 +26,16 @@
                     </FormFieldsContainer>
 
                     <FormFieldsContainer>
-                        <FormImageField v-model="formData.img" id="img" label="Imagen Principal" :error="errors.img" />
+                        <FormImageField v-model="formData.img" id="img" label="Imagen Principal" :error="errors.img" targetFolder="productos" />
                         <FormImageField v-model="formData.img_mobile" id="img_mobile" label="Imagen Mobile"
-                            :error="errors.img_mobile" />
+                            :error="errors.img_mobile" targetFolder="productos" />
                     </FormFieldsContainer>
 
                     <FormFieldsContainer>
                         <FormImageField v-model="formData.video_mapa_mobile" id="video_mapa_mobile"
-                            label="Video Mapa Mobile" :error="errors.video_mapa_mobile" />
+                            label="Video Mapa Mobile" :error="errors.video_mapa_mobile" targetFolder="productos" />
                         <FormImageField v-model="formData.video_mapa_desktop" id="video_mapa_desktop"
-                            label="Video Mapa Desktop" :error="errors.video_mapa_desktop" />
+                            label="Video Mapa Desktop" :error="errors.video_mapa_desktop" targetFolder="productos" />
                     </FormFieldsContainer>
 
                     <FormFieldsContainer>
