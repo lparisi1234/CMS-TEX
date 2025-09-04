@@ -1,18 +1,34 @@
 import getDbPool from "../../db"
+import { readMultipartFormData } from 'h3'
 
 export default defineEventHandler(async (event) => {
   try {
     const pool = await getDbPool()
-    const {
-      autor,
-      img,
-      fecha,
-      estado,
-      titulo,
-      destacado_home,
-      categoria_id,
-      destino_id
-    } = await readBody(event)
+    const formData = await readMultipartFormData(event)
+
+    let autor, img, fecha, estado, titulo, destacado_home, categoria_id, destino_id;
+
+     if (formData) {
+      for (const field of formData) {
+        if (field.name === 'autor') {
+          autor = field.data.toString('utf8');
+        } else if (field.name === 'img') {
+          img = field.data.toString('utf8');
+        } else if (field.name === 'fecha') {
+          fecha = field.data.toString('utf8');
+        } else if (field.name === 'estado') {
+          estado = field.data.toString('utf8');
+        } else if (field.name === 'titulo') {
+          titulo = field.data.toString('utf8');
+        } else if (field.name === 'destacado_home') {
+          destacado_home = field.data.toString('utf8');
+        } else if (field.name === 'categoria_id') {
+          categoria_id = field.data.toString('utf8');
+        } else if (field.name === 'destino_id') {
+          destino_id = field.data.toString('utf8');
+        }
+      }
+    }
 
     
     if (

@@ -17,13 +17,16 @@ export default defineEventHandler(async (event) => {
   try {
     const formData = await readMultipartFormData(event)
     const imageFile = formData?.find(field => field.name === 'image')
+    const targetFolderField = formData?.find(field => field.name === 'targetFolder');
 
-    if (!imageFile) {
+    if (!imageFile || !targetFolderField || !targetFolderField.data) {
       throw createError({
         statusCode: 400,
         statusMessage: 'No se encontró archivo de imagen'
       })
     }
+
+    const targetFolder = targetFolderField.data.toString('utf-8');
 
     // Generar nombre único para el archivo
     const fileExtension = imageFile.filename?.split('.').pop() || 'jpg'
@@ -35,10 +38,10 @@ export default defineEventHandler(async (event) => {
 
     // Comando AWS S3 CP
     const bucketName = 'tex2-static-images-prd'
-    const s3Key = `notas-de-prensa/${uniqueFileName}`
+    const s3Key = `${targetFolder}/${uniqueFileName}`;
     const s3Url = `s3://${bucketName}/${s3Key}`
     
-    const command = `aws s3 cp "${tempFilePath}" "${s3Url}"`
+    const command = `aws s3 cp "${tempFilePath}" "s3://${bucketName}/${s3Key}"`
 
     console.log('Ejecutando comando:', command)
 

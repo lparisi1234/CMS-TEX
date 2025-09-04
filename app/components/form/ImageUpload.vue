@@ -39,7 +39,11 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, defineProps  } from 'vue'
+
+const props = defineProps({
+      targetFolder: { type: String, required: true }
+    })
 
 const fileInput = ref(null)
 const selectedFile = ref(null)
@@ -71,6 +75,7 @@ const uploadImage = async () => {
   try {
     const formData = new FormData()
     formData.append('image', selectedFile.value)
+    formData.append('targetFolder', props.targetFolder);
 
     const response = await $fetch('/api/upload-image', {
       method: 'POST',
