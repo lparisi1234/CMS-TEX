@@ -31,8 +31,7 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
-    const estadoDB = estado === "activo" ? true : false;
-    const destacadoDB = destacado === "activo" ? true : false;
+
 
     const query = `
       INSERT INTO "Opinion" (
@@ -56,8 +55,8 @@ export default defineEventHandler(async (event) => {
       img,
       rating,
       comentario,
-      estadoDB,
-      destacadoDB,
+      estado,
+      destacado,
       producto_Id,
       categoria_id,
       destino_id

@@ -33,18 +33,7 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Ciudad no encontrada' }
     }
 
-    let estadoDb;
-    switch ((estado || '').toLowerCase()) {
-      case 'activo':
-        estadoDb = true
-        break
-      case 'inactivo':
-      case 'borrado':
-        estadoDb = false
-        break
-      default:
-        estadoDb = false
-    }
+    
 
     const query = `
       UPDATE "Ciudades" SET
@@ -63,7 +52,7 @@ export default defineEventHandler(async (event) => {
       imagen,
       guia,
       nombre,
-      estadoDb,
+      estado,
       destino_id,
       id
     ];

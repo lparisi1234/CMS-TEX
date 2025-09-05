@@ -51,18 +51,7 @@ export default defineEventHandler(async (event) => {
 
      await client.query('BEGIN');
 
-    let estadoDb;
-    switch ((estado || '').toString().toLowerCase()) {
-      case 'activo':
-        estadoDb = true
-        break
-      case 'inactivo':
-      case 'borrado':
-        estadoDb = false
-        break
-      default:
-        estadoDb = false
-    }
+
 
     const queryGrupoOferta = `
       UPDATE "GrupoDeOferta" SET
@@ -93,7 +82,7 @@ export default defineEventHandler(async (event) => {
       hasta_fecha,
       nro_orden,
       url,
-      estadoDb,
+      estado,
       descuento_id,
       id
     ]);

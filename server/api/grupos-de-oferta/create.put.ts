@@ -42,7 +42,6 @@ export default defineEventHandler(async (event) => {
 
     await client.query('BEGIN');
 
-    const estadoDB = estado === "activo" ? true : false;
 
     const queryGrupoOferta = `
       INSERT INTO "GrupoDeOferta" (
@@ -73,7 +72,7 @@ export default defineEventHandler(async (event) => {
       hasta_fecha,
       nro_orden,
       url,
-      estadoDB,
+      estado,
       descuento_id     
     ])
 
@@ -94,7 +93,7 @@ export default defineEventHandler(async (event) => {
     return {
       success: true,
       message: 'Grupo de oferta creado correctamente',
-      destino: { id: grupodeOfertaId, descripcion, titulo, subtitulo, segundaDescripcion, img_desktop, img_tablet, img_mobile, hasta_fecha, nro_orden, url, estadoDB,
+      destino: { id: grupodeOfertaId, descripcion, titulo, subtitulo, segundaDescripcion, img_desktop, img_tablet, img_mobile, hasta_fecha, nro_orden, url, estado,
        descuento_id, segmentos_id }
     };
   }catch (error) {

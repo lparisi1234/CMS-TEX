@@ -46,30 +46,8 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Producto no encontrado' }
     }
 
-    let estadoDb;
-    switch ((estado || '').toLowerCase()) {
-      case 'activo':
-        estadoDb = true
-        break
-      case 'inactivo':
-      case 'borrador':
-        estadoDb = false
-        break
-      default:
-        estadoDb = false
-    }
 
-    let aereoIncluidoDb;
-    switch ((aereo_incluido || '').toLowerCase()) {
-      case 'si':
-        aereoIncluidoDb = true
-        break
-      case 'no':
-        aereoIncluidoDb = false
-        break
-      default:
-        aereoIncluidoDb = false
-    }
+
 
     const query = `
       UPDATE "Producto" SET
@@ -116,14 +94,14 @@ export default defineEventHandler(async (event) => {
       expertoId || null,
       meta_titulo || '',
       meta_descripcion || '',
-      estadoDb,
+      estado,
       sticker || '',
       duracion || '',
       iniciafinaliza || '',
       precio || 0,
       precioTachado || 0,
       salidas || '',
-      aereoIncluidoDb,
+      aereo_incluido,
       id
     ];
 

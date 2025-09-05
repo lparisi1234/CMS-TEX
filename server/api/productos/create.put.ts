@@ -36,8 +36,6 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Nombre del producto y código Newton son requeridos' }
     }
 
-    const estadoDB = estado === "Activo" ? true : false;
-    const aereoIncluidoDB = aereo_incluido === "si" ? true : false;
 
     const query = `
       INSERT INTO "Producto" (
@@ -84,14 +82,14 @@ export default defineEventHandler(async (event) => {
       expertoId || null,
       meta_titulo || '',
       meta_descripcion || '',
-      estadoDB,
+      estado,
       sticker || '',
       duracion || '',
       iniciafinaliza || '',
       precio || 0,
       precioTachado || 0,
       salidas || '',
-      aereoIncluidoDB
+      aereo_incluido
     ];
 
     const result = await pool.query(query, values)

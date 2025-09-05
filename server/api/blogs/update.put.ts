@@ -37,14 +37,7 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Blog no encontrado' }
     }
 
-    let estadoDb;
-    switch ((estado || '').toLowerCase()) {
-      case 'activo':
-      case 'inactivo':
-      case 'borrado':
-      default:
-        estadoDb = false
-    }
+
 
     const query = `
       UPDATE "NotaBlog" SET
@@ -64,7 +57,7 @@ export default defineEventHandler(async (event) => {
       autor,
       img,
       fecha,
-      estadoDb,
+      estado,
       titulo,
       destacado_home,
       categoria_id,

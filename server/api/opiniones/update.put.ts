@@ -42,31 +42,9 @@ export default defineEventHandler(async (event) => {
     }
 
     
-    let estadoDb;    
-    switch ((estado || "").toString().toLowerCase()) {
-      case "activo":
-        estadoDb = true;
-        break;
-      case "inactivo":
-      case "borrado":
-        estadoDb = false;
-        break;
-      default:
-        estadoDb = false;
-    }
 
-    let destacadoDb;
-    switch ((destacado || '').toString().toLowerCase()) {
-      case 'activo':
-        destacadoDb = true
-        break
-      case 'inactivo':
-      case 'borrado':
-        destacadoDb = false
-        break
-      default:
-        destacadoDb = false
-    }
+
+
 
     const query = `
       UPDATE "Opinion" SET
@@ -90,8 +68,8 @@ export default defineEventHandler(async (event) => {
       img,
       rating,
       comentario,
-      estadoDb,
-      destacadoDb,
+      estado,
+      destacado,
       producto_Id,
       categoria_id,
       destino_id,

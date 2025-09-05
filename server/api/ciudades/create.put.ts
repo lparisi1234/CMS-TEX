@@ -23,7 +23,6 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
-    const estadoDB = estado === "activo" ? true : false;
 
     const query = `
       INSERT INTO "Ciudades" (
@@ -42,7 +41,7 @@ export default defineEventHandler(async (event) => {
       imagen,
       guia,
       nombre,
-      estadoDB,
+      estado,
       destino_id
     ];
 
