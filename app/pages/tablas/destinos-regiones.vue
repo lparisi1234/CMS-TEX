@@ -64,7 +64,7 @@ const regionesColumns = [
         key: 'h1',
         label: 'H1',
         type: 'text',
-        required: true``
+        required: true
     },
     {
         key: 'h2',

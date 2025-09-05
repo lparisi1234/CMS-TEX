@@ -6,8 +6,8 @@
                     <FormFieldsContainer>
                         <FormTextField v-model="formData.nombreprod" id="nombreprod" label="Nombre del Producto"
                             required placeholder="Ingresa el nombre del producto" :error="errors.nombreprod" />
-                        <FormTextField v-model="formData.codigonewton" id="codigonewton" label="Código Newton"
-                            type="text" required placeholder="Código único del producto" :error="errors.codigonewton" />
+                        <FormTextField v-model="formData.cod_newton" id="cod_newton" label="Código Newton" type="number"
+                            required placeholder="Código único del producto" :error="errors.cod_newton" />
                     </FormFieldsContainer>
 
                     <FormFieldsContainer>
@@ -26,7 +26,8 @@
                     </FormFieldsContainer>
 
                     <FormFieldsContainer>
-                        <FormImageField v-model="formData.img" id="img" label="Imagen Principal" :error="errors.img" targetFolder="productos" />
+                        <FormImageField v-model="formData.img" id="img" label="Imagen Principal" :error="errors.img"
+                            targetFolder="productos" />
                         <FormImageField v-model="formData.img_mobile" id="img_mobile" label="Imagen Mobile"
                             :error="errors.img_mobile" targetFolder="productos" />
                     </FormFieldsContainer>
@@ -47,8 +48,7 @@
                     </FormFieldsContainer>
 
                     <FormFieldsContainer>
-                        <FormSelectField v-model="formData.estado" id="estado" label="Estado" required
-                            :options="estadoOptions" placeholder="Seleccionar estado" :error="errors.estado" />
+                        <FormSwitchField v-model="formData.estado" id="estado" label="Estado" required :error="errors.estado" />
                         <FormSelectField v-model="formData.expertoId" id="expertoId" label="Experto"
                             :options="expertosOptions" placeholder="Seleccionar experto" :error="errors.expertoId" />
                     </FormFieldsContainer>
@@ -193,7 +193,7 @@ const formData = ref({
     meta_titulo: '',
     meta_descripcion: '',
     precio_total: 0,
-    estado: '',
+    estado: true,
     segmentos_excluidos: [],
     secciones: []
 })
@@ -220,12 +220,6 @@ const tabs = [
 
 const errors = ref({})
 const isSubmitting = ref(false)
-
-const estadoOptions = [
-    { value: 'Activo', label: 'Activo' },
-    { value: 'Inactivo', label: 'Inactivo' },
-    { value: 'Borrador', label: 'Borrador' }
-]
 
 const segmentosOptions = computed(() =>
     segmentosData.value.map(s => ({
@@ -306,11 +300,11 @@ const openCreateSeccionModal = (event) => {
     showSeccionModal.value = true
 }
 
-const handleEditSeccion = (seccion, index) => {
+const handleEditSeccion = (seccion) => {
     nextTick(() => editSeccion(seccion))
 }
 
-const handleDeleteSeccion = (seccion, index) => {
+const handleDeleteSeccion = (seccion) => {
     deleteSeccion(seccion)
 }
 
@@ -380,7 +374,7 @@ const deleteSeccion = (seccion) => {
 
 const handleSubmit = async () => {
 
-    if (!formData.value.nombreprod || !formData.value.codigonewton) {
+    if (!formData.value.nombreprod || !formData.value.cod_newton) {
         error('Por favor completa todos los campos requeridos')
         return
     }
@@ -399,6 +393,7 @@ const handleSubmit = async () => {
         dataToSubmit.cantidad_estrellas = parseInt(dataToSubmit.cantidad_estrellas) || 5
         dataToSubmit.cantidadAport = parseInt(dataToSubmit.cantidadAport) || 0
         dataToSubmit.expertoId = dataToSubmit.expertoId ? parseInt(dataToSubmit.expertoId) : null
+        dataToSubmit.estado = dataToSubmit.estado ? 1 : 0
 
         if (props.isEditing && props.editingData?.id) {
             dataToSubmit.id = props.editingData.id
@@ -449,8 +444,8 @@ const loadProductData = async () => {
                             ? [...producto[key]]
                             : []
                     } else {
-                        if (key === 'estado' && typeof producto[key] === 'boolean') {
-                            formData.value[key] = producto[key] ? 'Activo' : 'Inactivo'
+                        if (key === 'estado') {
+                            formData.value[key] = producto[key] == 1 || producto[key] === true
                         } else {
                             formData.value[key] = producto[key]
                         }
@@ -466,8 +461,8 @@ const loadProductData = async () => {
                         ? [...props.editingData[key]]
                         : []
                 } else {
-                    if (key === 'estado' && typeof props.editingData[key] === 'boolean') {
-                        formData.value[key] = props.editingData[key] ? 'Activo' : 'Inactivo'
+                    if (key === 'estado') {
+                        formData.value[key] = props.editingData[key] == 1 || props.editingData[key] === true
                     } else {
                         formData.value[key] = props.editingData[key]
                     }

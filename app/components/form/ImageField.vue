@@ -152,25 +152,21 @@ const simulateUpload = async (file) => {
     emit('upload-start', file)
 
     try {
-        // Crear FormData para enviar la imagen
         const formData = new FormData()
         formData.append('image', file)
         formData.append('targetFolder', props.targetFolder)
 
-        // Subir imagen a S3 usando nuestro endpoint
         const response = await $fetch('/api/upload-image', {
             method: 'POST',
             body: formData
         })
 
-        // Simular progreso de subida
         const interval = setInterval(() => {
             uploadProgress.value += 20
             if (uploadProgress.value >= 100) {
                 clearInterval(interval)
                 uploading.value = false
 
-                // Usar la URL de S3 como valor final
                 const finalUrl = response.s3Url
                 emit('update:modelValue', finalUrl)
                 emit('upload-complete', finalUrl)
