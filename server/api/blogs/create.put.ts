@@ -22,7 +22,6 @@ export default defineEventHandler(async (event) => {
       !estado ||
       !titulo ||
       destacado_home === undefined ||
-      !categoria_id ||
       !destino_id
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
