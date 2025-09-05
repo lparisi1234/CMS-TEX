@@ -181,11 +181,38 @@ const simulateUpload = async (file) => {
     }
 }
 
-const removeImage = () => {
+const deleteImageFromS3 = async (imageUrl) => {
+    if (!imageUrl || !imageUrl.startsWith('https://')) {
+        return
+    }
+    
+    try {
+        await $fetch('/api/delete-image', {
+            method: 'POST',
+            body: { imageUrl }
+        })
+    } catch (error) {
+        console.error('Error eliminando imagen de S3:', error)
+        throw error
+    }
+}
+
+const removeImage = async () => {
+    // Si hay una imagen cargada (no es solo preview local)
+    if (imagePreview.value && imagePreview.value.startsWith('https://')) {
+        try {
+            // Llamar al endpoint para eliminar de S3
+            await deleteImageFromS3(imagePreview.value)
+        } catch (error) {
+            console.error('Error eliminando imagen de S3:', error)
+        }
+    }
+    
+    // Limpiar estado local
     imagePreview.value = ''
     fileName.value = ''
     emit('update:modelValue', '')
-
+    
     if (fileInput.value) {
         fileInput.value.value = ''
     }
@@ -205,5 +232,12 @@ watchEffect(() => {
     if (props.error) {
         showError.value = true
     }
+})
+
+// Exponer métodos para uso externo
+defineExpose({
+    deleteImageFromS3,
+    removeImage,
+    imagePreview: readonly(imagePreview)
 })
 </script>

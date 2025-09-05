@@ -165,7 +165,56 @@ const handleSuccess = () => {
     }
 }
 
-const handleCancel = () => {
+// Función para obtener todas las URLs de imágenes cargadas
+const getUploadedImageUrls = () => {
+    const imageUrls = []
+    
+    // Buscar en formData todas las columnas de tipo 'image'
+    if (tabla?.columns) {
+        tabla.columns.forEach(column => {
+            if (column.type === 'image' && formData.value[column.key]) {
+                const imageUrl = formData.value[column.key]
+                if (imageUrl && imageUrl.startsWith('https://')) {
+                    imageUrls.push(imageUrl)
+                }
+            }
+        })
+    }
+    
+    return imageUrls
+}
+
+// Función para eliminar todas las imágenes de S3
+const deleteAllUploadedImages = async () => {
+    const imageUrls = getUploadedImageUrls()
+    
+    if (imageUrls.length === 0) return
+    
+    // Eliminar todas las imágenes en paralelo
+    const deletePromises = imageUrls.map(async (imageUrl) => {
+        try {
+            await $fetch('/api/delete-image', {
+                method: 'POST',
+                body: { imageUrl }
+            })
+        } catch (error) {
+            console.error('Error eliminando imagen:', imageUrl, error)
+        }
+    })
+    
+    await Promise.all(deletePromises)
+}
+
+const handleCancel = async () => {
+    try {
+        // Eliminar todas las imágenes subidas de S3
+        await deleteAllUploadedImages()
+    } catch (error) {
+        console.error('Error eliminando imágenes al cancelar:', error)
+        // Continuar con la cancelación aunque falle la eliminación
+    }
+    
+    // Navegar de vuelta
     handleSuccess()
 }
 
