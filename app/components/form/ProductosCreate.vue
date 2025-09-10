@@ -27,16 +27,18 @@
 
                     <FormFieldsContainer>
                         <FormImageField v-model="formData.img" id="img" label="Imagen Principal" :error="errors.img"
-                            targetFolder="productos" />
+                            targetFolder="productos" size="30px x 30px" />
                         <FormImageField v-model="formData.img_mobile" id="img_mobile" label="Imagen Mobile"
-                            :error="errors.img_mobile" targetFolder="productos" />
+                            :error="errors.img_mobile" targetFolder="productos" size="30px x 30px" />
                     </FormFieldsContainer>
 
                     <FormFieldsContainer>
                         <FormImageField v-model="formData.video_mapa_mobile" id="video_mapa_mobile"
-                            label="Video Mapa Mobile" :error="errors.video_mapa_mobile" targetFolder="productos" />
+                            label="Video Mapa Mobile" :error="errors.video_mapa_mobile" targetFolder="productos"
+                            size="30px x 30px" />
                         <FormImageField v-model="formData.video_mapa_desktop" id="video_mapa_desktop"
-                            label="Video Mapa Desktop" :error="errors.video_mapa_desktop" targetFolder="productos" />
+                            label="Video Mapa Desktop" :error="errors.video_mapa_desktop" targetFolder="productos"
+                            size="30px x 30px" />
                     </FormFieldsContainer>
 
                     <FormFieldsContainer>
@@ -48,7 +50,8 @@
                     </FormFieldsContainer>
 
                     <FormFieldsContainer>
-                        <FormSwitchField v-model="formData.estado" id="estado" label="Estado" required :error="errors.estado" />
+                        <FormSwitchField v-model="formData.estado" id="estado" label="Estado" required
+                            :error="errors.estado" />
                         <FormSelectField v-model="formData.expertoId" id="expertoId" label="Experto"
                             :options="expertosOptions" placeholder="Seleccionar experto" :error="errors.expertoId" />
                     </FormFieldsContainer>

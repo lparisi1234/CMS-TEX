@@ -112,7 +112,6 @@ const confirmDelete = async () => {
             body: { id: productoAEliminar.value.id }
         })
 
-        // Actualizar la lista local
         const index = productos.value.findIndex(p =>
             p.id === productoAEliminar.value.id
         )

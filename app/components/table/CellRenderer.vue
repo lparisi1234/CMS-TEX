@@ -22,6 +22,10 @@ const props = defineProps({
     relatedData: {
         type: Object,
         default: () => ({})
+    },
+    size: {
+        type: String,
+        default: undefined
     }
 })
 

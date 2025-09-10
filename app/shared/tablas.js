@@ -111,7 +111,7 @@ const tablas = {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
-                    size: '30px x 30px',
+                    size: '140px x 60px',
                     required: true
                 },
                 {
@@ -183,7 +183,7 @@ const tablas = {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
-                    size: '30px x 30px',
+                    size: '32px x 32px',
                     required: true
                 },
                 {
@@ -260,21 +260,21 @@ const tablas = {
                     key: 'video_mobile',
                     label: 'Video Mobile',
                     type: 'image',
-                    size: '30px x 30px',
+                    size: '510px x 260px',
                     required: true
                 },
                 {
                     key: 'video_desktop',
                     label: 'Video Desktop',
                     type: 'image',
-                    size: '30px x 30px',
+                    size: '670px x 460px',
                     required: true
                 },
                 {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
-                    size: '30px x 30px',
+                    size: '650px x 360px',
                     required: true
                 },
                 {
@@ -374,7 +374,7 @@ const tablas = {
                     key: 'icono',
                     label: 'Ícono',
                     type: 'image',
-                    size: '30px x 30px',
+                    size: '40px x 40px',
                     required: true
                 },
                 {
@@ -393,28 +393,28 @@ const tablas = {
                     key: 'img_carousel',
                     label: 'Imagen Carousel',
                     type: 'image',
-                    size: '30px x 30px',
+                    size: '215px x 260px',
                     required: true
                 },
                 {
                     key: 'img_search',
                     label: 'Imagen Search',
                     type: 'image',
-                    size: '30px x 30px',
+                    size: '650px x 360px',
                     required: true
                 },
                 {
                     key: 'video_mobile',
                     label: 'Video Mobile',
                     type: 'image',
-                    size: '30px x 30px',
+                    size: '510px x 260px',
                     required: true
                 },
                 {
                     key: 'video_desktop',
                     label: 'Video Desktop',
                     type: 'image',
-                    size: '30px x 30px',
+                    size: '670px x 460px',
                     required: true
                 },
                 {
@@ -453,7 +453,7 @@ const tablas = {
                     key: 'icono_search',
                     label: 'Icono Search',
                     type: 'image',
-                    size: '30x30'
+                    size: '16px x 16px'
                 },
                 {
                     key: 'etiqueta_search',
@@ -484,7 +484,7 @@ const tablas = {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
-                    size: '30px x 30px',
+                    size: '72px x 72px',
                     required: true
                 },
                 {
@@ -525,23 +525,25 @@ const tablas = {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
-                    size: '30x30'
+                    size: '970px x 400px'
                 },
                 {
                     key: 'imagen_mobile',
                     label: 'Imagen Mobile',
                     type: 'image',
-                    size: '30x30'
+                    size: '320px x 220px'
                 },
                 {
                     key: 'video_mapa_mobile',
                     label: 'Video Mapa Mobile',
-                    type: 'text'
+                    type: 'image',
+                    size: '970px x 470px'
                 },
                 {
                     key: 'video_mapa_desktop',
                     label: 'Video Mapa Desktop',
-                    type: 'text'
+                    type: 'image',
+                    size: '290px x 160px'
                 },
                 {
                     key: 'podcast',
@@ -713,7 +715,7 @@ const tablas = {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
-                    size: '30px x 30px',
+                    size: '48px x 48px',
                     required: true
                 },
                 {
@@ -749,7 +751,7 @@ const tablas = {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
-                    size: '30px x 30px',
+                    size: '180px x 100px',
                     required: true
                 },
                 {
@@ -795,7 +797,7 @@ const tablas = {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
-                    size: '30px x 30px',
+                    size: '48px x 48px',
                     required: true
                 },
                 {
@@ -890,7 +892,7 @@ const tablas = {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
-                    size: '30px x 30px',
+                    size: '300px x 80px',
                     required: true
                 },
                 {
@@ -924,7 +926,7 @@ const tablas = {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
-                    size: '30px x 30px',
+                    size: '300px x 130px',
                     required: true
                 },
                 {
@@ -975,7 +977,7 @@ const tablas = {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
-                    size: '30px x 30px',
+                    size: '80px x 80px',
                     required: true
                 },
                 {
@@ -1028,7 +1030,7 @@ const tablas = {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
-                    size: '30px x 30px',
+                    size: '215px x 130px',
                 },
             ]
         }
