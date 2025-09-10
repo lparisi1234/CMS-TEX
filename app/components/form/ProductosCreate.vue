@@ -6,8 +6,8 @@
                     <FormFieldsContainer>
                         <FormTextField v-model="formData.nombreprod" id="nombreprod" label="Nombre del Producto"
                             required placeholder="Ingresa el nombre del producto" :error="errors.nombreprod" />
-                        <FormTextField v-model="formData.cod_newton" id="cod_newton" label="Código Newton" type="number"
-                            required placeholder="Código único del producto" :error="errors.cod_newton" />
+                        <FormTextField v-model="formData.cod_newton" id="cod_newton" label="Código" type="number"
+                            required placeholder="Código del producto" :error="errors.cod_newton" />
                     </FormFieldsContainer>
 
                     <FormFieldsContainer>

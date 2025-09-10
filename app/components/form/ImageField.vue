@@ -1,6 +1,6 @@
 <template>
     <div class="w-full flex flex-col gap-2">
-        <FormLabel :id="id" :required="required" v-if="label">{{ label }}</FormLabel>
+        <FormLabel :id="id" :required="required" v-if="label">{{ label }} ({{ size }})</FormLabel>
 
         <div class="flex flex-col gap-3">
             <div @click="triggerFileInput" @dragover.prevent @dragenter.prevent @drop.prevent="handleDrop"
@@ -65,6 +65,10 @@ const props = defineProps({
         default: 5 * 1024 * 1024 // 5MB por defecto
     },
     targetFolder: {
+        type: String,
+        required: true
+    },
+    size: {
         type: String,
         required: true
     }
