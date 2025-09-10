@@ -550,7 +550,7 @@ const tablas = {
                 },
                 {
                     key: 'cod_newton',
-                    label: 'Código Newton',
+                    label: 'Código',
                     type: 'number',
                     required: true
                 },
