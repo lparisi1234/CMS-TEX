@@ -76,12 +76,14 @@ const regionesColumns = [
         key: 'video_mobile',
         label: 'Video Mobile',
         type: 'image',
+        size: '510px x 260px',
         required: true
     },
     {
         key: 'video_desktop',
         label: 'Video Desktop',
         type: 'image',
+        size: '670px x 460px',
         required: true
     },
     {
@@ -102,6 +104,7 @@ const regionesColumns = [
         key: 'img',
         label: 'Imagen',
         type: 'image',
+        size: '650px x 360px',
         required: true
     },
     {

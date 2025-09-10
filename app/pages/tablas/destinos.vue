@@ -36,7 +36,6 @@
                     <div class="flex justify-between items-center">
                         <div>
                             <span class="font-medium">{{ result.nombre }}</span>
-                            <!-- Mostrar código Newton si es un destino -->
                             <span v-if="result.type === 'destino'" class="ml-2 text-xs text-gray-500">
                                 (Código: {{ result.cod_newton }})
                             </span>

@@ -62,7 +62,7 @@
 
                                 <FormImageField v-else-if="column.type === 'image'" :id="`field-${column.key}`"
                                     v-model="formData[column.key]" :label="column.label" :required="column.required"
-                                    :error="errors[column.key]" targetFolder="destinos" />
+                                    :error="errors[column.key]" targetFolder="destinos" :size="column.size" />
 
                                 <FormSwitchField v-else-if="column.type === 'boolean'" :id="`field-${column.key}`"
                                     v-model="formData[column.key]" :label="column.label" :required="column.required"
@@ -358,9 +358,9 @@ const detailsColumns = [
     { key: 'meta_keywords', label: 'Meta Keywords', type: 'text' },
     { key: 'estado', label: 'Estado', type: 'boolean', required: true },
     { key: 'mapa', label: 'Coordenadas del Mapa', type: 'text' },
-    { key: 'img', label: 'Imagen', type: 'image' },
-    { key: 'video_mobile', label: 'Video Mobile', type: 'image' },
-    { key: 'video_desktop', label: 'Video Desktop', type: 'image' },
+    { key: 'img', label: 'Imagen', type: 'image', size: '650px x 360px' },
+    { key: 'video_mobile', label: 'Video Mobile', type: 'image', size: '510px x 260px' },
+    { key: 'video_desktop', label: 'Video Desktop', type: 'image', size: '670px x 460px' },
     { key: 'nro_orden', label: 'Número de Orden', type: 'number' },
     { key: 'precio_desde', label: 'Precio Desde', type: 'currency' },
     { key: 'experto_id', label: 'Experto', type: 'select' },
