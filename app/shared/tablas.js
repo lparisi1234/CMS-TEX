@@ -111,6 +111,7 @@ const tablas = {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
+                    size: '30px x 30px',
                     required: true
                 },
                 {
@@ -182,6 +183,7 @@ const tablas = {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
+                    size: '30px x 30px',
                     required: true
                 },
                 {
@@ -258,18 +260,21 @@ const tablas = {
                     key: 'video_mobile',
                     label: 'Video Mobile',
                     type: 'image',
+                    size: '30px x 30px',
                     required: true
                 },
                 {
                     key: 'video_desktop',
                     label: 'Video Desktop',
                     type: 'image',
+                    size: '30px x 30px',
                     required: true
                 },
                 {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
+                    size: '30px x 30px',
                     required: true
                 },
                 {
@@ -369,6 +374,7 @@ const tablas = {
                     key: 'icono',
                     label: 'Ícono',
                     type: 'image',
+                    size: '30px x 30px',
                     required: true
                 },
                 {
@@ -387,24 +393,28 @@ const tablas = {
                     key: 'img_carousel',
                     label: 'Imagen Carousel',
                     type: 'image',
+                    size: '30px x 30px',
                     required: true
                 },
                 {
                     key: 'img_search',
                     label: 'Imagen Search',
                     type: 'image',
+                    size: '30px x 30px',
                     required: true
                 },
                 {
                     key: 'video_mobile',
                     label: 'Video Mobile',
                     type: 'image',
+                    size: '30px x 30px',
                     required: true
                 },
                 {
                     key: 'video_desktop',
                     label: 'Video Desktop',
                     type: 'image',
+                    size: '30px x 30px',
                     required: true
                 },
                 {
@@ -442,7 +452,8 @@ const tablas = {
                 {
                     key: 'icono_search',
                     label: 'Icono Search',
-                    type: 'image'
+                    type: 'image',
+                    size: '30x30'
                 },
                 {
                     key: 'etiqueta_search',
@@ -473,6 +484,7 @@ const tablas = {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
+                    size: '30px x 30px',
                     required: true
                 },
                 {
@@ -512,12 +524,14 @@ const tablas = {
                 {
                     key: 'img',
                     label: 'Imagen',
-                    type: 'image'
+                    type: 'image',
+                    size: '30x30'
                 },
                 {
                     key: 'imagen_mobile',
                     label: 'Imagen Mobile',
-                    type: 'image'
+                    type: 'image',
+                    size: '30x30'
                 },
                 {
                     key: 'video_mapa_mobile',
@@ -627,18 +641,21 @@ const tablas = {
                     key: 'img_desktop',
                     label: 'Imagen Desktop',
                     type: 'image',
+                    size: '30px x 30px',
                     required: true
                 },
                 {
                     key: 'img_tablet',
                     label: 'Imagen Tablet',
                     type: 'image',
+                    size: '30px x 30px',
                     required: true
                 },
                 {
                     key: 'img_mobile',
                     label: 'Imagen Mobile',
                     type: 'image',
+                    size: '30px x 30px',
                     required: true
                 },
                 {
@@ -696,6 +713,7 @@ const tablas = {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
+                    size: '30px x 30px',
                     required: true
                 },
                 {
@@ -731,6 +749,7 @@ const tablas = {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
+                    size: '30px x 30px',
                     required: true
                 },
                 {
@@ -776,6 +795,7 @@ const tablas = {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
+                    size: '30px x 30px',
                     required: true
                 },
                 {
@@ -870,6 +890,7 @@ const tablas = {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
+                    size: '30px x 30px',
                     required: true
                 },
                 {
@@ -903,6 +924,7 @@ const tablas = {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
+                    size: '30px x 30px',
                     required: true
                 },
                 {
@@ -953,6 +975,7 @@ const tablas = {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
+                    size: '30px x 30px',
                     required: true
                 },
                 {
@@ -1005,6 +1028,7 @@ const tablas = {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
+                    size: '30px x 30px',
                 },
             ]
         }
