@@ -6,8 +6,8 @@
                     <FormFieldsContainer>
                         <FormTextField v-model="formData.nombreprod" id="nombreprod" label="Nombre del Producto"
                             required placeholder="Ingresa el nombre del producto" :error="errors.nombreprod" />
-                        <FormTextField v-model="formData.cod_newton" id="cod_newton" label="Código" type="text"
-                            required placeholder="Código del producto" :error="errors.cod_newton" />
+                        <FormTextField v-model="formData.cod_newton" id="cod_newton" label="Código" type="text" required
+                            placeholder="Código del producto" :error="errors.cod_newton" />
                     </FormFieldsContainer>
 
                     <FormFieldsContainer>
@@ -121,6 +121,140 @@
                     </div>
                 </div>
             </template>
+            <template #itinerario>
+                <div class="flex flex-col gap-5">
+                    <div v-if="formData.itinerario.length === 0" class="text-center py-8">
+                        <p class="text-gray-600 mb-4">No hay días agregados al itinerario</p>
+                    </div>
+
+                    <div v-for="(dia, index) in formData.itinerario" :key="dia.id">
+                        <div class="flex items-center justify-between">
+                            <div @click="toggleDiaAccordion(index)"
+                                class="w-full flex items-center gap-3 cursor-pointer">
+                                <div class="w-full flex items-center">
+                                    <button @click.stop="eliminarDia(index)" aria-label="Eliminar día" type="button"
+                                        class="w-8 h-8 flex justify-center items-center text-primary">
+                                        <Icon name="tabler:x" class="w-5 h-5" />
+                                    </button>
+                                    <div class="bg-gray-mid rounded-md p-1.5">
+                                        <p class="text-xl text-dark">Día: <span class="font-bold">{{ index + 1 }}</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <Icon :name="dia.isOpen ? 'tabler:chevron-up' : 'tabler:chevron-down'"
+                                    class="w-8 h-8 text-primary transition-transform duration-300 ease-in-out" />
+                            </div>
+
+                        </div>
+
+                        <Transition enter-active-class="transition-all duration-300 ease-out"
+                            leave-active-class="transition-all duration-300 ease-in"
+                            enter-from-class="opacity-0 max-h-0" enter-to-class="opacity-100 max-h-screen"
+                            leave-from-class="opacity-100 max-h-screen" leave-to-class="opacity-0 max-h-0">
+                            <div v-if="dia.isOpen" class="border-b border-terciary pt-3 pb-6 overflow-hidden">
+                                <div class="flex flex-col gap-4">
+                                    <FormFieldsContainer>
+                                        <FormTextField v-model="dia.titulo" :id="`titulo-dia-${index}`" label="Título"
+                                            required placeholder="Escribe el nombre del tour" />
+                                        <div class="flex flex-col gap-2">
+                                            <FormLabel :id="`destacados-dia-${index}`" required>Destacados</FormLabel>
+                                            <div class="flex items-center gap-6">
+                                                <button @click="agregarDestacado(index)" aria-label="Agregar destacado"
+                                                    type="button"
+                                                    class="w-7 h-7 flex justify-center items-center bg-primary text-white rounded-lg">
+                                                    <Icon name="tabler:plus" class="w-4 h-4" />
+                                                </button>
+                                                <span class="text-xl text-dark font-light">{{ dia.destacados.length
+                                                }}</span>
+                                            </div>
+                                        </div>
+                                    </FormFieldsContainer>
+
+                                    <FormTextareaField v-model="dia.texto" :id="`texto-dia-${index}`" label="Texto"
+                                        required placeholder="Escribe el ID del tour" :rows="3" />
+                                </div>
+                            </div>
+                        </Transition>
+                    </div>
+
+                    <div class="flex justify-start pb-4">
+                        <ButtonPrimary @click.prevent.stop="agregarDia" type="button">
+                            + Agregar Día
+                        </ButtonPrimary>
+                    </div>
+                </div>
+
+                <div v-if="showDestacadosModal"
+                    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+                    @click="handleDestacadosModalBackgroundClick">
+                    <div class="w-full max-w-[60rem] flex flex-col gap-6 bg-light rounded-[20px] p-8" @click.stop>
+                        <HeadingH2 class="text-center">
+                            Destacados - Día del itinerario: {{ currentDiaIndex + 1 }}
+                        </HeadingH2>
+
+                        <div class="flex flex-col gap-5">
+                            <div v-if="currentDestacados.length === 0" class="text-center py-8">
+                                <p class="text-gray-600 mb-4">No hay destacados agregados</p>
+                            </div>
+
+                            <div v-for="(destacado, index) in currentDestacados" :key="destacado.id">
+                                <div class="flex items-center justify-between">
+                                    <div @click="toggleDestacadoAccordion(index)"
+                                        class="w-full flex items-center gap-3 cursor-pointer flex-1">
+                                        <div class="w-full flex items-center">
+                                            <button @click.stop="eliminarDestacado(index)"
+                                                aria-label="Eliminar destacado" type="button"
+                                                class="w-8 h-8 flex justify-center items-center text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors duration-200">
+                                                <Icon name="tabler:x" class="w-5 h-5" />
+                                            </button>
+                                            <div class="bg-gray-mid rounded-md p-1.5">
+                                                <p class="text-lg text-dark">Destacado: <span class="font-bold">{{ index
+                                                    + 1
+                                                        }}</span></p>
+                                            </div>
+                                        </div>
+                                        <Icon :name="destacado.isOpen ? 'tabler:chevron-up' : 'tabler:chevron-down'"
+                                            class="w-6 h-6 text-primary transition-transform duration-300 ease-in-out" />
+                                    </div>
+
+                                </div>
+
+                                <Transition enter-active-class="transition-all duration-300 ease-out"
+                                    leave-active-class="transition-all duration-300 ease-in"
+                                    enter-from-class="opacity-0 max-h-0" enter-to-class="opacity-100 max-h-screen"
+                                    leave-from-class="opacity-100 max-h-screen" leave-to-class="opacity-0 max-h-0">
+                                    <div v-if="destacado.isOpen"
+                                        class="border-b border-terciary pt-3 pb-6 overflow-hidden">
+                                        <div class="flex flex-col gap-4">
+                                            <FormFieldsContainer>
+                                                <FormTextField v-model="destacado.titulo"
+                                                    :id="`titulo-destacado-${index}`" label="Título" required
+                                                    placeholder="Título del destacado" />
+                                                <FormImageField v-model="destacado.imagen"
+                                                    :id="`imagen-destacado-${index}`" label="Imagen" required
+                                                    targetFolder="productos" size="290px x 180px" />
+                                            </FormFieldsContainer>
+                                        </div>
+                                    </div>
+                                </Transition>
+                            </div>
+
+                            <div class="flex justify-start pb-4">
+                                <ButtonPrimary @click.prevent.stop="agregarDestacadoModal" type="button">
+                                    + Agregar Destacado
+                                </ButtonPrimary>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-center gap-5 mt-2">
+                            <ButtonPrimary @click.prevent="closeDestacadosModal" type="button"
+                                class="!bg-gray-mid !text-dark">
+                                Cerrar
+                            </ButtonPrimary>
+                        </div>
+                    </div>
+                </div>
+            </template>
         </TabsLayout>
 
         <div class="flex justify-center items-center flex-wrap gap-8 mt-3">
@@ -198,7 +332,8 @@ const formData = ref({
     precio_total: 0,
     estado: true,
     segmentos_excluidos: [],
-    secciones: []
+    secciones: [],
+    itinerario: []
 })
 
 watchEffect(() => {
@@ -218,7 +353,8 @@ watchEffect(() => {
 const tabs = [
     { id: 'detalle', label: 'Detalle' },
     { id: 'segmentos', label: 'Segmentos excluidos' },
-    { id: 'secciones', label: 'Secciones' }
+    { id: 'secciones', label: 'Secciones' },
+    { id: 'itinerario', label: 'Itinerario' }
 ]
 
 const errors = ref({})
@@ -291,6 +427,10 @@ const modalSeccion = ref({ ...seccionModalDefault })
 const showSeccionModal = ref(false)
 const isEditingSeccion = ref(false)
 const editingSeccionIndex = ref(-1)
+
+const showDestacadosModal = ref(false)
+const currentDiaIndex = ref(-1)
+const currentDestacados = ref([])
 
 const openCreateSeccionModal = (event) => {
     if (event) {
@@ -372,6 +512,62 @@ const deleteSeccion = (seccion) => {
     const idx = formData.value.secciones.findIndex(s => s.id === seccion.id)
     if (idx !== -1) {
         formData.value.secciones.splice(idx, 1)
+    }
+}
+
+const agregarDia = () => {
+    const nuevoDia = {
+        id: Date.now(),
+        titulo: '',
+        destacados: [],
+        texto: '',
+        isOpen: true
+    }
+    formData.value.itinerario.push(nuevoDia)
+}
+
+const toggleDiaAccordion = (index) => {
+    formData.value.itinerario[index].isOpen = !formData.value.itinerario[index].isOpen
+}
+
+const agregarDestacado = (index) => {
+    currentDiaIndex.value = index
+    currentDestacados.value = [...formData.value.itinerario[index].destacados]
+    showDestacadosModal.value = true
+}
+
+const eliminarDia = (index) => {
+    formData.value.itinerario.splice(index, 1)
+}
+
+const agregarDestacadoModal = () => {
+    const nuevoDestacado = {
+        id: Date.now(),
+        titulo: '',
+        imagen: '',
+        isOpen: true
+    }
+    currentDestacados.value.push(nuevoDestacado)
+}
+
+const toggleDestacadoAccordion = (index) => {
+    currentDestacados.value[index].isOpen = !currentDestacados.value[index].isOpen
+}
+
+const eliminarDestacado = (index) => {
+    currentDestacados.value.splice(index, 1)
+}
+
+const closeDestacadosModal = () => {
+    formData.value.itinerario[currentDiaIndex.value].destacados = [...currentDestacados.value]
+    showDestacadosModal.value = false
+    currentDiaIndex.value = -1
+    currentDestacados.value = []
+}
+
+const handleDestacadosModalBackgroundClick = (event) => {
+    if (event.target === event.currentTarget) {
+        closeDestacadosModal()
     }
 }
 

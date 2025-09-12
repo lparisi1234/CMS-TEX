@@ -37,6 +37,10 @@ if (nombreSlug === 'productos') {
     await navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.PRODUCTOS}`)
 }
 
+if (nombreSlug === 'opiniones') {
+    await navigateTo(`${ROUTE_NAMES.TABLAS}/opiniones`)
+}
+
 if (nombreSlug === 'que-esperar-categorias') {
     await navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.QUE_ESPERAR}`)
 }
