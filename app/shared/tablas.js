@@ -142,6 +142,12 @@ const tablas = {
                     label: 'Nomenclatura',
                     type: 'text',
                     required: true
+                },
+                {
+                    key: 'segmentos_id',
+                    label: 'Segmentos Excluidos',
+                    type: 'checkbox-multiple',
+                    relatedTable: 'segmentos',
                 }
             ]
         },
@@ -902,6 +908,11 @@ const tablas = {
                     required: true
                 },
                 {
+                    key: 'nro_orden',
+                    label: 'Número de Orden',
+                    type: 'number'
+                },
+                {
                     key: 'estado',
                     label: 'Estado',
                     type: 'boolean',
@@ -940,6 +951,11 @@ const tablas = {
                     label: 'Fecha',
                     type: 'date',
                     required: true
+                },
+                {
+                    key: 'nro_orden',
+                    label: 'Número de Orden',
+                    type: 'number'
                 },
                 {
                     key: 'estado',
