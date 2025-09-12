@@ -902,6 +902,11 @@ const tablas = {
                     required: true
                 },
                 {
+                    key: 'nro_orden',
+                    label: 'Número de Orden',
+                    type: 'number'
+                },
+                {
                     key: 'estado',
                     label: 'Estado',
                     type: 'boolean',
@@ -940,6 +945,11 @@ const tablas = {
                     label: 'Fecha',
                     type: 'date',
                     required: true
+                },
+                {
+                    key: 'nro_orden',
+                    label: 'Número de Orden',
+                    type: 'number'
                 },
                 {
                     key: 'estado',
