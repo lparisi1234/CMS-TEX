@@ -142,6 +142,12 @@ const tablas = {
                     label: 'Nomenclatura',
                     type: 'text',
                     required: true
+                },
+                {
+                    key: 'segmentos_id',
+                    label: 'Segmentos Excluidos',
+                    type: 'checkbox-multiple',
+                    relatedTable: 'segmentos',
                 }
             ]
         },

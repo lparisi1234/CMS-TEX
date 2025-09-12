@@ -120,12 +120,12 @@ const handleSearch = () => {
 const goToResult = (result) => {
     if (result.type === 'destino') {
         if (result.region_id) {
-            navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.DESTINOS_PAISES}/${result.id}`)
+            navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.EDITAR}/${result.id}?tabla=destinos&tipo=pais`)
         } else {
-            navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.DESTINOS_REGIONES}/${result.id}`)
+            navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.EDITAR}/${result.id}?tabla=destinos&tipo=region`)
         }
     } else {
-        navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.CIUDADES}/${result.id}`)
+        navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.EDITAR}/${result.id}?tabla=ciudades`)
     }
 
     searchQuery.value = ''
