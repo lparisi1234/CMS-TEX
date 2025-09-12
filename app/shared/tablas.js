@@ -1005,6 +1005,94 @@ const tablas = {
             ]
         },
         {
+            name: 'Traducciones',
+            slug: 'traducciones',
+            icon: 'book',
+            endpoint: 'traducciones/traducciones',
+            botonTexto: 'Crear nueva traducción',
+            columns: [
+                {
+                    key: 'img',
+                    label: 'Imagen',
+                    type: 'image',
+                    size: '80px x 80px',
+                    required: true
+                },
+                {
+                    key: 'nombre',
+                    label: 'Nombre',
+                    type: 'text',
+                    required: true
+                }
+            ]
+        },
+        {
+            name: 'Personalizar',
+            slug: 'personalizar',
+            endpoint: 'personalizar/personalizar',
+            botonTexto: 'Crear nueva traducción',
+            showInNav: false,
+            columns: [
+                {
+                    key: 'cod_newton',
+                    label: 'Código Newton',
+                    type: 'text',
+                    required: true
+                },
+                {
+                    key: 'traduccion_titulo',
+                    label: 'Traducción Título',
+                    type: 'text',
+                    required: true
+                },
+                {
+                    key: 'descripcion',
+                    label: 'Descripción',
+                    type: 'text',
+                    required: true
+                },
+                {
+                    key: 'estado',
+                    label: 'Estado',
+                    type: 'boolean',
+                    required: true
+                },
+            ]
+        },
+        {
+            name: 'Categoría Hotelera',
+            slug: 'categoria_hotelera',
+            endpoint: 'categoria_hotelera/categoria_hotelera',
+            botonTexto: 'Crear nueva traducción',
+            showInNav: false,
+            columns: [
+                {
+                    key: 'operador_id',
+                    label: 'Operador',
+                    type: 'select',
+                    relatedTable: 'operadores',
+                },
+                {
+                    key: 'cod_newton',
+                    label: 'Código Newton',
+                    type: 'text',
+                    required: true
+                },
+                {
+                    key: 'traduccion',
+                    label: 'Traducción',
+                    type: 'text',
+                    required: true
+                },
+                {
+                    key: 'estado',
+                    label: 'Estado',
+                    type: 'boolean',
+                    required: true
+                },
+            ]
+        },
+        {
             name: 'Ciudades',
             slug: 'ciudades',
             icon: 'building',
