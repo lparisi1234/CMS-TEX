@@ -34,7 +34,7 @@
 
                                 <FormImageField v-else-if="column.type === 'image'" :id="`field-${column.key}`"
                                     v-model="formData[column.key]" :label="column.label" :required="column.required"
-                                    :error="errors[column.key]" targetFolder="categorias" />
+                                    :error="errors[column.key]" targetFolder="categorias" :size="column.size" />
 
                                 <FormSwitchField v-else-if="column.type === 'boolean'" :id="`field-${column.key}`"
                                     v-model="formData[column.key]" :label="column.label" :required="column.required"
@@ -232,7 +232,6 @@ const loadSubgrupos = async (forceFromDatabase = false) => {
                     const filteredSubgrupos = response.subgrupos.filter(sub => sub.categoria_id === props.formData.id)
                     subgruposFromDb.value = filteredSubgrupos
                     
-                    // Actualizar también formData.subgrupos para mantener sincronización
                     if (props.formData.subgrupos) {
                         props.formData.subgrupos = filteredSubgrupos
                     }
@@ -409,7 +408,6 @@ const saveSubgrupo = async () => {
             if (response.success) {
                 success('Subgrupo actualizado correctamente')
                 
-                // Recargar desde la base de datos para estar seguros
                 await loadSubgrupos(true)
             } else {
                 error(response.message || 'Error actualizando subgrupo')
@@ -431,7 +429,6 @@ const saveSubgrupo = async () => {
                 if (response.success) {
                     success('Subgrupo creado correctamente')
 
-                    // Recargar los subgrupos desde la base de datos para estar seguros
                     await loadSubgrupos(true)
                 } else {
                     error(response.message || 'Error creando subgrupo')
@@ -450,7 +447,6 @@ const saveSubgrupo = async () => {
 
                 props.formData.subgrupos.push(subgrupoData)
                 
-                // Recargar para mostrar el nuevo subgrupo sin duplicar
                 await loadSubgrupos()
             }
         }
@@ -476,7 +472,6 @@ const deleteSubgrupo = async (subgrupo) => {
         if (response.success) {
             success('Subgrupo eliminado correctamente')
             
-            // Actualizar localmente para que desaparezca inmediatamente
             const index = subgruposFromDb.value.findIndex(s => s.id === subgrupo.id)
             if (index !== -1) {
                 subgruposFromDb.value.splice(index, 1)
