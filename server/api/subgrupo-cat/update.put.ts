@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
 
       // 1. Actualizar el subgrupo de categoría
       const updateSubgrupoQuery = `
-        UPDATE "Subgrupos_cat" SET
+        UPDATE subgrupos_cat SET
           nombre = $1,
           categoria_id = $2,
           nro_orden = $3
@@ -55,14 +55,14 @@ export default defineEventHandler(async (event) => {
 
       // 2. Eliminar todas las relaciones existentes para este subgrupo
       await client.query(`
-        DELETE FROM "SubGrupo_prod" 
+        DELETE FROM subgrupos_prod 
         WHERE subgrupo_cat_id = $1
       `, [id])
 
       // 3. Si hay productos_ids, crear las nuevas relaciones en subgrupos_prod
       if (productos_ids && productos_ids.length > 0) {
         const createRelacionQuery = `
-          INSERT INTO "SubGrupo_prod" (
+          INSERT INTO subgrupos_prod (
             producto_id,
             subgrupo_cat_id,
             subgrupo_dst_id

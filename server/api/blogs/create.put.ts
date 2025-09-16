@@ -12,6 +12,7 @@ export default defineEventHandler(async (event) => {
       titulo,
       destacado_home,
       categoria_id,
+      nro_orden,
       destino_id
     } = await readBody(event)
 
@@ -31,7 +32,7 @@ export default defineEventHandler(async (event) => {
     const estadoDB = estado === true ? true : false;
 
     const query = `
-      INSERT INTO "NotaBlog" (
+      INSERT INTO nota_blog (
         autor,
         img,
         fecha,
@@ -39,8 +40,9 @@ export default defineEventHandler(async (event) => {
         titulo,
         destacado_home,
         categoria_id,
-        destino_id
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        destino_id,
+        nro_orden 
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING *;
     `;
 
@@ -53,6 +55,7 @@ export default defineEventHandler(async (event) => {
       destacado_home,
       categoria_id,
       destino_id,
+      nro_orden
     ];
 
     const result = await pool.query(query, values)

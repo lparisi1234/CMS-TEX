@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Primero obtener la imagen anterior antes de la transacción
-    const oldResult = await pool.query('SELECT img FROM "DestinoHome" WHERE id = $1', [id])
+    const oldResult = await pool.query('SELECT img FROM destino_home WHERE id = $1', [id])
     const oldDestinoHome = oldResult.rows[0]
     
     if (!oldDestinoHome) {
@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
     await client.query('BEGIN');
 
     const queryDestinoHome = `
-      UPDATE "DestinoHome" SET
+      UPDATE destino_home SET
                 destino_id = $1,
                 nro_orden = $2,
                 precio_desde = $3,
@@ -60,14 +60,14 @@ export default defineEventHandler(async (event) => {
     }
 
      const queryDeleteSegmentos = `
-      DELETE FROM "DestinoHomeSegmentos"
+      DELETE FROM destino_home_segmentos
       WHERE destino_home_id = $1;
     `;
     await client.query(queryDeleteSegmentos, [id]);
 
     if (segmentos_id && Array.isArray(segmentos_id) && segmentos_id.length > 0) {
       const queryInsertSegmentos = `
-        INSERT INTO "DestinoHomeSegmentos" (destino_home_id, segmento_id) VALUES ($1, $2);
+        INSERT INTO destino_home_segmentos (destino_home_id, segmento_id) VALUES ($1, $2);
       `;
       for (const segmentoId of segmentos_id) {
         await client.query(queryInsertSegmentos, [id, parseInt(segmentoId)]);

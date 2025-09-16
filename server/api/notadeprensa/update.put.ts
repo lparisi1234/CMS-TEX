@@ -8,6 +8,7 @@ export default defineEventHandler(async (event) => {
       descripcion,
       img,
       url,
+      nro_orden,
       estado
     } = await readBody(event)
 
@@ -16,13 +17,14 @@ export default defineEventHandler(async (event) => {
       descripcion === undefined ||
       img === undefined ||
       url === undefined ||
+      nro_orden === undefined ||
       estado === undefined
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
     // Primero obtener la imagen anterior antes de actualizar
-    const oldResult = await pool.query('SELECT img FROM "NotaDePrensa" WHERE id = $1', [id])
+    const oldResult = await pool.query('SELECT img FROM nota_prensa WHERE id = $1', [id])
     const oldNotadeprensa = oldResult.rows[0]
     
     if (!oldNotadeprensa) {
@@ -30,12 +32,13 @@ export default defineEventHandler(async (event) => {
     }
 
     const query = `
-       UPDATE "NotaDePrensa" SET
+       UPDATE nota_prensa SET
         descripcion = $1,
         img = $2,
         url = $3,
-        estado = $4
-      WHERE id = $5 
+        estado = $4,
+        nro_orden = $5
+      WHERE id = $6
       RETURNING *;
     `;
 
@@ -44,6 +47,7 @@ export default defineEventHandler(async (event) => {
       img,
       url,
       estado,
+      nro_orden,
       id
     ];
 

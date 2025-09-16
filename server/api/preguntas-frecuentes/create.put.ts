@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const query = `
-      INSERT INTO "PreguntasFrecuentes" (
+      INSERT INTO preguntas_frecuentes (
         pregunta,
         respuesta,
         destino_id

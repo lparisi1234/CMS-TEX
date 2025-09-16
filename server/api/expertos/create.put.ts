@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const query = `
-      INSERT INTO "Experto" (
+      INSERT INTO expertos (
         img,
         nombre
       ) VALUES ($1, $2)

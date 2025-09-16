@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const query = `
-      UPDATE "PreguntasFrecuentes" SET
+      UPDATE preguntas_frecuentes SET
         pregunta = $1,
         respuesta = $2,
         destino_id = $3

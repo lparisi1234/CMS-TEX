@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const query = `
-      INSERT INTO "Operador" (
+      INSERT INTO operador (
         nombre,
         estado,
         certificado,

@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
 
       // 1. Crear el subgrupo de destino
       const createSubgrupoQuery = `
-        INSERT INTO "Subgrupos_dst" (
+        INSERT INTO subgrupos_dst (
           nombre,
           destino_id,
           nro_orden
@@ -42,7 +42,7 @@ export default defineEventHandler(async (event) => {
       // 2. Si hay productos_ids, crear las relaciones en subgrupos_prod
       if (productos_ids && productos_ids.length > 0) {
         const createRelacionQuery = `
-          INSERT INTO "SubGrupo_prod" (
+          INSERT INTO subgrupos_prod (
             producto_id,
             subgrupo_cat_id,
             subgrupo_dst_id

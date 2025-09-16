@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
       descripcion,
       titulo,
       subtitulo,
-      segundaDescripcion,
+      segunda_descripcion,
       img_desktop,
       img_tablet,
       img_mobile,
@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
       descripcion === undefined ||
       titulo === undefined ||
       subtitulo === undefined ||
-      segundaDescripcion === undefined ||
+      segunda_descripcion === undefined ||
       img_desktop === undefined ||
       img_tablet === undefined ||
       img_mobile === undefined ||
@@ -44,11 +44,11 @@ export default defineEventHandler(async (event) => {
 
 
     const queryGrupoOferta = `
-      INSERT INTO "GrupoDeOferta" (
+      INSERT INTO grupos_de_ofertas (
         descripcion,
         titulo,
         subtitulo,
-        "segundaDescripcion",
+        segunda_descripcion,
         img_desktop,
         img_tablet,
         img_mobile,
@@ -65,7 +65,7 @@ export default defineEventHandler(async (event) => {
       descripcion,
       titulo,
       subtitulo,
-      segundaDescripcion,
+      segunda_descripcion,
       img_desktop,
       img_tablet,
       img_mobile,
@@ -78,10 +78,10 @@ export default defineEventHandler(async (event) => {
 
     const grupodeOfertaId = resultadoGrupoOferta.rows[0].id;
 
-     // Paso 2: Insertar en la tabla de unión "DestinoHomeSegmentos"
+     // Paso 2: Insertar en la tabla de unión grupos_de_ofertas_segmentos
     if (segmentos_id && Array.isArray(segmentos_id) && segmentos_id.length > 0) {
       const querySegmentos = `
-        INSERT INTO "GrupoDeOferta_Segmento" (grupodeoferta_id, segmento_id) VALUES ($1, $2);
+        INSERT INTO grupos_de_ofertas_segmentos (grupodeoferta_id, segmento_id) VALUES ($1, $2);
       `;
       for (const segmentoId of segmentos_id) {
         await client.query(querySegmentos, [grupodeOfertaId, parseInt(segmentoId)]);
@@ -93,7 +93,7 @@ export default defineEventHandler(async (event) => {
     return {
       success: true,
       message: 'Grupo de oferta creado correctamente',
-      destino: { id: grupodeOfertaId, descripcion, titulo, subtitulo, segundaDescripcion, img_desktop, img_tablet, img_mobile, hasta_fecha, nro_orden, url, estado,
+      destino: { id: grupodeOfertaId, descripcion, titulo, subtitulo, segunda_descripcion, img_desktop, img_tablet, img_mobile, hasta_fecha, nro_orden, url, estado,
        descuento_id, segmentos_id }
     };
   }catch (error) {

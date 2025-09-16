@@ -11,8 +11,8 @@ export default defineEventHandler(async (event) => {
         sc.categoria_id,
         sc.nro_orden,
         c.nombre as categoria_nombre
-      FROM "Subgrupos_cat" sc
-      LEFT JOIN "Categoria" c ON sc.categoria_id = c.id
+      FROM subgrupos_cat sc
+      LEFT JOIN categorias c ON sc.categoria_id = c.id
       ORDER BY sc.nro_orden ASC, sc.nombre ASC
     `
 

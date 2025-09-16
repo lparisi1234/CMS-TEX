@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     if (!id) {
       return { success: false, message: 'ID requerido' }
     }
-    await pool.query('DELETE FROM "Moneda" WHERE id = $1', [id])
+    await pool.query('DELETE FROM moneda WHERE id = $1', [id])
     return { success: true, message: 'Moneda eliminado correctamente' }
   } catch (error) {
     console.error('Error eliminando Moneda:', error)

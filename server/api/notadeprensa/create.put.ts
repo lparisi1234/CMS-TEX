@@ -13,12 +13,13 @@ export default defineEventHandler(async (event) => {
     }
 
     const query = `
-      INSERT INTO "NotaDePrensa" (
+      INSERT INTO nota_prensa (
         descripcion,
         img,
         url,
-        estado
-      ) VALUES ($1, $2, $3, $4)
+        estado,
+        nro_orden
+      ) VALUES ($1, $2, $3, $4, $5)
       RETURNING *;
     `;
 

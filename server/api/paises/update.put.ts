@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Primero obtener la imagen anterior antes de actualizar
-    const oldResult = await pool.query('SELECT img FROM "PaisesOperativos" WHERE id = $1', [id])
+    const oldResult = await pool.query('SELECT img FROM paises_operativos WHERE id = $1', [id])
     const oldPais = oldResult.rows[0]
     
     if (!oldPais) {
@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const query = `
-      UPDATE "PaisesOperativos" SET
+      UPDATE paises_operativos SET
         nombre = $1,
         numero_telefono = $2,
         img = $3,

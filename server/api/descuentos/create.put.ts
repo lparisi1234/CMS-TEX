@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const query = `
-      INSERT INTO "Descuentos" (
+      INSERT INTO descuentos (
         nombre,
         img,
         estado,

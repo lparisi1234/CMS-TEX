@@ -16,8 +16,8 @@ export default defineEventHandler(async (event) => {
     }
 
     const query = `
-      INSERT INTO "MasVendidos_dst" (
-        "ProductoId",
+      INSERT INTO mas_vendidos_dst (
+        producto_id,
         destino_id
       ) VALUES ($1, $2)
       RETURNING *;

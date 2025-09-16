@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Primero obtener las imágenes antes de eliminar el registro
-    const result = await pool.query('SELECT img_desktop, img_tablet, img_mobile FROM "GrupoDeOferta" WHERE id = $1', [id])
+    const result = await pool.query('SELECT img_desktop, img_tablet, img_mobile FROM grupos_de_ofertas WHERE id = $1', [id])
     const grupoOferta = result.rows[0]
     
     if (!grupoOferta) {
@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Eliminar el registro de la base de datos
-    await pool.query('DELETE FROM "GrupoDeOferta" WHERE id = $1', [id])
+    await pool.query('DELETE FROM grupos_de_ofertas WHERE id = $1', [id])
 
     // Función auxiliar para eliminar imagen de S3
     const deleteImageFromS3 = async (imageUrl: string) => {

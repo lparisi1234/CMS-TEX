@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
       cantidad_estrellas,
       cantidadAport,
       consejo_experto,
-      expertoId,
+      experto_id,
       meta_titulo,
       meta_descripcion,
       estado,
@@ -38,7 +38,7 @@ export default defineEventHandler(async (event) => {
 
 
     const query = `
-      INSERT INTO "Producto" (
+      INSERT INTO productos (
         nombreprod,
         h1,
         img,
@@ -51,7 +51,7 @@ export default defineEventHandler(async (event) => {
         cantidad_estrellas,
         "cantidadAport",
         consejo_experto,
-        "expertoId",
+        experto_id,
         meta_titulo,
         meta_descripcion,
         estado,
@@ -79,7 +79,7 @@ export default defineEventHandler(async (event) => {
       cantidad_estrellas || 5,
       cantidadAport || 0,
       consejo_experto || '',
-      expertoId || null,
+      experto_id || null,
       meta_titulo || '',
       meta_descripcion || '',
       estado,

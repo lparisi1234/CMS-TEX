@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Primero obtener la imagen antes de eliminar el registro
-    const result = await pool.query('SELECT img FROM "PaisesOperativos" WHERE id = $1', [id])
+    const result = await pool.query('SELECT img FROM paises_operativos WHERE id = $1', [id])
     const pais = result.rows[0]
     
     if (!pais) {
@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Eliminar el registro de la base de datos
-    await pool.query('DELETE FROM "PaisesOperativos" WHERE id = $1', [id])
+    await pool.query('DELETE FROM paises_operativos WHERE id = $1', [id])
 
     // Eliminar la imagen de S3 si existe
     if (pais.img) {

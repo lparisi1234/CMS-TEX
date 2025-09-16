@@ -49,7 +49,7 @@ async function getDbPool() {
       host: "tex2-dev.cluster-c0lq6suu44up.us-east-1.rds.amazonaws.com",
       user: username,
       password: password,
-      database: "TEX_db",
+      database: "DB_TEX",
       port: 5432,
     });
 
@@ -72,7 +72,7 @@ export default getDbPool;
 //   const pool = new Pool({
 //     host: "localhost",
 //     user: "postgres",
-//     password: "Lioben2000!#",
+//     password: "root",
 //     database: "TEX_db",
 //   });
 //   return pool;

@@ -621,7 +621,7 @@ const tablas = {
                     required: true
                 },
                 {
-                    key: 'segundaDescripcion',
+                    key: 'segunda_descripcion',
                     label: 'Segunda Descripción',
                     type: 'text',
                     required: true

@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Primero obtener la imagen antes de eliminar el registro
-    const result = await pool.query('SELECT img FROM "Destinos" WHERE id = $1', [id])
+    const result = await pool.query('SELECT img FROM destinos WHERE id = $1', [id])
     const destino = result.rows[0]
     
     if (!destino) {
@@ -23,14 +23,14 @@ export default defineEventHandler(async (event) => {
       await client.query('BEGIN')
 
       // Eliminar dependencias: actualizar destinos que usan esta región
-      await client.query('UPDATE "Destinos" SET region_id = NULL WHERE region_id = $1', [id])
+      await client.query('UPDATE destinos SET region_id = NULL WHERE region_id = $1', [id])
 
       // Eliminar subgrupos relacionados y sus productos
-      await client.query('DELETE FROM "SubGrupo_prod" WHERE subgrupo_dst_id IN (SELECT id FROM "Subgrupos_dst" WHERE destino_id = $1)', [id])
-      await client.query('DELETE FROM "Subgrupos_dst" WHERE destino_id = $1', [id])
+      await client.query('DELETE FROM subgrupos_prod WHERE subgrupo_dst_id IN (SELECT id FROM subgrupos_dst WHERE destino_id = $1)', [id])
+      await client.query('DELETE FROM subgrupos_dst WHERE destino_id = $1', [id])
 
       // Eliminar el destino
-      await client.query('DELETE FROM "Destinos" WHERE id = $1', [id])
+      await client.query('DELETE FROM destinos WHERE id = $1', [id])
 
       await client.query('COMMIT')
 

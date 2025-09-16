@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const query = `
-      INSERT INTO "NumeroWpp" (
+      INSERT INTO numero_wpp (
         numero
       ) VALUES ($1)
       RETURNING *;

@@ -18,8 +18,8 @@ export default defineEventHandler(async (event) => {
     }
 
     const query = `
-      UPDATE "MasVendidos_dst" SET
-        "ProductoId" = $1,
+      UPDATE mas_vendidos_dst SET
+        producto_id = $1,
         destino_id = $2
       WHERE id = $3
       RETURNING *;

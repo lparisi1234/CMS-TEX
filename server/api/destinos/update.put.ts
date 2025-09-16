@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Primero obtener la imagen anterior antes de la transacción
-    const oldResult = await pool.query('SELECT img FROM "Destinos" WHERE id = $1', [id])
+    const oldResult = await pool.query('SELECT img FROM destinos WHERE id = $1', [id])
     const oldDestino = oldResult.rows[0]
     
     if (!oldDestino) {
@@ -48,7 +48,7 @@ export default defineEventHandler(async (event) => {
       
       // 1. Actualizar datos principales del destino
       const query = `
-        UPDATE "Destinos" SET
+        UPDATE destinos SET
           url = $1,
           cod_newton = $2,
           nombre = $3,
@@ -99,7 +99,7 @@ export default defineEventHandler(async (event) => {
       const updateRelatedProducts = async (tableName: string, products: string[]) => {
         // Primero eliminamos todas las relaciones existentes
         await client.query(`
-          DELETE FROM "${tableName}"
+          DELETE FROM ${tableName}
           WHERE destino_id = $1
         `, [id])
 
@@ -110,7 +110,7 @@ export default defineEventHandler(async (event) => {
           }).join(', ')
 
           const insertQuery = `
-            INSERT INTO "${tableName}" (destino_id, "ProductoId")
+            INSERT INTO ${tableName} (destino_id, producto_id)
             VALUES ${insertValues}
           `
 
@@ -120,15 +120,15 @@ export default defineEventHandler(async (event) => {
 
       // 3. Actualizar cada tabla relacionada si los datos vienen en el body
       if (body.hasOwnProperty('masVendidos')) {
-        await updateRelatedProducts('MasVendidos_dst', masVendidos || [])
+        await updateRelatedProducts('mas_vendidos_dst', masVendidos || [])
       }
       
       if (body.hasOwnProperty('vueloIncluido')) {
-        await updateRelatedProducts('VuelosIncluidos_dst', vueloIncluido || [])
+        await updateRelatedProducts('vuelos_incluidos_dst', vueloIncluido || [])
       }
       
       if (body.hasOwnProperty('recomendados')) {
-        await updateRelatedProducts('Recomendados_dst', recomendados || [])
+        await updateRelatedProducts('recomendados_dst', recomendados || [])
       }
 
       await client.query('COMMIT')

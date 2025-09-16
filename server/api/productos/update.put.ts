@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
       cantidad_estrellas,
       cantidadAport,
       consejo_experto,
-      expertoId,
+      experto_id,
       meta_titulo,
       meta_descripcion,
       estado,
@@ -39,7 +39,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Primero obtener las imágenes anteriores antes de actualizar
-    const oldResult = await pool.query('SELECT img, imagen_mobile FROM "Producto" WHERE id = $1', [id])
+    const oldResult = await pool.query('SELECT img, imagen_mobile FROM productos WHERE id = $1', [id])
     const oldProducto = oldResult.rows[0]
     
     if (!oldProducto) {
@@ -50,7 +50,7 @@ export default defineEventHandler(async (event) => {
 
 
     const query = `
-      UPDATE "Producto" SET
+      UPDATE productos SET
         nombreprod = $1,
         h1 = $2,
         img = $3,
@@ -63,7 +63,7 @@ export default defineEventHandler(async (event) => {
         cantidad_estrellas = $10,
         "cantidadAport" = $11,
         consejo_experto = $12,
-        "expertoId" = $13,
+        experto_id = $13,
         meta_titulo = $14,
         meta_descripcion = $15,
         estado = $16,
@@ -91,7 +91,7 @@ export default defineEventHandler(async (event) => {
       cantidad_estrellas || 5,
       cantidadAport || 0,
       consejo_experto || '',
-      expertoId || null,
+      experto_id || null,
       meta_titulo || '',
       meta_descripcion || '',
       estado,

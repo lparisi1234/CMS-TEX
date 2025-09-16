@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     if (!id) {
       return { success: false, message: 'ID requerido' }
     }
-    await pool.query('DELETE FROM "NumeroWpp" WHERE id = $1', [id])
+    await pool.query('DELETE FROM numero_wpp WHERE id = $1', [id])
     return { success: true, message: 'Número de WhatsApp eliminado correctamente' }
   } catch (error) {
     console.error('Error eliminando número de WhatsApp:', error)
