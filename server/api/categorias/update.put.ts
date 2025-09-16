@@ -57,7 +57,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Primero obtener las imágenes anteriores antes de la transacción
-    const oldResult = await pool.query('SELECT img_carousel, img_search FROM "Categoria" WHERE id = $1', [id])
+    const oldResult = await pool.query('SELECT img_carousel, img_search FROM categorias WHERE id = $1', [id])
     const oldCategoria = oldResult.rows[0]
     
     if (!oldCategoria) {
@@ -65,7 +65,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const query = `
-      UPDATE "Categoria" SET
+      UPDATE categorias SET
         nombre = $1,
         coordenadas_icono = $2,
         coordenadas_icono_hover = $3,
@@ -84,7 +84,7 @@ export default defineEventHandler(async (event) => {
         video_desktop = $16,
         estado = $17,
         codigo_newton = $18,
-        "idExperto" = $19,
+        experto_id = $19,
         consejo_experto = $20,
         url = $21
       WHERE id = $22
@@ -137,7 +137,7 @@ export default defineEventHandler(async (event) => {
           // Solo crear subgrupos con IDs temporales (muy altos)
           if (subgrupo.id && subgrupo.id > Date.now() - 10000000) {
             const createSubgrupoQuery = `
-              INSERT INTO "Subgrupos_cat" (
+              INSERT INTO subgrupos_cat (
                 nombre,
                 categoria_id,
                 nro_orden
@@ -159,7 +159,7 @@ export default defineEventHandler(async (event) => {
             if (subgrupo.productos_ids && Array.isArray(subgrupo.productos_ids) && subgrupo.productos_ids.length > 0) {
               for (const producto_id of subgrupo.productos_ids) {
                 await client.query(`
-                  INSERT INTO "SubGrupo_prod" (
+                  INSERT INTO subgrupos_prod (
                     producto_id,
                     subgrupo_cat_id,
                     subgrupo_dst_id

@@ -42,7 +42,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Primero obtener las imágenes anteriores antes de la transacción
-    const oldResult = await pool.query('SELECT img_desktop, img_tablet, img_mobile FROM "GrupoDeOferta" WHERE id = $1', [id])
+    const oldResult = await pool.query('SELECT img_desktop, img_tablet, img_mobile FROM grupos_de_ofertas WHERE id = $1', [id])
     const oldGrupoOferta = oldResult.rows[0]
     
     if (!oldGrupoOferta) {
@@ -54,7 +54,7 @@ export default defineEventHandler(async (event) => {
 
 
     const queryGrupoOferta = `
-      UPDATE "GrupoDeOferta" SET
+      UPDATE grupos_de_ofertas SET
         descripcion = $1,
         titulo = $2,
         subtitulo = $3,
@@ -93,14 +93,14 @@ export default defineEventHandler(async (event) => {
     }
 
     const queryDeleteSegmentos = `
-      DELETE FROM "GrupoDeOferta_Segmento"
+      DELETE FROM grupos_de_ofertas_segmentos
       WHERE grupodeoferta_id = $1;
     `;
     await client.query(queryDeleteSegmentos, [id]);
 
     if (segmentos_id && Array.isArray(segmentos_id) && segmentos_id.length > 0) {
       const queryInsertSegmentos = `
-        INSERT INTO "GrupoDeOferta_Segmento" (grupodeoferta_id, segmento_id) VALUES ($1, $2);
+        INSERT INTO grupos_de_ofertas_segmentos (grupodeoferta_id, segmento_id) VALUES ($1, $2);
       `;
       for (const segmentoId of segmentos_id) {
         await client.query(queryInsertSegmentos, [id, parseInt(segmentoId)]);

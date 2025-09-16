@@ -39,7 +39,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Primero obtener las imágenes anteriores antes de actualizar
-    const oldResult = await pool.query('SELECT img, imagen_mobile FROM "Producto" WHERE id = $1', [id])
+    const oldResult = await pool.query('SELECT img, imagen_mobile FROM productos WHERE id = $1', [id])
     const oldProducto = oldResult.rows[0]
     
     if (!oldProducto) {
@@ -50,7 +50,7 @@ export default defineEventHandler(async (event) => {
 
 
     const query = `
-      UPDATE "Producto" SET
+      UPDATE productos SET
         nombreprod = $1,
         h1 = $2,
         img = $3,

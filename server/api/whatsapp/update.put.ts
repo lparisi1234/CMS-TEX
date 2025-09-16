@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const query = `
-      UPDATE "NumeroWpp" SET
+      UPDATE numero_wpp SET
         numero = $1
       WHERE id = $2
       RETURNING *;

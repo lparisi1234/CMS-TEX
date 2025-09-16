@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
 
 
     const queryGrupoOferta = `
-      INSERT INTO "GrupoDeOferta" (
+      INSERT INTO grupos_de_ofertas (
         descripcion,
         titulo,
         subtitulo,
@@ -78,10 +78,10 @@ export default defineEventHandler(async (event) => {
 
     const grupodeOfertaId = resultadoGrupoOferta.rows[0].id;
 
-     // Paso 2: Insertar en la tabla de unión "DestinoHomeSegmentos"
+     // Paso 2: Insertar en la tabla de unión grupos_de_ofertas_segmentos
     if (segmentos_id && Array.isArray(segmentos_id) && segmentos_id.length > 0) {
       const querySegmentos = `
-        INSERT INTO "GrupoDeOferta_Segmento" (grupodeoferta_id, segmento_id) VALUES ($1, $2);
+        INSERT INTO grupos_de_ofertas_segmentos (grupodeoferta_id, segmento_id) VALUES ($1, $2);
       `;
       for (const segmentoId of segmentos_id) {
         await client.query(querySegmentos, [grupodeOfertaId, parseInt(segmentoId)]);

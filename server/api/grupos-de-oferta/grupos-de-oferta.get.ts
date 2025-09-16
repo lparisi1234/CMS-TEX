@@ -10,9 +10,9 @@ export default defineEventHandler(async () => {
                 ARRAY[]::INTEGER[]
             ) AS segmentos_id
         FROM
-            "GrupoDeOferta" AS go
+            grupos_de_ofertas AS go
         LEFT JOIN
-            "GrupoDeOferta_Segmento" AS gos ON go.id = gos.grupodeoferta_id
+            grupos_de_ofertas_segmentos AS gos ON go.id = gos.grupodeoferta_id
         GROUP BY
             go.id
         ORDER BY

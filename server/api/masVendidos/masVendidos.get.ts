@@ -2,6 +2,6 @@ import getDbPool from "../../db"
 
 export default defineEventHandler(async () => {
   const pool = await getDbPool()
-  const { rows } = await pool.query('SELECT * FROM "MasVendidos_dst" ORDER BY id')
+  const { rows } = await pool.query('SELECT * FROM mas_vendidos_dst ORDER BY id')
   return rows
 })

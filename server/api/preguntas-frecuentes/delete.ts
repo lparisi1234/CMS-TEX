@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     if (!id) {
       return { success: false, message: 'ID requerido' }
     }
-    await pool.query('DELETE FROM "PreguntasFrecuentes" WHERE id = $1', [id])
+    await pool.query('DELETE FROM preguntas_frecuentes WHERE id = $1', [id])
     return { success: true, message: 'Pregunta frecuente eliminada correctamente' }
   } catch (error) {
     console.error('Error eliminando pregunta frecuente:', error)

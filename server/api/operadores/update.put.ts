@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Primero obtener la imagen anterior antes de actualizar
-    const oldResult = await pool.query('SELECT img FROM "Operador" WHERE id = $1', [id])
+    const oldResult = await pool.query('SELECT img FROM operador WHERE id = $1', [id])
     const oldOperador = oldResult.rows[0]
     
     if (!oldOperador) {
@@ -40,7 +40,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const query = `
-      UPDATE "Operador" SET
+      UPDATE operador SET
         nombre = $1,
         estado = $2,
         certificado = $3,

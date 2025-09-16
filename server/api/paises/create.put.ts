@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const query = `
-      INSERT INTO "PaisesOperativos" (
+      INSERT INTO paises_operativos (
         nombre,
         numero_telefono,
         img,

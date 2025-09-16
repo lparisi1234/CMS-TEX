@@ -5,7 +5,7 @@ export default defineEventHandler(async () => {
     const pool = await getDbPool()
     
     // Obtener categorías
-    const { rows: categorias } = await pool.query('SELECT * FROM "Categoria" ORDER BY id')
+    const { rows: categorias } = await pool.query('SELECT * FROM public.categorias ORDER BY id')
     
     // Para cada categoría, obtener sus subgrupos
     for (const categoria of categorias) {
@@ -20,8 +20,8 @@ export default defineEventHandler(async () => {
             FILTER (WHERE sp.producto_id IS NOT NULL), 
             ARRAY[]::text[]
           ) as productos_ids
-        FROM "Subgrupos_cat" sc
-        LEFT JOIN "SubGrupo_prod" sp ON sc.id = sp.subgrupo_cat_id
+        FROM subgrupos_cat sc
+        LEFT JOIN subgrupos_prod sp ON sc.id = sp.subgrupo_cat_id
         WHERE sc.categoria_id = $1
         GROUP BY sc.id, sc.nombre, sc.categoria_id, sc.nro_orden
         ORDER BY sc.nro_orden ASC, sc.nombre ASC

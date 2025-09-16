@@ -18,9 +18,9 @@ export default defineEventHandler(async (event) => {
             ELSE NULL 
           END
         ) FILTER (WHERE sp.producto_id IS NOT NULL) as productos_ids
-      FROM "Subgrupos_dst" sd
-      LEFT JOIN "Destinos" d ON sd.destino_id = d.id
-      LEFT JOIN "SubGrupo_prod" sp ON sd.id = sp.subgrupo_dst_id
+      FROM subgrupos_dst sd
+      LEFT JOIN destinos d ON sd.destino_id = d.id
+      LEFT JOIN subgrupos_prod sp ON sd.id = sp.subgrupo_dst_id
       GROUP BY sd.id, sd.nombre, sd.destino_id, sd.nro_orden, d.nombre
       ORDER BY sd.nro_orden ASC, sd.nombre ASC
     `

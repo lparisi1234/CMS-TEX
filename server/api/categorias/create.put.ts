@@ -55,7 +55,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const query = `
-      INSERT INTO "Categoria" (
+      INSERT INTO categorias (
         nombre,
         coordenadas_icono,
         coordenadas_icono_hover,
@@ -74,7 +74,7 @@ export default defineEventHandler(async (event) => {
         video_desktop,
         estado,
         codigo_newton,
-        "idExperto",
+        experto_id,
         consejo_experto,
         url
       ) VALUES (
@@ -120,7 +120,7 @@ export default defineEventHandler(async (event) => {
       if (subgrupos && Array.isArray(subgrupos) && subgrupos.length > 0) {
         for (const subgrupo of subgrupos) {
           const createSubgrupoQuery = `
-            INSERT INTO "Subgrupos_cat" (
+            INSERT INTO subgrupos_cat (
               nombre,
               categoria_id,
               nro_orden
@@ -142,7 +142,7 @@ export default defineEventHandler(async (event) => {
           if (subgrupo.productos_ids && Array.isArray(subgrupo.productos_ids) && subgrupo.productos_ids.length > 0) {
             for (const producto_id of subgrupo.productos_ids) {
               await client.query(`
-                INSERT INTO "SubGrupo_prod" (
+                INSERT INTO subgrupos_prod (
                   producto_id,
                   subgrupo_cat_id,
                   subgrupo_dst_id

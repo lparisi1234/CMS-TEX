@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     if (!id) {
       return { success: false, message: 'ID requerido' }
     }
-    await pool.query('DELETE FROM "VuelosIncluidos_dst" WHERE id = $1', [id])
+    await pool.query('DELETE FROM vuelos_incluidos_dst WHERE id = $1', [id])
     return { success: true, message: 'Vuelo incluido eliminado correctamente' }
   } catch (error) {
     console.error('Error eliminando vuelo incluido:', error)

@@ -38,7 +38,7 @@ export default defineEventHandler(async (event) => {
 
 
     const query = `
-      INSERT INTO "Producto" (
+      INSERT INTO productos (
         nombreprod,
         h1,
         img,

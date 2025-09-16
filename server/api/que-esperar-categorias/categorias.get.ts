@@ -10,8 +10,8 @@ export default defineEventHandler(async () => {
         c.nombre,
         c.url,
         c.estado
-      FROM "Categorias" c
-      INNER JOIN "QueEsperar" qe ON c.id = qe.categoria_id
+      FROM categorias c
+      INNER JOIN que_esperar qe ON c.id = qe.categoria_id
       WHERE c.estado = true
       ORDER BY c.nombre ASC
     `

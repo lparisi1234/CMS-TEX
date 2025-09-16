@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Primero obtener la imagen anterior antes de actualizar
-    const oldResult = await pool.query('SELECT img FROM "QueEsperar" WHERE id = $1', [id])
+    const oldResult = await pool.query('SELECT img FROM que_esperar WHERE id = $1', [id])
     const oldQueEsperar = oldResult.rows[0]
     
     if (!oldQueEsperar) {
@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const query = `
-      UPDATE "QueEsperar" SET
+      UPDATE que_esperar SET
         categoria_id = $1,
         region_id = COALESCE($2, region_id),
         titulo = $3,

@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const query = `
-      INSERT INTO "QueEsperar" (
+      INSERT INTO que_esperar (
         categoria_id,
         titulo,
         descripcion,

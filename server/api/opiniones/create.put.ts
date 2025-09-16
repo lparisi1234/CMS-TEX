@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
 
 
     const query = `
-      INSERT INTO "Opinion" (
+      INSERT INTO opinion (
         nombre,
         tour,
         img,
