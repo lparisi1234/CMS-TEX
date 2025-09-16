@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
 
     // Paso 1: Insertar en la tabla principal "DestinoHome"
     const queryDestino = `
-      INSERT INTO "DestinoHome" (
+      INSERT INTO destino_home (
         destino_id,
         nro_orden,
         precio_desde,
@@ -45,7 +45,7 @@ export default defineEventHandler(async (event) => {
     // Paso 2: Insertar en la tabla de unión "DestinoHomeSegmentos"
     if (segmentos_id && Array.isArray(segmentos_id) && segmentos_id.length > 0) {
       const querySegmentos = `
-        INSERT INTO "DestinoHomeSegmentos" (destino_home_id, segmento_id) VALUES ($1, $2);
+        INSERT INTO destino_home_segmentos (destino_home_id, segmento_id) VALUES ($1, $2);
       `;
       for (const segmentoId of segmentos_id) {
         await client.query(querySegmentos, [destinoHomeId, parseInt(segmentoId)]);

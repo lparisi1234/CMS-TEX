@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const query = `
-      UPDATE "Segmento" SET
+      UPDATE segmentos SET
         descripcion = $1,
         txt_header = $2,
         txt_footer = $3,

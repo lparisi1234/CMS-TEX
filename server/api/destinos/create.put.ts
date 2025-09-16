@@ -36,7 +36,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const query = `
-      INSERT INTO "Destinos" (
+      INSERT INTO destinos (
         cod_newton,
         url,
         nombre,

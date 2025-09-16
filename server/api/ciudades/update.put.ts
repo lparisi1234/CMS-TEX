@@ -6,27 +6,27 @@ export default defineEventHandler(async (event) => {
     const {
       id,
       cod_newton,
-      imagen,
+      img,
       guia,
       nombre,
       estado,
       destino_id
     } = await readBody(event)
 
-    if (
-      id === undefined ||
-      cod_newton === undefined ||
-      imagen === undefined ||
-      guia === undefined ||
-      nombre === undefined ||
-      estado === undefined ||
-      destino_id === undefined
-    ) {
-      return { success: false, message: 'Faltan campos requeridos' }
-    }
+    // if (
+    //   id === undefined ||
+    //   cod_newton === undefined ||
+    //   imagen === undefined ||
+    //   guia === undefined ||
+    //   nombre === undefined ||
+    //   estado === undefined ||
+    //   destino_id === undefined
+    // ) {
+    //   return { success: false, message: 'Faltan campos requeridos' }
+    // }
 
     // Primero obtener la imagen anterior antes de actualizar
-    const oldResult = await pool.query('SELECT imagen FROM "Ciudades" WHERE id = $1', [id])
+    const oldResult = await pool.query('SELECT img FROM ciudades WHERE id = $1', [id])
     const oldCiudad = oldResult.rows[0]
     
     if (!oldCiudad) {
@@ -36,9 +36,9 @@ export default defineEventHandler(async (event) => {
     
 
     const query = `
-      UPDATE "Ciudades" SET
+      UPDATE ciudades SET
         cod_newton = $1,
-        imagen = $2,
+        img = $2,
         guia = $3,
         nombre = $4,
         estado = $5,
@@ -49,7 +49,7 @@ export default defineEventHandler(async (event) => {
 
     const values = [
       cod_newton,
-      imagen,
+      img,
       guia,
       nombre,
       estado,
@@ -63,7 +63,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Eliminar la imagen anterior de S3 si es diferente a la nueva
-    if (oldCiudad.imagen && oldCiudad.imagen !== imagen) {
+    if (oldCiudad.imagen && oldCiudad.imagen !== img) {
       try {
         const deleteResponse = await $fetch('/api/delete-image', {
           method: 'POST',

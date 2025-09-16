@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
       descripcion,
       titulo,
       subtitulo,
-      segundaDescripcion,
+      segunda_descripcion,
       img_desktop,
       img_tablet,
       img_mobile,
@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
       descripcion === undefined ||
       titulo === undefined ||
       subtitulo === undefined ||
-      segundaDescripcion === undefined ||
+      segunda_descripcion === undefined ||
       img_desktop === undefined ||
       img_tablet === undefined ||
       img_mobile === undefined ||
@@ -58,7 +58,7 @@ export default defineEventHandler(async (event) => {
         descripcion = $1,
         titulo = $2,
         subtitulo = $3,
-        "segundaDescripcion" = $4,
+        segunda_descripcion = $4,
         img_desktop = $5,
         img_tablet = $6,
         img_mobile = $7,
@@ -75,7 +75,7 @@ export default defineEventHandler(async (event) => {
       descripcion,
       titulo,
       subtitulo,
-      segundaDescripcion,
+      segunda_descripcion,
       img_desktop,
       img_tablet,
       img_mobile,

@@ -28,7 +28,7 @@ export default defineEventHandler(async () => {
     return { 
       success: false, 
       message: 'Error obteniendo categorías',
-      error: error.message 
+      error: error instanceof Error ? error.message : String(error)
     }
   }
 })

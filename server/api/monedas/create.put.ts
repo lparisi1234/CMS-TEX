@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const query = `
-      INSERT INTO "Moneda" (
+      INSERT INTO moneda(
         descripcion,
         codigo,
         importe,

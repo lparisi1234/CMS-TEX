@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
     const pool = await getDbPool()
     const {
       cod_newton,
-      imagen,
+      img,
       guia,
       nombre,
       estado,
@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
 
     if (
       cod_newton === undefined ||
-      imagen === undefined ||
+      img === undefined ||
       guia === undefined ||
       nombre === undefined ||
       estado === undefined ||
@@ -25,9 +25,9 @@ export default defineEventHandler(async (event) => {
 
 
     const query = `
-      INSERT INTO "Ciudades" (
+      INSERT INTO ciudades (
         cod_newton,
-        imagen,
+        img,
         guia,
         nombre,
         estado,
@@ -38,7 +38,7 @@ export default defineEventHandler(async (event) => {
 
     const values = [
       cod_newton,
-      imagen,
+      img,
       guia,
       nombre,
       estado,

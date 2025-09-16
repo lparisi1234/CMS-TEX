@@ -26,14 +26,14 @@ export default defineEventHandler(async (event) => {
     }
 
     const query = `
-      INSERT INTO "Segmento" (
+      INSERT INTO segmentos (
         descripcion,
         txt_header,
         txt_footer,
         vencimiento_header,
         estado,
-        codigo_newton,
-        "monedaId"
+        cod_newton,
+        moneda_id
       ) VALUES ($1, $2, $3, $4, $5, $6, $7)
       RETURNING *;
     `;

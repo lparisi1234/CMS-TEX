@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const query = `
-       UPDATE "Moneda" SET
+       UPDATE moneda SET
         descripcion = $1,
         codigo = $2,
         importe = $3,

@@ -12,6 +12,7 @@ export default defineEventHandler(async (event) => {
       titulo,
       destacado_home,
       categoria_id,
+      nro_orden,
       destino_id
     } = await readBody(event)
 
@@ -24,13 +25,14 @@ export default defineEventHandler(async (event) => {
       titulo === undefined ||
       destacado_home === undefined ||
       categoria_id === undefined ||
+      nro_orden === undefined ||
       destino_id === undefined
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
     // Primero obtener la imagen anterior antes de actualizar
-    const oldResult = await pool.query('SELECT img FROM "NotaBlog" WHERE id = $1', [id])
+    const oldResult = await pool.query('SELECT img FROM nota_blog WHERE id = $1', [id])
     const oldBlog = oldResult.rows[0]
     
     if (!oldBlog) {
@@ -40,7 +42,7 @@ export default defineEventHandler(async (event) => {
 
 
     const query = `
-      UPDATE "NotaBlog" SET
+      UPDATE nota_blog SET
         autor = $1,
         img = $2,
         fecha = $3,
@@ -48,8 +50,9 @@ export default defineEventHandler(async (event) => {
         titulo = $5,
         destacado_home = $6,
         categoria_id = $7,
-        destino_id = $8
-      WHERE id = $9
+        destino_id = $8,
+        nro_orden = $9
+      WHERE id = $10
       RETURNING *;
     `;
 
@@ -62,6 +65,7 @@ export default defineEventHandler(async (event) => {
       destacado_home,
       categoria_id,
       destino_id,
+      nro_orden,
       id
     ];
 
