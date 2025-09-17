@@ -3,7 +3,6 @@ import { promisify } from 'util'
 import { writeFile, unlink } from 'fs/promises'
 import { join } from 'path'
 import { tmpdir } from 'os'
-import { randomUUID } from 'crypto'
 
 const execAsync = promisify(exec)
 
@@ -29,17 +28,16 @@ export default defineEventHandler(async (event) => {
 
     const targetFolder = targetFolderField.data.toString('utf-8');
 
-    // Generar nombre único para el archivo
-    const fileExtension = imageFile.filename?.split('.').pop() || 'jpg'
-    const uniqueFileName = `${randomUUID()}.${fileExtension}`
-    const tempFilePath = join(tmpdir(), uniqueFileName)
+    // Usar el nombre original del archivo
+    const fileName = imageFile.filename || 'default.jpg'
+    const tempFilePath = join(tmpdir(), fileName)
 
     // Guardar archivo temporalmente
     await writeFile(tempFilePath, imageFile.data)
 
     // Comando AWS S3 CP
     const bucketName = 'tex2-static-images-prd'
-    const s3Key = `${targetFolder}/${uniqueFileName}`;
+    const s3Key = `${targetFolder}/${fileName}`;
     const s3Url = `s3://${bucketName}/${s3Key}`
     
     const command = `aws s3 cp "${tempFilePath}" "s3://${bucketName}/${s3Key}"`
@@ -68,7 +66,7 @@ export default defineEventHandler(async (event) => {
       success: true,
       message: 'Imagen subida exitosamente',
       s3Url: objectUrl,
-      fileName: uniqueFileName,
+      fileName: fileName,
       stdout: stdout
     }
 
