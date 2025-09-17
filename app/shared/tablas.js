@@ -194,7 +194,7 @@ const tablas = {
                 },
                 {
                     key: 'pais_apertura',
-                    label: 'País Apertura',
+                    label: 'País Abreviatura',
                     type: 'text',
                     required: true
                 },
