@@ -84,7 +84,7 @@ export default getDbPool;
 // host: "localhost",
 // user: "postgres",
 // password: "Lioben2000!#",
-// database: "TEX_db",
+// database: "TEX_v2",
 
 // host: "localhost",
 // user: "postgres",

@@ -108,8 +108,8 @@ const openDeleteModal = (item, index) => {
     let itemName = 'este elemento'
 
     if (item.nombre) itemName = item.nombre
-    else if (item.descripcion) itemName = item.descripcion
     else if (item.titulo) itemName = item.titulo
+    else if (item.descripcion) itemName = item.descripcion
     else if (item.name) itemName = item.name
     else if (item.h1) itemName = item.h1
     else if (item.nombreprod) itemName = item.nombreprod
