@@ -29,7 +29,7 @@
                                 <ul>
                                     <li v-for="item in tablas.configuracion.filter(t => t.showInNav !== false)" :key="item.name">
                                         <NuxtLink :to="`${ROUTE_NAMES.TABLAS}/${item.slug}`"
-                                            class="flex items-center gap-3 text-light font-light py-2.5 px-3"
+                                            class="flex items-center gap-3 text-light font-light cursor-pointer py-2.5 px-3"
                                             @click="closeMenu">
                                             <Icon :name="`tabler:${item.icon}`" class="w-5 h-5" />
                                             <span>{{ item.name }}</span>
