@@ -72,8 +72,8 @@ export default getDbPool;
 //   const pool = new Pool({
 //     host: "localhost",
 //     user: "postgres",
-//     password: "root",
-//     database: "TEX_db",
+//     password: "Lioben2000!#",
+//     database: "TEX_v2",
 //   });
 //   return pool;
 // }
