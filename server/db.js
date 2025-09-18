@@ -30,34 +30,39 @@ async function getSecret() {
   }
 }
 
+let pool;
+
 // Función para crear el pool de conexiones
 async function getDbPool() {
-  try {
-    // Obtener las credenciales del secret
-    const credentials = await getSecret();
+  if (!pool) {
+    try {
+      // Obtener las credenciales del secret
+      const credentials = await getSecret();
 
-    // Asegurar que la contraseña sea un string
-    const password = String(credentials.password || credentials.pass || '');
-    const username = String(credentials.username || credentials.user || 'postgres');
+      // Asegurar que la contraseña sea un string
+      const password = String(credentials.password || credentials.pass || '');
+      const username = String(credentials.username || credentials.user || 'postgres');
 
-    if (!password) {
-      throw new Error('No se encontró la contraseña en el secret');
+      if (!password) {
+        throw new Error('No se encontró la contraseña en el secret');
+      }
+
+      pool = new Pool({
+        host: "tex2-dev.cluster-c0lq6suu44up.us-east-1.rds.amazonaws.com",
+        user: username,
+        password: password,
+        database: "DB_TEX",
+        port: 5432,
+        max: 10,
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 2000,
+      });
+    } catch (error) {
+      console.error("Error creando el pool de conexiones:", error);
+      throw error;
     }
-
-
-    const pool = new Pool({
-      host: "tex2-dev.cluster-c0lq6suu44up.us-east-1.rds.amazonaws.com",
-      user: username,
-      password: password,
-      database: "DB_TEX",
-      port: 5432,
-    });
-
-    return pool;
-  } catch (error) {
-    console.error("Error creando el pool de conexiones:", error);
-    throw error;
   }
+  return pool;
 }
 
 export default getDbPool;
@@ -68,13 +73,20 @@ export default getDbPool;
 
 // import { Pool } from 'pg';
 
+// let pool;
+
 // async function getDbPool() {
-//   const pool = new Pool({
-//     host: "localhost",
-//     user: "postgres",
-//     password: "Lioben2000!#",
-//     database: "TEX_v2",
-//   });
+//   if (!pool) {
+//     pool = new Pool({
+//       host: "localhost",
+//       user: "postgres",
+//       password: "Lioben2000!#",
+//       database: "TEX_v2",
+//       max: 10,
+//       idleTimeoutMillis: 30000,
+//       connectionTimeoutMillis: 2000,
+//     });
+//   }
 //   return pool;
 // }
 
