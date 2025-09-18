@@ -1136,6 +1136,11 @@ const tablas = {
                     type: 'image',
                     size: '215px x 130px',
                 },
+                {
+                    key: 'codigo_iata',
+                    label: 'Código IATA',
+                    type: 'text',
+                },
             ]
         }
     ]
