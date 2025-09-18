@@ -24,7 +24,7 @@ export default defineEventHandler(async () => {
         LEFT JOIN subgrupos_prod sp ON sc.id = sp.subgrupo_cat_id
         WHERE sc.categoria_id = $1
         GROUP BY sc.id, sc.nombre, sc.categoria_id, sc.nro_orden
-        ORDER BY sc.nro_orden ASC, sc.nombre ASC
+        ORDER BY sc.nro_orden ASC
       `
       
       const { rows: subgrupos } = await pool.query(subgruposQuery, [categoria.id])
