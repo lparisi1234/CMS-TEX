@@ -16,7 +16,7 @@ export default defineEventHandler(async () => {
         GROUP BY
             go.id
         ORDER BY
-            go.id
+            go.nro_orden ASC
     `);
 
     return rows;

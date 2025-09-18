@@ -5,7 +5,7 @@ export default defineEventHandler(async () => {
     const pool = await getDbPool()
     
     // Obtener categorías
-    const { rows: categorias } = await pool.query('SELECT * FROM public.categorias ORDER BY id')
+    const { rows: categorias } = await pool.query('SELECT * FROM public.categorias ORDER BY nro_orden ASC')
     
     // Para cada categoría, obtener sus subgrupos
     for (const categoria of categorias) {

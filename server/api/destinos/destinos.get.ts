@@ -5,7 +5,7 @@ export default defineEventHandler(async () => {
     const pool = await getDbPool()
     
     // Obtener destinos
-    const { rows: destinos } = await pool.query('SELECT * FROM destinos ORDER BY nombre ASC')
+    const { rows: destinos } = await pool.query('SELECT * FROM destinos ORDER BY nro_orden ASC')
     
     // Para cada destino, obtener sus subgrupos
     for (const destino of destinos) {
