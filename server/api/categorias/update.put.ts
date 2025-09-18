@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
       video_desktop,
       estado,
       codigo_newton,
-      idExperto,
+      experto_id,
       consejo_experto,
       url,
       subgrupos
@@ -49,7 +49,7 @@ export default defineEventHandler(async (event) => {
       video_desktop === undefined ||
       estado === undefined ||
       codigo_newton === undefined ||
-      idExperto === undefined ||
+      experto_id === undefined ||
       consejo_experto === undefined ||
       url === undefined
     ) {
@@ -110,7 +110,7 @@ export default defineEventHandler(async (event) => {
       video_desktop,
       estado,
       codigo_newton,
-      idExperto,
+      experto_id,
       consejo_experto,
       url,
       id

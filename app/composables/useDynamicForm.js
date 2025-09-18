@@ -51,7 +51,7 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
             const data = response || []
 
             return data.map(item => ({
-                value: item.id,
+                value: String(item.id),
                 label: getDisplayLabel(item, tabla)
             }))
 
