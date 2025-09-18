@@ -1,6 +1,12 @@
 <template>
     <div v-if="column.type === 'image'" class="flex items-center justify-center">
-        <img :src="value" :alt="column.label" class="w-16 h-16 object-cover rounded-lg" />
+        <div v-if="value && value.trim()" class="flex items-center justify-center">
+            <video v-if="isVideoFile(value)" :src="value" class="w-16 h-16 object-cover rounded-lg" controls />
+            <img v-else :src="value" :alt="column.label" class="w-16 h-16 object-cover rounded-lg" />
+        </div>
+        <div v-else class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
+            <span class="text-xs text-gray-500">Sin imagen</span>
+        </div>
     </div>
     <div v-else-if="(column.type === 'text' || column.type === 'textarea') && column.key !== 'subgrupos'"
         class="w-full max-w-[18.75rem] max-h-32 overflow-auto whitespace-pre-wrap break-words">
@@ -28,6 +34,12 @@ const props = defineProps({
         default: undefined
     }
 })
+
+const isVideoFile = (url) => {
+    if (!url || typeof url !== 'string') return false
+    const extension = url.split('.').pop()?.toLowerCase()
+    return extension === 'mp4' || extension === 'webm' || extension === 'mov'
+}
 
 const formatValue = (value, column) => {
     if (value === null || value === undefined) return '-'

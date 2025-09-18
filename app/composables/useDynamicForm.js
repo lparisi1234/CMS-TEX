@@ -143,19 +143,23 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
                     if (item.hasOwnProperty(column.key)) {
                         let value = item[column.key]
 
-                        if (column.type === 'text' || column.type === 'textarea' || column.type === 'currency' || column.type === 'date' || column.type === 'datetime') {
+                        if (column.type === 'text' || column.type === 'textarea' || column.type === 'currency' || column.type === 'date' || column.type === 'datetime' || column.type === 'image') {
                             formData.value[column.key] = value != null ? String(value) : ''
                         } else if (column.type === 'badge') {
                             formData.value[column.key] = value != null ? String(value).toLowerCase() : ''
                         } else if (column.type === 'checkbox-multiple') {
                             if (typeof value === 'string' && value) {
-                                formData.value[column.key] = value.split(',').map(v => v.trim()).filter(Boolean)
+                                // Convertir string separado por comas a array de strings
+                                formData.value[column.key] = value.split(',').map(v => String(v.trim())).filter(Boolean)
                             } else if (Array.isArray(value)) {
                                 // Asegurar que todos los valores sean strings para los checkboxes
-                                formData.value[column.key] = value.map(v => String(v)).filter(v => v !== 'null' && v !== 'undefined')
+                                formData.value[column.key] = value.map(v => String(v)).filter(v => v !== 'null' && v !== 'undefined' && v !== '')
                             } else {
                                 formData.value[column.key] = []
                             }
+                        } else if (column.type === 'select') {
+                            // Asegurar que los valores de select se conviertan a string para comparación
+                            formData.value[column.key] = value != null ? String(value) : ''
                         } else if (column.type === 'array') {
                             if (Array.isArray(value)) {
                                 formData.value[column.key] = value
