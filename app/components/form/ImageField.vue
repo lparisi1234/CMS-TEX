@@ -8,24 +8,25 @@
                 <div v-if="!imagePreview" class="space-y-2">
                     <Icon name="tabler:cloud-upload" class="mx-auto text-4xl text-dark" />
                     <p class="text-dark">
-                        Haz clic aquí o arrastra una imagen
+                        Haz clic aquí o arrastra una imagen o video
                     </p>
                     <p class="text-sm text-dark font-light">
-                        Formatos Recomendados: WEBP, SVG, JPG
+                        Formatos Recomendados: WEBP, SVG, JPG, MP4
                     </p>
                 </div>
 
                 <div v-else class="flex flex-col items-center gap-2">
-                    <img :src="imagePreview" alt="Preview" class="mx-auto max-h-32 rounded border" />
+                    <video v-if="isVideo" :src="imagePreview" class="mx-auto max-h-32 rounded border" controls />
+                    <img v-else :src="imagePreview" alt="Preview" class="mx-auto max-h-32 rounded border" />
                     <p class="text-sm text-dark">{{ fileName }}</p>
                     <button type="button" @click.stop="removeImage"
                         class="text-error text-sm">
-                        Eliminar imagen
+                        Eliminar {{ isVideo ? 'video' : 'imagen' }}
                     </button>
                 </div>
             </div>
 
-            <input ref="fileInput" type="file" accept="image/*" @change="handleFileSelect" class="hidden"
+            <input ref="fileInput" type="file" accept="image/*,video/mp4" @change="handleFileSelect" class="hidden"
                 :id="inputId" />
 
             <div v-if="uploading" class="w-full bg-gray-200 rounded-full h-2">
@@ -62,7 +63,7 @@ const props = defineProps({
     },
     maxSize: {
         type: Number,
-        default: 5 * 1024 * 1024 // 5MB por defecto
+        default: 5 * 1024 * 1024
     },
     targetFolder: {
         type: String,
@@ -83,13 +84,16 @@ const isDragging = ref(false)
 const uploading = ref(false)
 const uploadProgress = ref(0)
 const showError = ref(false)
+const isVideo = ref(false)
 
 const inputId = computed(() => props.id)
 
 watch(() => props.modelValue, (newValue) => {
     if (newValue && newValue !== imagePreview.value) {
         imagePreview.value = newValue
-        fileName.value = newValue.split('/').pop() || 'imagen.jpg'
+        fileName.value = newValue.split('/').pop() || 'archivo'
+        const extension = fileName.value.split('.').pop().toLowerCase()
+        isVideo.value = extension === 'mp4'
     }
 }, { immediate: true })
 
@@ -98,12 +102,11 @@ const triggerFileInput = () => {
 }
 
 const validateFile = (file) => {
-    if (!file.type.startsWith('image/')) {
-        throw new Error('El archivo debe ser una imagen')
-    }
-
-    if (file.size > props.maxSize) {
-        throw new Error(`El archivo no debe superar ${Math.round(props.maxSize / 1024 / 1024)}MB`)
+    const isImage = file.type.startsWith('image/')
+    const isMP4Video = file.type === 'video/mp4'
+    
+    if (!isImage && !isMP4Video) {
+        throw new Error('El archivo debe ser una imagen o un video MP4')
     }
 
     return true
@@ -129,6 +132,7 @@ const processFile = async (file) => {
         validateFile(file)
 
         fileName.value = file.name
+        isVideo.value = file.type === 'video/mp4'
 
         const reader = new FileReader()
         reader.onload = (e) => {
@@ -136,7 +140,6 @@ const processFile = async (file) => {
         }
         reader.readAsDataURL(file)
 
-        // Simular subida
         await simulateUpload(file)
 
         if (showError.value) {
@@ -202,19 +205,17 @@ const deleteImageFromS3 = async (imageUrl) => {
 }
 
 const removeImage = async () => {
-    // Si hay una imagen cargada (no es solo preview local)
     if (imagePreview.value && imagePreview.value.startsWith('https://')) {
         try {
-            // Llamar al endpoint para eliminar de S3
             await deleteImageFromS3(imagePreview.value)
         } catch (error) {
-            console.error('Error eliminando imagen de S3:', error)
+            console.error('Error eliminando archivo de S3:', error)
         }
     }
     
-    // Limpiar estado local
     imagePreview.value = ''
     fileName.value = ''
+    isVideo.value = false
     emit('update:modelValue', '')
     
     if (fileInput.value) {
@@ -238,7 +239,6 @@ watchEffect(() => {
     }
 })
 
-// Exponer métodos para uso externo
 defineExpose({
     deleteImageFromS3,
     removeImage,
