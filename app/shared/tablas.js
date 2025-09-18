@@ -442,7 +442,7 @@ const tablas = {
                     required: true
                 },
                 {
-                    key: 'idExperto',
+                    key: 'experto_id',
                     label: 'Experto',
                     type: 'select',
                     relatedTable: 'expertos',
