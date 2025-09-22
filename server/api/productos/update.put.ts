@@ -1,8 +1,10 @@
 import getDbPool from "../../db"
 
 export default defineEventHandler(async (event) => {
+  const pool = await getDbPool();
+  const client = await pool.connect();
+  
   try {
-    const pool = await getDbPool()
     const {
       id,
       nombreprod,
@@ -12,7 +14,7 @@ export default defineEventHandler(async (event) => {
       video_mapa_mobile,
       video_mapa_desktop,
       podcast,
-      codigonewton,
+      cod_newton,
       url,
       cantidad_estrellas,
       cantidadAport,
@@ -22,18 +24,16 @@ export default defineEventHandler(async (event) => {
       meta_descripcion,
       estado,
       sticker,
-      duracion,
-      iniciafinaliza,
-      precio,
-      precioTachado,
       salidas,
-      aereo_incluido
+      aereo_incluido,
+      segmentos_excluidos,
+      itinerario
     } = await readBody(event)
 
     if (
       id === undefined ||
       nombreprod === undefined ||
-      codigonewton === undefined
+      cod_newton === undefined
     ) {
       return { success: false, message: 'ID, nombre del producto y código Newton son requeridos' }
     }
@@ -46,8 +46,7 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Producto no encontrado' }
     }
 
-
-
+    await client.query('BEGIN');
 
     const query = `
       UPDATE productos SET
@@ -58,7 +57,7 @@ export default defineEventHandler(async (event) => {
         video_mapa_mobile = $5,
         video_mapa_desktop = $6,
         podcast = $7,
-        codigonewton = $8,
+        cod_newton = $8,
         url = $9,
         cantidad_estrellas = $10,
         "cantidadAport" = $11,
@@ -68,13 +67,9 @@ export default defineEventHandler(async (event) => {
         meta_descripcion = $15,
         estado = $16,
         sticker = $17,
-        duracion = $18,
-        iniciafinaliza = $19,
-        precio = $20,
-        "precioTachado" = $21,
-        salidas = $22,
-        aereo_incluido = $23
-      WHERE id = $24
+        salidas = $18,
+        aereo_incluido = $19
+      WHERE id = $20
       RETURNING *;
     `;
 
@@ -86,7 +81,7 @@ export default defineEventHandler(async (event) => {
       video_mapa_mobile || '',
       video_mapa_desktop || '',
       podcast || '',
-      codigonewton,
+      cod_newton,
       url || '',
       cantidad_estrellas || 5,
       cantidadAport || 0,
@@ -96,19 +91,55 @@ export default defineEventHandler(async (event) => {
       meta_descripcion || '',
       estado,
       sticker || '',
-      duracion || '',
-      iniciafinaliza || '',
-      precio || 0,
-      precioTachado || 0,
       salidas || '',
       aereo_incluido,
       id
     ];
 
-    const result = await pool.query(query, values)
+    const result = await client.query(query, values);
     if (result.rows.length === 0) {
+      await client.query('ROLLBACK');
       return { success: false, message: 'No se encontró el producto para modificar' }
     }
+    console.log("Segmentos Excluidos:", segmentos_excluidos);
+    // Eliminar segmentos existentes y agregar los nuevos
+    const queryDeleteSegmentos = `
+      DELETE FROM segmentos_productos
+      WHERE producto_id = $1;
+    `;
+    await client.query(queryDeleteSegmentos, [id]);
+
+    if (segmentos_excluidos && Array.isArray(segmentos_excluidos) && segmentos_excluidos.length > 0) {
+      const queryInsertSegmentos = `
+        INSERT INTO segmentos_productos (producto_id, segmentos_id) VALUES ($1, $2);
+      `;
+      for (const segmentoId of segmentos_excluidos) {
+        await client.query(queryInsertSegmentos, [id, parseInt(segmentoId)]);
+      }
+    }
+/*
+    // Eliminar itinerario existente y agregar el nuevo
+    const queryDeleteItinerario = `
+      DELETE FROM itinerario
+      WHERE producto_id = $1;
+    `;
+    await client.query(queryDeleteItinerario, [id]);
+*/
+    if (itinerario && Array.isArray(itinerario) && itinerario.length > 0) {
+      const queryInsertItinerario = `
+        INSERT INTO itinerario (producto_id, nro_dia, titulo, texto) VALUES ($1, $2, $3, $4);
+      `;
+      for (const item of itinerario) {
+        await client.query(queryInsertItinerario, [
+          id, 
+          item.nro_dia || 1, 
+          item.titulo || '', 
+          item.texto || ''
+        ]);
+      }
+    }
+
+    await client.query('COMMIT');
 
     // Función auxiliar para eliminar imagen de S3
     const deleteImageFromS3 = async (imageUrl: string) => {
@@ -130,15 +161,22 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Eliminar las imágenes anteriores de S3 si son diferentes a las nuevas
+    // Eliminar las imágenes anteriores de S3 si son diferentes a las nuevas (después de la transacción)
     await Promise.all([
       oldProducto.img !== img ? deleteImageFromS3(oldProducto.img) : Promise.resolve(),
       oldProducto.imagen_mobile !== imagen_mobile ? deleteImageFromS3(oldProducto.imagen_mobile) : Promise.resolve()
     ])
 
-    return { success: true, message: 'Producto modificado correctamente', producto: result.rows[0] }
+    return { 
+      success: true, 
+      message: 'Producto modificado correctamente', 
+      producto: { ...result.rows[0], segmentos_excluidos, itinerario } 
+    }
   } catch (error) {
+    await client.query('ROLLBACK');
     console.error('Error modificando producto:', error)
     return { success: false, message: 'Error modificando producto' }
+  } finally {
+    client.release();
   }
 })
