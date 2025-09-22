@@ -74,7 +74,7 @@ const filteredProductos = computed(() => {
     const searchValue = searchCodigoNewton.value.toString().toLowerCase()
 
     return productos.value.filter(producto => {
-        const codigoNewton = producto.codigonewton?.toString().toLowerCase() || ''
+        const codigoNewton = producto.cod_newton?.toString().toLowerCase() || ''
         const nombre = producto.nombreprod?.toLowerCase() || ''
 
         return codigoNewton.includes(searchValue) || nombre.includes(searchValue)
