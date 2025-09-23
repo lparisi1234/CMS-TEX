@@ -10,7 +10,8 @@ export default defineEventHandler(async (event) => {
       guia,
       nombre,
       estado,
-      destino_id
+      destino_id,
+      iata
     } = await readBody(event)
 
     // if (
@@ -42,8 +43,9 @@ export default defineEventHandler(async (event) => {
         guia = $3,
         nombre = $4,
         estado = $5,
-        destino_id = $6
-      WHERE id = $7
+        destino_id = $6,
+        iata = $7
+      WHERE id = $8
       RETURNING *;
     `;
 
@@ -54,6 +56,7 @@ export default defineEventHandler(async (event) => {
       nombre,
       estado,
       destino_id,
+      iata,
       id
     ];
 

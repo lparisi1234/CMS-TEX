@@ -9,13 +9,12 @@ export default defineEventHandler(async (event) => {
       guia,
       nombre,
       estado,
-      destino_id
+      destino_id,
+      iata
     } = await readBody(event)
 
     if (
       cod_newton === undefined ||
-      img === undefined ||
-      guia === undefined ||
       nombre === undefined ||
       estado === undefined ||
       destino_id === undefined
@@ -31,8 +30,9 @@ export default defineEventHandler(async (event) => {
         guia,
         nombre,
         estado,
-        destino_id
-      ) VALUES ($1, $2, $3, $4, $5, $6)
+        destino_id,
+        iata
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7)
       RETURNING *;
     `;
 
@@ -42,7 +42,8 @@ export default defineEventHandler(async (event) => {
       guia,
       nombre,
       estado,
-      destino_id
+      destino_id,
+      iata
     ];
 
     const result = await pool.query(query, values)
