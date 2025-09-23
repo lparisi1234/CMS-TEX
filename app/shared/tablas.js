@@ -1137,7 +1137,7 @@ const tablas = {
                     size: '215px x 130px',
                 },
                 {
-                    key: 'codigo_iata',
+                    key: 'iata',
                     label: 'Código IATA',
                     type: 'text',
                 },
