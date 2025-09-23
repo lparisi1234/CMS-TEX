@@ -7,14 +7,14 @@ export default defineEventHandler(async (event) => {
     const {
       texto,
       titulo,
-      nro_ord,
+      nro_dia,
       producto_id
     } = await readBody(event)
 
     if (
       texto === undefined ||
       titulo === undefined ||
-      nro_ord === undefined ||
+      nro_dia === undefined ||
       producto_id === undefined
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
       INSERT INTO itinerario (
         texto,
         titulo,
-        nro_ord,
+        nro_dia,
         producto_id
       ) VALUES ($1, $2, $3, $4)
       RETURNING *;
@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
     const values = [
       texto,
       titulo,
-      nro_ord,
+      nro_dia,
       producto_id
     ]
 

@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
       id,
       texto,
       titulo,
-      nro_ord,
+      nro_dia,
       producto_id
     } = await readBody(event)
 
@@ -16,26 +16,27 @@ export default defineEventHandler(async (event) => {
       id === undefined ||
       texto === undefined ||
       titulo === undefined ||
-      nro_ord === undefined ||
+      nro_dia === undefined ||
       producto_id === undefined
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
     const query = `
-      UPDATE itinerario SET
-        texto = $1,
-        titulo = $2,
-        nro_ord = $3,
-        producto_id = $4
-      WHERE id = $5
-      RETURNING *;
+    UPDATE itinerario
+    SET
+    texto = $1,
+    titulo = $2,
+    nro_dia = $3
+    WHERE producto_id = $4
+    AND nro_dia = $5
+    RETURNING *;
     `
 
     const values = [
       texto,
       titulo,
-      nro_ord,
+      nro_dia,
       producto_id,
       id
     ]
