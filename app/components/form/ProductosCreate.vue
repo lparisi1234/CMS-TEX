@@ -156,7 +156,7 @@
                                         <FormTextField v-model="dia.titulo" :id="`titulo-dia-${index}`" label="Título"
                                             required placeholder="Escribe el nombre del tour" />
                                         <div class="flex flex-col gap-2">
-                                            <FormLabel :id="`destacados-dia-${index}`" required>Destacados</FormLabel>
+                                            <FormLabel :id="`destacados-dia-${index}`">Destacados</FormLabel>
                                             <div class="flex items-center gap-6">
                                                 <button @click="agregarDestacado(index)" aria-label="Agregar destacado"
                                                     type="button"
@@ -227,10 +227,10 @@
                                         <div class="flex flex-col gap-4">
                                             <FormFieldsContainer>
                                                 <FormTextField v-model="destacado.titulo"
-                                                    :id="`titulo-destacado-${index}`" label="Título" required
+                                                    :id="`titulo-destacado-${index}`" label="Título"
                                                     placeholder="Título del destacado" />
                                                 <FormImageField v-model="destacado.imagen"
-                                                    :id="`imagen-destacado-${index}`" label="Imagen" required
+                                                    :id="`imagen-destacado-${index}`" label="Imagen"
                                                     targetFolder="productos" size="290px x 180px" />
                                             </FormFieldsContainer>
                                         </div>
@@ -246,9 +246,12 @@
                         </div>
 
                         <div class="flex justify-center gap-5 mt-2">
-                            <ButtonPrimary @click.prevent="closeDestacadosModal" type="button"
+                            <ButtonPrimary @click.prevent="cancelDestacadosModal" type="button"
                                 class="!bg-gray-mid !text-dark">
-                                Cerrar
+                                Cancelar
+                            </ButtonPrimary>
+                            <ButtonPrimary @click.prevent="saveDestacadosModal" type="button">
+                                Guardar
                             </ButtonPrimary>
                         </div>
                     </div>
@@ -277,18 +280,21 @@ const { success, error } = useNotification()
 const segmentosData = ref([])
 const expertosData = ref([])
 const productosData = ref([])
+const itinerarioData = ref([])
 
 const loadData = async () => {
     try {
-        const [segmentos, expertos, productos] = await Promise.all([
+        const [segmentos, expertos, productos, itinerario] = await Promise.all([
             $fetch('/api/segmentos/segmentos'),
             $fetch('/api/expertos/expertos'),
-            $fetch('/api/productos/productos')
+            $fetch('/api/productos/productos'),
+            $fetch('/api/itinerarios/itinerarios')
         ])
 
         segmentosData.value = segmentos || []
         expertosData.value = expertos || []
         productosData.value = productos || []
+        itinerarioData.value = itinerario || []
     } catch (err) {
         console.error('Error cargando datos:', err)
         error('Error al cargar los datos')
@@ -565,14 +571,21 @@ const eliminarDestacado = (index) => {
     currentDestacados.value.splice(index, 1)
 }
 
-const closeDestacadosModal = () => {
-    // Filtrar destacados que tengan título e imagen
+const saveDestacadosModal = () => {
     const destacadosConInfo = currentDestacados.value.filter(destacado =>
         destacado.titulo && destacado.titulo.trim() !== '' &&
         destacado.imagen && destacado.imagen.trim() !== ''
     )
 
     formData.value.itinerario[currentDiaIndex.value].destacados = destacadosConInfo
+    closeDestacadosModal()
+}
+
+const cancelDestacadosModal = () => {
+    closeDestacadosModal()
+}
+
+const closeDestacadosModal = () => {
     showDestacadosModal.value = false
     currentDiaIndex.value = -1
     currentDestacados.value = []
@@ -580,7 +593,7 @@ const closeDestacadosModal = () => {
 
 const handleDestacadosModalBackgroundClick = (event) => {
     if (event.target === event.currentTarget) {
-        closeDestacadosModal()
+        cancelDestacadosModal()
     }
 }
 
