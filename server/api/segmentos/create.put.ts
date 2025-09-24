@@ -11,6 +11,7 @@ export default defineEventHandler(async (event) => {
       estado,
       codigo_newton,
       monedaId,
+      url
     } = await readBody(event)
 
     if (
@@ -33,8 +34,9 @@ export default defineEventHandler(async (event) => {
         vencimiento_header,
         estado,
         cod_newton,
-        moneda_id
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+        moneda_id,
+        url
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7,$8)
       RETURNING *;
     `;
 
@@ -46,6 +48,7 @@ export default defineEventHandler(async (event) => {
       estado,
       codigo_newton,
       monedaId,
+      url
     ];
 
     const result = await pool.query(query, values)

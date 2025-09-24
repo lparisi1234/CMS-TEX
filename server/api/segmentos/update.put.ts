@@ -12,6 +12,7 @@ export default defineEventHandler(async (event) => {
       estado,
       codigo_newton,
       monedaId,
+      url
     } = await readBody(event)
 
     if (
@@ -35,8 +36,9 @@ export default defineEventHandler(async (event) => {
         vencimiento_header = $4,
         estado = $5,
         codigo_newton = $6,
-        "monedaId" = $7
-      WHERE id = $8
+        "monedaId" = $7,
+        url = $8
+      WHERE id = $9
       RETURNING *;
     `;
 
@@ -48,6 +50,7 @@ export default defineEventHandler(async (event) => {
       estado,
       codigo_newton,
       monedaId,
+      url,
       id
     ];
 
