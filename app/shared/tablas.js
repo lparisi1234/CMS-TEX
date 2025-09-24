@@ -47,7 +47,12 @@ const tablas = {
                     type: 'select',
                     relatedTable: 'monedas',
                     required: true
-                }
+                },
+                {
+                    key: 'url',
+                    label: 'URL',
+                    type: 'text'
+                },
             ]
         },
         {

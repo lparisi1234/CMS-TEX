@@ -137,14 +137,13 @@
                                         <Icon name="tabler:x" class="w-5 h-5" />
                                     </button>
                                     <div class="bg-gray-mid rounded-md p-1.5">
-                                        <p class="text-xl text-dark">Día: <span class="font-bold">{{ index + 1 }}</span>
+                                        <p class="text-xl text-dark">Día: <span class="font-bold">{{ dia.dia }}</span>
                                         </p>
                                     </div>
                                 </div>
                                 <Icon :name="dia.isOpen ? 'tabler:chevron-up' : 'tabler:chevron-down'"
                                     class="w-8 h-8 text-primary transition-transform duration-300 ease-in-out" />
                             </div>
-
                         </div>
 
                         <Transition enter-active-class="transition-all duration-300 ease-out"
@@ -165,7 +164,7 @@
                                                     <Icon name="tabler:plus" class="w-4 h-4" />
                                                 </button>
                                                 <span class="text-xl text-dark font-light">{{ dia.destacados.length
-                                                }}</span>
+                                                    }}</span>
                                             </div>
                                         </div>
                                     </FormFieldsContainer>
@@ -189,7 +188,7 @@
                     @click="handleDestacadosModalBackgroundClick">
                     <div class="w-full max-w-[60rem] flex flex-col gap-6 bg-light rounded-[20px] p-8" @click.stop>
                         <HeadingH2 class="text-center">
-                            Destacados - Día del itinerario: {{ currentDiaIndex + 1 }}
+                            Destacados - Día del itinerario: {{ formData.itinerario[currentDiaIndex]?.dia || currentDiaIndex + 1 }}
                         </HeadingH2>
 
                         <div class="flex flex-col gap-5">
@@ -518,6 +517,7 @@ const deleteSeccion = (seccion) => {
 const agregarDia = () => {
     const nuevoDia = {
         id: Date.now(),
+        dia: formData.value.itinerario.length + 1,
         titulo: '',
         destacados: [],
         texto: '',
@@ -536,8 +536,15 @@ const agregarDestacado = (index) => {
     showDestacadosModal.value = true
 }
 
+const recalcularNumerosDias = () => {
+    formData.value.itinerario.forEach((dia, index) => {
+        dia.dia = index + 1
+    })
+}
+
 const eliminarDia = (index) => {
     formData.value.itinerario.splice(index, 1)
+    recalcularNumerosDias()
 }
 
 const agregarDestacadoModal = () => {
@@ -559,7 +566,13 @@ const eliminarDestacado = (index) => {
 }
 
 const closeDestacadosModal = () => {
-    formData.value.itinerario[currentDiaIndex.value].destacados = [...currentDestacados.value]
+    // Filtrar destacados que tengan título e imagen
+    const destacadosConInfo = currentDestacados.value.filter(destacado =>
+        destacado.titulo && destacado.titulo.trim() !== '' &&
+        destacado.imagen && destacado.imagen.trim() !== ''
+    )
+
+    formData.value.itinerario[currentDiaIndex.value].destacados = destacadosConInfo
     showDestacadosModal.value = false
     currentDiaIndex.value = -1
     currentDestacados.value = []
@@ -642,6 +655,12 @@ const loadProductData = async () => {
                         formData.value[key] = Array.isArray(producto[key])
                             ? [...producto[key]]
                             : []
+                    } else if (key === 'itinerario') {
+                        const itinerario = Array.isArray(producto[key]) ? [...producto[key]] : []
+                        formData.value[key] = itinerario.map((dia, index) => ({
+                            ...dia,
+                            dia: dia.dia || index + 1
+                        }))
                     } else {
                         if (key === 'estado') {
                             formData.value[key] = producto[key] == 1 || producto[key] === true
@@ -659,6 +678,12 @@ const loadProductData = async () => {
                     formData.value[key] = Array.isArray(props.editingData[key])
                         ? [...props.editingData[key]]
                         : []
+                } else if (key === 'itinerario') {
+                    const itinerario = Array.isArray(props.editingData[key]) ? [...props.editingData[key]] : []
+                    formData.value[key] = itinerario.map((dia, index) => ({
+                        ...dia,
+                        dia: dia.dia || index + 1
+                    }))
                 } else {
                     if (key === 'estado') {
                         formData.value[key] = props.editingData[key] == 1 || props.editingData[key] === true
