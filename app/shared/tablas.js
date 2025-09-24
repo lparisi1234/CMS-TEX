@@ -42,7 +42,7 @@ const tablas = {
                     required: true
                 },
                 {
-                    key: 'monedaId',
+                    key: 'moneda_id',
                     label: 'Moneda',
                     type: 'select',
                     relatedTable: 'monedas',
