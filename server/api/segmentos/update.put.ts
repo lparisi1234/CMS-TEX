@@ -10,8 +10,9 @@ export default defineEventHandler(async (event) => {
       txt_footer,
       vencimiento_header,
       estado,
-      codigo_newton,
-      monedaId,
+      cod_newton,
+      moneda_id,
+      url
     } = await readBody(event)
 
     if (
@@ -21,8 +22,8 @@ export default defineEventHandler(async (event) => {
       txt_footer === undefined ||
       vencimiento_header === undefined ||
       estado === undefined ||
-      codigo_newton === undefined ||
-      monedaId === undefined 
+      cod_newton === undefined ||
+      moneda_id === undefined 
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
     }
@@ -34,9 +35,10 @@ export default defineEventHandler(async (event) => {
         txt_footer = $3,
         vencimiento_header = $4,
         estado = $5,
-        codigo_newton = $6,
-        "monedaId" = $7
-      WHERE id = $8
+        cod_newton = $6,
+        moneda_id = $7,
+        url = $8
+      WHERE id = $9
       RETURNING *;
     `;
 
@@ -46,8 +48,9 @@ export default defineEventHandler(async (event) => {
       txt_footer,
       vencimiento_header,
       estado,
-      codigo_newton,
-      monedaId,
+      cod_newton,
+      moneda_id,
+      url,
       id
     ];
 
