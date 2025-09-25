@@ -101,7 +101,7 @@ export default defineEventHandler(async (event) => {
       await client.query('ROLLBACK');
       return { success: false, message: 'No se encontró el producto para modificar' }
     }
-    console.log("Segmentos Excluidos:", segmentos_excluidos);
+    
     // Eliminar segmentos existentes y agregar los nuevos
     const queryDeleteSegmentos = `
       DELETE FROM segmentos_productos
