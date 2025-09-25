@@ -25,8 +25,7 @@ export default defineEventHandler(async (event) => {
       sticker,
       salidas,
       aereo_incluido,
-      segmentos_excluidos,
-      itinerario
+      segmentos_excluidos
     } = await readBody(event)
 
     if (
@@ -88,7 +87,7 @@ export default defineEventHandler(async (event) => {
 
     const result = await client.query(query, values);
     const productoId = result.rows[0].id;
-    console.log("Segmentos Excluidos:", segmentos_excluidos);
+    
     // Paso 2: Insertar en la tabla de unión "segmentos_productos"
     if (segmentos_excluidos && Array.isArray(segmentos_excluidos) && segmentos_excluidos.length > 0) {
       const querySegmentos = `
@@ -99,27 +98,13 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Paso 3: Insertar en la tabla "itinerario"
-    if (itinerario && Array.isArray(itinerario) && itinerario.length > 0) {
-      const queryItinerario = `
-        INSERT INTO itinerario (producto_id, nro_dia, titulo, texto) VALUES ($1, $2, $3, $4);
-      `;
-      for (const item of itinerario) {
-        await client.query(queryItinerario, [
-          productoId, 
-          item.nro_dia || 1, 
-          item.titulo || '', 
-          item.texto || ''
-        ]);
-      }
-    }
-
     await client.query('COMMIT');
 
     return { 
       success: true, 
-      message: 'Producto creado correctamente', 
-      producto: { ...result.rows[0], segmentos_excluidos, itinerario } 
+      message: 'Producto creado correctamente',
+      id: productoId, // Aseguramos que se devuelva el ID explícitamente
+      producto: { ...result.rows[0], segmentos_excluidos } 
     };
   } catch (error) {
     await client.query('ROLLBACK');

@@ -6,8 +6,8 @@
                     <FormFieldsContainer>
                         <FormTextField v-model="formData.nombreprod" id="nombreprod" label="Nombre del Producto"
                             required placeholder="Ingresa el nombre del producto" :error="errors.nombreprod" />
-                        <FormTextField v-model="formData.cod_newton" id="cod_newton" label="Código" type="text" required
-                            placeholder="Código del producto" :error="errors.cod_newton" />
+<FormTextField v-model="formData.cod_newton" id="cod_newton" label="Código" type="text" required
+    placeholder="Código del producto" :error="errors.cod_newton" />
                     </FormFieldsContainer>
 
                     <FormFieldsContainer>
@@ -522,7 +522,6 @@ const deleteSeccion = (seccion) => {
 
 const agregarDia = () => {
     const nuevoDia = {
-        id: Date.now(),
         dia: formData.value.itinerario.length + 1,
         titulo: '',
         destacados: [],
@@ -598,7 +597,6 @@ const handleDestacadosModalBackgroundClick = (event) => {
 }
 
 const handleSubmit = async () => {
-
     if (!formData.value.nombreprod || !formData.value.cod_newton) {
         error('Por favor completa todos los campos requeridos')
         return
@@ -607,7 +605,9 @@ const handleSubmit = async () => {
     isSubmitting.value = true
 
     try {
+        // Preparar datos del producto
         const dataToSubmit = { ...formData.value }
+        delete dataToSubmit.itinerario // Remove itinerario from main product data
 
         if (!props.isEditing) {
             const timestamp = Date.now()
@@ -620,32 +620,65 @@ const handleSubmit = async () => {
         dataToSubmit.expertoId = dataToSubmit.expertoId ? parseInt(dataToSubmit.expertoId) : null
         dataToSubmit.estado = dataToSubmit.estado ? 1 : 0
 
+        let productId
+
+        // Guardar el producto primero
         if (props.isEditing && props.editingData?.id) {
+            // Actualizar producto existente
             dataToSubmit.id = props.editingData.id
+            productId = props.editingData.id
             const result = await $fetch('/api/productos/update', {
                 method: 'PUT',
                 body: dataToSubmit
             })
 
-            if (result.success) {
-                success('Producto actualizado correctamente')
-                emit('success')
-            } else {
-                error(result.message || 'Error al actualizar el producto')
+            if (!result.success) {
+                throw new Error(result.message || 'Error al actualizar el producto')
             }
         } else {
+            // Crear nuevo producto
             const result = await $fetch('/api/productos/create', {
                 method: 'PUT',
                 body: dataToSubmit
             })
 
-            if (result.success) {
-                success('Producto creado correctamente')
-                emit('success')
-            } else {
-                error(result.message || 'Error al crear el producto')
+            if (!result.success) {
+                throw new Error(result.message || 'Error al crear el producto')
+            }
+            
+            productId = result.id
+            if (!productId) {
+                console.error('Respuesta del servidor:', result)
+                throw new Error('No se recibió el ID del producto creado')
+            }
+            
+            console.log('Producto creado con ID:', productId)
+        }
+
+        // Si hay itinerarios, guardarlos
+        if (formData.value.itinerario && formData.value.itinerario.length > 0) {
+            const itinerariosToSubmit = formData.value.itinerario.map(dia => ({
+                nro_dia: dia.dia,
+                titulo: dia.titulo || '',
+                texto: dia.texto || ''
+            }))
+
+            // Enviar los itinerarios al backend
+            const itinerariosResult = await $fetch(`/api/itinerarios/${productId}`, {
+                method: 'PUT',
+                body: {
+                    itinerarios: itinerariosToSubmit,
+                    productId: productId
+                }
+            })
+
+            if (!itinerariosResult.success) {
+                throw new Error(itinerariosResult.message || 'Error al guardar los itinerarios')
             }
         }
+
+        success(props.isEditing ? 'Producto actualizado correctamente' : 'Producto creado correctamente')
+        emit('success')
 
     } catch (error) {
         console.error('Error al procesar producto:', error)
@@ -655,26 +688,52 @@ const handleSubmit = async () => {
     }
 }
 
+const loadItinerarios = async (productoId) => {
+    try {
+        console.log('Fetching itinerarios for producto:', productoId)
+        const response = await $fetch(`/api/itinerarios/${productoId}`, {
+            method: 'GET'
+        })
+        if (response && Array.isArray(response)) {
+            // Sort by nro_dia and transform to expected format
+            const itinerariosOrdenados = response
+                .sort((a, b) => a.nro_dia - b.nro_dia)
+                .map(item => ({
+                    id: item.id,
+                    dia: item.nro_dia,
+                    titulo: item.titulo,
+                    texto: item.texto,
+                    destacados: [], 
+                    isOpen: true
+                }))
+            console.log('Processed itinerarios:', itinerariosOrdenados)
+            formData.value.itinerario = itinerariosOrdenados
+        }
+    } catch (error) {
+        console.error('Error loading itinerarios:', error)
+        error('Error al cargar los itinerarios')
+    }
+}
+
 const loadProductData = async () => {
     if (props.isEditing && props.productId) {
+        console.log('Loading product data for ID:', props.productId)
         const producto = productosData.value.find(p =>
             String(p.id) === String(props.productId)
         )
 
+       
+
         if (producto) {
+            // Load basic product data
             Object.keys(formData.value).forEach(key => {
                 if (producto.hasOwnProperty(key)) {
                     if (key === 'segmentos_excluidos' || key === 'secciones') {
                         formData.value[key] = Array.isArray(producto[key])
                             ? [...producto[key]]
                             : []
-                    } else if (key === 'itinerario') {
-                        const itinerario = Array.isArray(producto[key]) ? [...producto[key]] : []
-                        formData.value[key] = itinerario.map((dia, index) => ({
-                            ...dia,
-                            dia: dia.dia || index + 1
-                        }))
-                    } else {
+                       
+                    } else if (key !== 'itinerario') { // Skip itinerario as it's loaded separately
                         if (key === 'estado') {
                             formData.value[key] = producto[key] == 1 || producto[key] === true
                         } else {
@@ -683,21 +742,23 @@ const loadProductData = async () => {
                     }
                 }
             })
+
+            // Load itinerarios separately
+            await loadItinerarios(props.productId)
+
+        } else {
+            console.warn('Product not found in productosData')
         }
     } else if (props.editingData) {
+        console.log('Loading from editingData:', props.editingData)
         Object.keys(formData.value).forEach(key => {
             if (props.editingData.hasOwnProperty(key)) {
                 if (key === 'segmentos_excluidos' || key === 'secciones') {
                     formData.value[key] = Array.isArray(props.editingData[key])
                         ? [...props.editingData[key]]
                         : []
-                } else if (key === 'itinerario') {
-                    const itinerario = Array.isArray(props.editingData[key]) ? [...props.editingData[key]] : []
-                    formData.value[key] = itinerario.map((dia, index) => ({
-                        ...dia,
-                        dia: dia.dia || index + 1
-                    }))
-                } else {
+                    console.log(`Loaded ${key}:`, formData.value[key])
+                } else if (key !== 'itinerario') { // Skip itinerario as it's loaded separately
                     if (key === 'estado') {
                         formData.value[key] = props.editingData[key] == 1 || props.editingData[key] === true
                     } else {
@@ -706,6 +767,11 @@ const loadProductData = async () => {
                 }
             }
         })
+
+        // Load itinerarios if we have a product ID
+        if (props.editingData.id) {
+            await loadItinerarios(props.editingData.id)
+        }
     }
 }
 

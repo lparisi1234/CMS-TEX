@@ -1,3 +1,4 @@
+
 import {
   SecretsManagerClient,
   GetSecretValueCommand,
@@ -67,32 +68,31 @@ async function getDbPool() {
 
 export default getDbPool;
 
-
-
+/*
 ///FUNCIONA DE FORMA LOCAL
 
-//  import { Pool } from 'pg';
+ import { Pool } from 'pg';
 
-//  let pool;
+ let pool;
 
-//  async function getDbPool() {
-//    if (!pool) {
-//      pool = new Pool({
-//        host: "localhost",
-//        user: "postgres",
-//        password: "ADMIN",
-//        database: "TourExperto",
-//       max: 10,
-//        idleTimeoutMillis: 30000,
-//       connectionTimeoutMillis: 2000,
-//    });
-//   }
-//   return pool;
-// }
+ async function getDbPool() {
+   if (!pool) {
+     pool = new Pool({
+       host: "localhost",
+       user: "postgres",
+       password: "ADMIN",
+       database: "TourExperto",
+      max: 10,
+       idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 2000,
+   });
+  }
+  return pool;
+}
 
-//  export default getDbPool;
+ export default getDbPool;
 
-
+*/
 // host: "localhost",
 // user: "postgres",
 // password: "Lioben2000!#",

@@ -10,9 +10,42 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'ID requerido' }
     }
 
-    await pool.query('DELETE FROM itinerario WHERE id = $1', [id])
-    
-    return { success: true, message: 'Itinerario eliminado correctamente' }
+    // Comenzar una transacción
+    const client = await pool.connect()
+    try {
+      await client.query('BEGIN')
+
+      // Obtener el producto_id y nro_dia del itinerario a eliminar
+      const { rows: [itinerario] } = await client.query(
+        'SELECT producto_id, nro_dia FROM itinerario WHERE id = $1',
+        [id]
+      )
+
+      if (!itinerario) {
+        return { success: false, message: 'Itinerario no encontrado' }
+      }
+
+      // Eliminar el itinerario
+      await client.query('DELETE FROM itinerario WHERE id = $1', [id])
+
+      // Actualizar los números de día de los itinerarios posteriores
+      await client.query(
+        `UPDATE itinerario 
+         SET nro_dia = nro_dia - 1 
+         WHERE producto_id = $1 
+         AND nro_dia > $2`,
+        [itinerario.producto_id, itinerario.nro_dia]
+      )
+
+      await client.query('COMMIT')
+      return { success: true, message: 'Itinerario eliminado correctamente' }
+    } catch (error) {
+      await client.query('ROLLBACK')
+      console.error('Error en la transacción:', error)
+      throw error
+    } finally {
+      client.release()
+    }
   } catch (error) {
     console.error('Error eliminando itinerario:', error)
     return { success: false, message: 'Error eliminando itinerario' }
