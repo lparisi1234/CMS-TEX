@@ -1,4 +1,4 @@
-/*
+
 import {
   SecretsManagerClient,
   GetSecretValueCommand,
@@ -68,8 +68,7 @@ async function getDbPool() {
 
 export default getDbPool;
 
-*/
-
+/*
 ///FUNCIONA DE FORMA LOCAL
 
  import { Pool } from 'pg';
@@ -93,7 +92,7 @@ export default getDbPool;
 
  export default getDbPool;
 
-
+*/
 // host: "localhost",
 // user: "postgres",
 // password: "Lioben2000!#",
