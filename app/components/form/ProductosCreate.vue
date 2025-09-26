@@ -689,9 +689,9 @@ const handleSubmit = async () => {
 }
 
 const loadItinerarios = async (productoId) => {
-   console.log('Loading itinerarios for producto:', productoId)
+   
     try {
-        console.log('Fetching itinerarios for producto:', productoId)
+        
         const response = await $fetch(`/api/itinerarios/${productoId}`, {
             method: 'GET'
         })
@@ -707,7 +707,7 @@ const loadItinerarios = async (productoId) => {
                     destacados: [], 
                     isOpen: true
                 }))
-            console.log('Processed itinerarios:', itinerariosOrdenados)
+            
             formData.value.itinerario = itinerariosOrdenados
         }
     } catch (error) {
@@ -718,12 +718,12 @@ const loadItinerarios = async (productoId) => {
 
 const loadProductData = async () => {
     if (props.isEditing && props.productId) {
-        console.log('Loading product data for ID:', props.productId)
+        
         const producto = productosData.value.find(p =>
             String(p.id) === String(props.productId)
         )
 
-       console.log('Found producto:', producto)
+       
 
         if (producto) {
             // Load basic product data
