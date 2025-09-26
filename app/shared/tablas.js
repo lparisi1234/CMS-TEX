@@ -134,13 +134,15 @@ const tablas = {
                     key: 'txt_contacto',
                     label: 'Texto Contacto',
                     type: 'textarea',
-                    required: true
+                    required: true,
+                    fullWidth: true
                 },
                 {
                     key: 'txt_cancelaciones',
                     label: 'Texto Cancelaciones',
                     type: 'textarea',
-                    required: true
+                    required: true,
+                    fullWidth: true
                 },
                 {
                     key: 'nomenclatura',

@@ -71,9 +71,28 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
         if (!tabla?.columns) return []
 
         const chunks = []
-        for (let i = 0; i < tabla.columns.length; i += 2) {
-            chunks.push(tabla.columns.slice(i, i + 2))
+        let i = 0
+
+        while (i < tabla.columns.length) {
+            const column = tabla.columns[i]
+
+            if (column.fullWidth) {
+                // Full width fields go in their own chunk
+                chunks.push([column])
+                i++
+            } else {
+                // Regular fields are grouped in pairs
+                const nextColumn = tabla.columns[i + 1]
+                if (nextColumn && !nextColumn.fullWidth) {
+                    chunks.push([column, nextColumn])
+                    i += 2
+                } else {
+                    chunks.push([column])
+                    i++
+                }
+            }
         }
+
         return chunks
     })
 
