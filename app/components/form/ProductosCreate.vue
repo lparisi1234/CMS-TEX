@@ -689,6 +689,7 @@ const handleSubmit = async () => {
 }
 
 const loadItinerarios = async (productoId) => {
+   console.log('Loading itinerarios for producto:', productoId)
     try {
         console.log('Fetching itinerarios for producto:', productoId)
         const response = await $fetch(`/api/itinerarios/${productoId}`, {
@@ -722,7 +723,7 @@ const loadProductData = async () => {
             String(p.id) === String(props.productId)
         )
 
-       
+       console.log('Found producto:', producto)
 
         if (producto) {
             // Load basic product data
