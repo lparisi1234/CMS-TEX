@@ -28,8 +28,8 @@
                     <FormFieldsContainer>
                         <FormImageField v-model="formData.img" id="img" label="Imagen Principal" :error="errors.img"
                             targetFolder="productos" size="30px x 30px" />
-                        <FormImageField v-model="formData.img_mobile" id="img_mobile" label="Imagen Mobile"
-                            :error="errors.img_mobile" targetFolder="productos" size="30px x 30px" />
+                        <FormImageField v-model="formData.imagen_mobile" id="imagen_mobile" label="Imagen Mobile"
+                            :error="errors.imagen_mobile" targetFolder="productos" size="30px x 30px" />
                     </FormFieldsContainer>
 
                     <FormFieldsContainer>
@@ -322,7 +322,7 @@ const formData = ref({
     nombreprod: '',
     h1: '',
     img: '',
-    img_mobile: '',
+    imagen_mobile: '',
     video_mapa_mobile: '',
     video_mapa_desktop: '',
     podcast: '',
