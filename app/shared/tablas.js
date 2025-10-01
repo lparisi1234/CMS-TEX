@@ -590,7 +590,7 @@ const tablas = {
                     type: 'textarea'
                 },
                 {
-                    key: 'expertoId',
+                    key: 'experto_id',
                     label: 'Experto',
                     type: 'select',
                     relatedTable: 'expertos',
