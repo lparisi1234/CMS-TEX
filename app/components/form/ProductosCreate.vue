@@ -52,8 +52,8 @@
                     <FormFieldsContainer>
                         <FormSwitchField v-model="formData.estado" id="estado" label="Estado" required
                             :error="errors.estado" />
-                        <FormSelectField v-model="formData.expertoId" id="expertoId" label="Experto"
-                            :options="expertosOptions" placeholder="Seleccionar experto" :error="errors.expertoId" />
+                        <FormSelectField v-model="formData.experto_id" id="experto_id" label="Experto"
+                            :options="expertosOptions" placeholder="Seleccionar experto" :error="errors.experto_id" />
                     </FormFieldsContainer>
 
                     <FormFieldsContainer>
@@ -331,7 +331,7 @@ const formData = ref({
     cantidad_estrellas: 5,
     cantidadAport: 0,
     consejo_experto: '',
-    expertoId: '',
+    experto_id: '',
     meta_titulo: '',
     meta_descripcion: '',
     precio_total: 0,
@@ -617,7 +617,7 @@ const handleSubmit = async () => {
 
         dataToSubmit.cantidad_estrellas = parseInt(dataToSubmit.cantidad_estrellas) || 5
         dataToSubmit.cantidadAport = parseInt(dataToSubmit.cantidadAport) || 0
-        dataToSubmit.expertoId = dataToSubmit.expertoId ? parseInt(dataToSubmit.expertoId) : null
+        dataToSubmit.experto_id = dataToSubmit.experto_id ? parseInt(dataToSubmit.experto_id) : null
         dataToSubmit.estado = dataToSubmit.estado ? 1 : 0
 
         let productId
