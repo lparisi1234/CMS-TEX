@@ -571,12 +571,8 @@ const eliminarDestacado = (index) => {
 }
 
 const saveDestacadosModal = () => {
-    const destacadosConInfo = currentDestacados.value.filter(destacado =>
-        destacado.titulo && destacado.titulo.trim() !== '' &&
-        destacado.imagen && destacado.imagen.trim() !== ''
-    )
-
-    formData.value.itinerario[currentDiaIndex.value].destacados = destacadosConInfo
+    // Guardar todos los destacados, incluso si están vacíos
+    formData.value.itinerario[currentDiaIndex.value].destacados = [...currentDestacados.value]
     closeDestacadosModal()
 }
 
@@ -660,7 +656,8 @@ const handleSubmit = async () => {
             const itinerariosToSubmit = formData.value.itinerario.map(dia => ({
                 nro_dia: dia.dia,
                 titulo: dia.titulo || '',
-                texto: dia.texto || ''
+                texto: dia.texto || '',
+                destacados: dia.destacados || []
             }))
 
             // Enviar los itinerarios al backend
