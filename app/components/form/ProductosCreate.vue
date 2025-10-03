@@ -554,7 +554,6 @@ const eliminarDia = (index) => {
 
 const agregarDestacadoModal = () => {
     const nuevoDestacado = {
-        id: Date.now(),
         titulo: '',
         imagen: '',
         isOpen: true
@@ -597,9 +596,9 @@ const handleSubmit = async () => {
         error('Por favor completa todos los campos requeridos')
         return
     }
-
+   
     isSubmitting.value = true
-
+    
     try {
         // Preparar datos del producto
         const dataToSubmit = { ...formData.value }
@@ -672,6 +671,42 @@ const handleSubmit = async () => {
             if (!itinerariosResult.success) {
                 throw new Error(itinerariosResult.message || 'Error al guardar los itinerarios')
             }
+
+            console.log('Itinerarios creados con sus IDs:', itinerariosResult)
+
+            // Guardar los destacados usando los IDs de los itinerarios recién creados
+            const { itinerarios: itinerariosCreados } = itinerariosResult
+            
+            // Validar que tenemos los IDs de los itinerarios
+            if (!itinerariosCreados || !Array.isArray(itinerariosCreados)) {
+                throw new Error('No se recibieron los IDs de los itinerarios correctamente')
+            }
+
+            // Guardar los destacados de cada día con el ID correcto del itinerario
+            for (let i = 0; i < formData.value.itinerario.length; i++) {
+                const dia = formData.value.itinerario[i]
+                const itinerarioCreado = itinerariosCreados[i]
+
+                if (dia.destacados && dia.destacados.length > 0 && itinerarioCreado && itinerarioCreado.id) {
+                    for (const destacado of dia.destacados) {
+                        const destacadoData = {
+                            texto: destacado.titulo,
+                            img: destacado.imagen,
+                            itinerario_id: itinerarioCreado.id, // Usamos el ID del itinerario recién creado
+                            nro_orden: dia.dia
+                        }
+
+                        const destacadoResult = await $fetch('/api/destacados/create', {
+                            method: 'PUT',
+                            body: destacadoData
+                        })
+
+                        if (!destacadoResult) {
+                            console.error('Error al guardar destacado:', destacadoData)
+                        }
+                    }
+                }
+            }
         }
 
         success(props.isEditing ? 'Producto actualizado correctamente' : 'Producto creado correctamente')
@@ -688,10 +723,11 @@ const handleSubmit = async () => {
 const loadItinerarios = async (productoId) => {
    
     try {
-        
+        // Cargar itinerarios
         const response = await $fetch(`/api/itinerarios/${productoId}`, {
             method: 'GET'
         })
+        
         if (response && Array.isArray(response)) {
             // Sort by nro_dia and transform to expected format
             const itinerariosOrdenados = response
@@ -701,9 +737,28 @@ const loadItinerarios = async (productoId) => {
                     dia: item.nro_dia,
                     titulo: item.titulo,
                     texto: item.texto,
-                    destacados: [], 
+                    destacados: [],
                     isOpen: true
                 }))
+
+            // Cargar destacados para cada itinerario
+            for (const itinerario of itinerariosOrdenados) {
+                try {
+                    const destacados = await $fetch(`/api/destacados/${itinerario.id}`, {
+                        method: 'GET'
+                    })
+                    if (destacados && Array.isArray(destacados)) {
+                        itinerario.destacados = destacados.map(d => ({
+                            id: d.id,
+                            titulo: d.texto,
+                            imagen: d.img,
+                            isOpen: false
+                        }))
+                    }
+                } catch (err) {
+                    console.error(`Error cargando destacados del itinerario ${itinerario.id}:`, err)
+                }
+            }
             
             formData.value.itinerario = itinerariosOrdenados
         }

@@ -11,19 +11,42 @@ export default defineEventHandler(async (event) => {
     try {
       await client.query('BEGIN')
 
-      // Eliminamos todos los itinerarios existentes del producto
-      await client.query('DELETE FROM itinerario WHERE producto_id = $1', [producto_id])
+      // Primero obtenemos los IDs de los itinerarios actuales
+      const { rows: currentItinerarios } = await client.query(
+        'SELECT id FROM itinerario WHERE producto_id = $1',
+        [producto_id]
+      )
 
-      // Insertamos los nuevos itinerarios
-      for (const itinerario of itinerarios) {
+      // Eliminamos primero los destacados asociados a estos itinerarios
+      if (currentItinerarios.length > 0) {
+        const itinerarioIds = currentItinerarios.map(it => it.id)
         await client.query(
-          'INSERT INTO itinerario (producto_id, nro_dia, titulo, texto) VALUES ($1, $2, $3, $4)',
-          [producto_id, itinerario.nro_dia, itinerario.titulo || '', itinerario.texto || '']
+          'DELETE FROM destacados WHERE itinerario_id = ANY($1)',
+          [itinerarioIds]
         )
       }
 
+      // Ahora sí podemos eliminar los itinerarios
+      await client.query('DELETE FROM itinerario WHERE producto_id = $1', [producto_id])
+
+      // Insertamos los nuevos itinerarios y guardamos sus IDs
+      const insertedItinerarios = []
+      for (const itinerario of itinerarios) {
+        const result = await client.query(
+          'INSERT INTO itinerario (producto_id, nro_dia, titulo, texto) VALUES ($1, $2, $3, $4) RETURNING id',
+          [producto_id, itinerario.nro_dia, itinerario.titulo || '', itinerario.texto || '']
+        )
+        insertedItinerarios.push({
+          ...itinerario,
+          id: result.rows[0].id
+        })
+      }
+
       await client.query('COMMIT')
-      return { success: true }
+      return { 
+        success: true,
+        itinerarios: insertedItinerarios
+      }
     } catch (error) {
       await client.query('ROLLBACK')
       throw error
