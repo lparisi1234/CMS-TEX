@@ -2,7 +2,6 @@ import getDbPool from "../../db"
 
 export default defineEventHandler(async (event) => {
   const pool = await getDbPool();
-  const client = await pool.connect();
   
   try {
     const {
@@ -35,7 +34,7 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Nombre del producto y código Newton son requeridos' }
     }
 
-    await client.query('BEGIN');
+    await pool.query('BEGIN');
 
     // Paso 1: Insertar en la tabla principal "productos"
     const query = `
@@ -85,7 +84,7 @@ export default defineEventHandler(async (event) => {
       aereo_incluido
     ];
 
-    const result = await client.query(query, values);
+    const result = await pool.query(query, values);
     const productoId = result.rows[0].id;
     
     // Paso 2: Insertar en la tabla de unión "segmentos_productos"
@@ -94,11 +93,11 @@ export default defineEventHandler(async (event) => {
         INSERT INTO segmentos_productos (producto_id, segmentos_id) VALUES ($1, $2);
       `;
       for (const segmentoId of segmentos_excluidos) {
-        await client.query(querySegmentos, [productoId, parseInt(segmentoId)]);
+        await pool.query(querySegmentos, [productoId, parseInt(segmentoId)]);
       }
     }
 
-    await client.query('COMMIT');
+    await pool.query('COMMIT');
 
     return { 
       success: true, 
@@ -107,10 +106,10 @@ export default defineEventHandler(async (event) => {
       producto: { ...result.rows[0], segmentos_excluidos } 
     };
   } catch (error) {
-    await client.query('ROLLBACK');
+    await pool.query('ROLLBACK');
     console.error('Error creando producto:', error);
     return { success: false, message: 'Error creando producto' };
   } finally {
-    client.release();
+    // No need to release when using pool directly
   }
 })

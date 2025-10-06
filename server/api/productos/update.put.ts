@@ -2,7 +2,6 @@ import getDbPool from "../../db"
 
 export default defineEventHandler(async (event) => {
   const pool = await getDbPool();
-  const client = await pool.connect();
   
   try {
     const {
@@ -46,7 +45,7 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Producto no encontrado' }
     }
 
-    await client.query('BEGIN');
+    await pool.query('BEGIN');
 
     const query = `
       UPDATE productos SET
@@ -96,9 +95,9 @@ export default defineEventHandler(async (event) => {
       id
     ];
 
-    const result = await client.query(query, values);
+    const result = await pool.query(query, values);
     if (result.rows.length === 0) {
-      await client.query('ROLLBACK');
+      await pool.query('ROLLBACK');
       return { success: false, message: 'No se encontró el producto para modificar' }
     }
     
@@ -107,14 +106,14 @@ export default defineEventHandler(async (event) => {
       DELETE FROM segmentos_productos
       WHERE producto_id = $1;
     `;
-    await client.query(queryDeleteSegmentos, [id]);
+    await pool.query(queryDeleteSegmentos, [id]);
 
     if (segmentos_excluidos && Array.isArray(segmentos_excluidos) && segmentos_excluidos.length > 0) {
       const queryInsertSegmentos = `
         INSERT INTO segmentos_productos (producto_id, segmentos_id) VALUES ($1, $2);
       `;
       for (const segmentoId of segmentos_excluidos) {
-        await client.query(queryInsertSegmentos, [id, parseInt(segmentoId)]);
+        await pool.query(queryInsertSegmentos, [id, parseInt(segmentoId)]);
       }
     }
 /*
@@ -130,7 +129,7 @@ export default defineEventHandler(async (event) => {
         INSERT INTO itinerario (producto_id, nro_dia, titulo, texto) VALUES ($1, $2, $3, $4);
       `;
       for (const item of itinerario) {
-        await client.query(queryInsertItinerario, [
+        await pool.query(queryInsertItinerario, [
           id, 
           item.nro_dia || 1, 
           item.titulo || '', 
@@ -139,7 +138,7 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    await client.query('COMMIT');
+    await pool.query('COMMIT');
 
     // Función auxiliar para eliminar imagen de S3
     const deleteImageFromS3 = async (imageUrl: string) => {
@@ -173,10 +172,10 @@ export default defineEventHandler(async (event) => {
       producto: { ...result.rows[0], segmentos_excluidos, itinerario } 
     }
   } catch (error) {
-    await client.query('ROLLBACK');
+    await pool.query('ROLLBACK');
     console.error('Error modificando producto:', error)
     return { success: false, message: 'Error modificando producto' }
   } finally {
-    client.release();
+    // No need to release when using pool directly
   }
 })
