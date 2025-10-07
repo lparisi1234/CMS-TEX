@@ -9,6 +9,7 @@ const client = new SecretsManagerClient({
   region: "us-east-1",
 });
 
+
 // Función para obtener el secret de AWS
 async function getSecret() {
   try {
