@@ -603,7 +603,7 @@ const handleSubmit = async () => {
         // Preparar datos del producto
         const dataToSubmit = { ...formData.value }
         delete dataToSubmit.itinerario // Remove itinerario from main product data
-
+console.log('Datos a enviar:', dataToSubmit)
         if (!props.isEditing) {
             const timestamp = Date.now()
             const lastDigits = timestamp.toString().slice(-6)

@@ -24,7 +24,8 @@ export default defineEventHandler(async (event) => {
       sticker,
       salidas,
       aereo_incluido,
-      segmentos_excluidos
+      segmentos_excluidos,
+      secciones
     } = await readBody(event)
 
     if (
@@ -94,6 +95,21 @@ export default defineEventHandler(async (event) => {
       `;
       for (const segmentoId of segmentos_excluidos) {
         await pool.query(querySegmentos, [productoId, parseInt(segmentoId)]);
+      }
+    }
+
+    // Paso 3: Insertar en la tabla "Secciones_prod" si vienen datos de secciones
+    if (secciones && secciones.id && secciones.segmentos_excluidos && Array.isArray(secciones.segmentos_excluidos)) {
+      const querySeccionesProd = `
+        INSERT INTO secciones_prod (seccion_id, product_id, segmentos_id) VALUES ($1, $2, $3);
+      `;
+      
+      for (const segmentoId of secciones.segmentos_excluidos) {
+        await pool.query(querySeccionesProd, [
+          parseInt(secciones.id),
+          productoId,
+          parseInt(segmentoId)
+        ]);
       }
     }
 
