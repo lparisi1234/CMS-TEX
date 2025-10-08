@@ -518,12 +518,20 @@ const handleSeccionModalBackgroundClick = (event) => {
 const saveSeccion = () => {
     if (!modalSeccion.value.pagina || !modalSeccion.value.seccion) return
 
+    // Buscar el ID de la sección seleccionada
+    const seccionSeleccionada = seccionesData.value.find(s => s.texto === modalSeccion.value.seccion)
+    if (!seccionSeleccionada) {
+        error('No se encontró la sección seleccionada')
+        return
+    }
+
     const seccionData = {
         id: isEditingSeccion.value
             ? formData.value.secciones[editingSeccionIndex.value].id
             : Date.now(),
         pagina: modalSeccion.value.pagina,
         seccion: modalSeccion.value.seccion,
+        seccion_id: seccionSeleccionada.id, // Guardamos el ID de la sección
         segmentos_excluidos: Array.isArray(modalSeccion.value.segmentos_excluidos)
             ? modalSeccion.value.segmentos_excluidos.map(v => v.toString())
             : []
@@ -631,7 +639,7 @@ const handleSubmit = async () => {
     try {
         // Preparar datos del producto
         const dataToSubmit = { ...formData.value }
-        delete dataToSubmit.itinerario // Remove itinerario from main product data
+        delete dataToSubmit.itinerario 
 console.log('Datos a enviar:', dataToSubmit)
         if (!props.isEditing) {
             const timestamp = Date.now()
@@ -797,6 +805,25 @@ const loadItinerarios = async (productoId) => {
     }
 }
 
+const loadSecciones = async (productoId) => {
+    try {
+        const secciones = await $fetch(`/api/secciones-prod/${productoId}`, {
+            method: 'GET'
+        })
+        
+        if (secciones) {
+            // Cargar las secciones en el formato esperado
+            formData.value.secciones = [secciones]
+            console.log('Secciones cargadas:', formData.value.secciones)
+        } else {
+            formData.value.secciones = []
+        }
+    } catch (error) {
+        console.error('Error loading secciones:', error)
+        formData.value.secciones = []
+    }
+}
+
 const loadProductData = async () => {
     if (props.isEditing && props.productId) {
         
@@ -810,12 +837,11 @@ const loadProductData = async () => {
             // Load basic product data
             Object.keys(formData.value).forEach(key => {
                 if (producto.hasOwnProperty(key)) {
-                    if (key === 'segmentos_excluidos' || key === 'secciones') {
+                    if (key === 'segmentos_excluidos') {
                         formData.value[key] = Array.isArray(producto[key])
                             ? [...producto[key]]
                             : []
-                       
-                    } else if (key !== 'itinerario') { // Skip itinerario as it's loaded separately
+                    } else if (key !== 'itinerario' && key !== 'secciones') { // Skip itinerario and secciones as they're loaded separately
                         if (key === 'estado') {
                             formData.value[key] = producto[key] == 1 || producto[key] === true
                         } else {
@@ -825,8 +851,11 @@ const loadProductData = async () => {
                 }
             })
 
-            // Load itinerarios separately
-            await loadItinerarios(props.productId)
+            // Load itinerarios and secciones separately
+            await Promise.all([
+                loadItinerarios(props.productId),
+                loadSecciones(props.productId)
+            ])
 
         } else {
             console.warn('Product not found in productosData')
@@ -835,12 +864,12 @@ const loadProductData = async () => {
         console.log('Loading from editingData:', props.editingData)
         Object.keys(formData.value).forEach(key => {
             if (props.editingData.hasOwnProperty(key)) {
-                if (key === 'segmentos_excluidos' || key === 'secciones') {
+                if (key === 'segmentos_excluidos') {
                     formData.value[key] = Array.isArray(props.editingData[key])
                         ? [...props.editingData[key]]
                         : []
                     console.log(`Loaded ${key}:`, formData.value[key])
-                } else if (key !== 'itinerario') { // Skip itinerario as it's loaded separately
+                } else if (key !== 'itinerario' && key !== 'secciones') { // Skip itinerario and secciones as they're loaded separately
                     if (key === 'estado') {
                         formData.value[key] = props.editingData[key] == 1 || props.editingData[key] === true
                     } else {
@@ -850,9 +879,12 @@ const loadProductData = async () => {
             }
         })
 
-        // Load itinerarios if we have a product ID
+        // Load itinerarios and secciones if we have a product ID
         if (props.editingData.id) {
-            await loadItinerarios(props.editingData.id)
+            await Promise.all([
+                loadItinerarios(props.editingData.id),
+                loadSecciones(props.editingData.id)
+            ])
         }
     }
 }

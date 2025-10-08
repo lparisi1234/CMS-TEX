@@ -99,16 +99,15 @@ export default defineEventHandler(async (event) => {
     }
 
     // Paso 3: Insertar en la tabla "Secciones_prod" si vienen datos de secciones
-    if (secciones && secciones.id && secciones.segmentos_excluidos && Array.isArray(secciones.segmentos_excluidos)) {
+    if (secciones && secciones.seccion_id && secciones.segmentos_excluidos && Array.isArray(secciones.segmentos_excluidos)) {
       const querySeccionesProd = `
         INSERT INTO secciones_prod (seccion_id, product_id, segmentos_id) VALUES ($1, $2, $3);
       `;
-      
       for (const segmentoId of secciones.segmentos_excluidos) {
         await pool.query(querySeccionesProd, [
-          parseInt(secciones.id),
+          secciones.seccion_id,
           productoId,
-          parseInt(segmentoId)
+          segmentoId
         ]);
       }
     }
