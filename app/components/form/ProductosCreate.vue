@@ -281,20 +281,25 @@ const segmentosData = ref([])
 const expertosData = ref([])
 const productosData = ref([])
 const itinerarioData = ref([])
+const paginasData = ref([])
+const seccionesData = ref([])
 
 const loadData = async () => {
     try {
-        const [segmentos, expertos, productos, itinerario] = await Promise.all([
+        const [segmentos, expertos, productos, itinerario, paginas] = await Promise.all([
             $fetch('/api/segmentos/segmentos'),
             $fetch('/api/expertos/expertos'),
             $fetch('/api/productos/productos'),
-            $fetch('/api/itinerarios/itinerarios')
+            $fetch('/api/itinerarios/itinerarios'),
+            $fetch('/api/pagina/pagina')
         ])
 
         segmentosData.value = segmentos || []
         expertosData.value = expertos || []
         productosData.value = productos || []
         itinerarioData.value = itinerario || []
+        paginasData.value = paginas || []
+        console.log('Páginas cargadas:', paginasData.value)
     } catch (err) {
         console.error('Error cargando datos:', err)
         error('Error al cargar los datos')
@@ -384,24 +389,27 @@ const seccionesColumns = [
     { key: 'segmentos_excluidos', label: 'Segmentos excluidos', type: 'array-ids', required: false }
 ]
 
-const paginaOptions = [
-    { value: 'home', label: 'Home' },
-    { value: 'grupos', label: 'Grupos de Ofertas' }
-]
+const paginaOptions = computed(() => 
+    paginasData.value.map(p => ({
+        value: p.texto,
+        label: p.texto
+    }))
+)
 
 const seccionOptions = computed(() => {
-    if (modalSeccion.value.pagina === 'home') {
-        return [
-            { value: 'mas_vendidos', label: 'Mas vendidos' },
-            { value: 'vuelo_incluido', label: 'Vuelo incluido' }
-        ]
-    } else if (modalSeccion.value.pagina === 'grupos') {
-        return [
-            { value: 'tours_europa', label: 'Tours por Europa, Escandinavia y Balticos' },
-            { value: 'amigos_europa', label: 'Viaja con amigos por Europa' }
-        ]
-    }
-    return []
+    if (!modalSeccion.value.pagina) return []
+    
+    // Buscar el ID de la página seleccionada
+    const paginaSeleccionada = paginasData.value.find(p => p.texto === modalSeccion.value.pagina)
+    if (!paginaSeleccionada) return []
+    
+    // Filtrar las secciones por pagina_id
+    return seccionesData.value
+        .filter(s => s.pagina_id === paginaSeleccionada.id)
+        .map(s => ({
+            value: s.texto,
+            label: s.texto
+        }))
 })
 
 const displaySecciones = computed(() => {
@@ -432,6 +440,27 @@ const modalSeccion = ref({ ...seccionModalDefault })
 const showSeccionModal = ref(false)
 const isEditingSeccion = ref(false)
 const editingSeccionIndex = ref(-1)
+
+// Watcher para cargar secciones cuando cambia la página
+watch(() => modalSeccion.value.pagina, async (nuevaPagina) => {
+    if (nuevaPagina) {
+        // Buscar el ID de la página seleccionada
+        const paginaSeleccionada = paginasData.value.find(p => p.texto === nuevaPagina)
+        if (paginaSeleccionada) {
+            try {
+                const secciones = await $fetch(`/api/seccciones/${paginaSeleccionada.id}`)
+                seccionesData.value = secciones || []
+            } catch (err) {
+                console.error('Error cargando secciones:', err)
+                seccionesData.value = []
+            }
+        }
+    } else {
+        seccionesData.value = []
+    }
+    // Resetear la sección seleccionada cuando cambia la página
+    modalSeccion.value.seccion = ''
+})
 
 const showDestacadosModal = ref(false)
 const currentDiaIndex = ref(-1)
