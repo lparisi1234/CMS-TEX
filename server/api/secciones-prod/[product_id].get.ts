@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     const { rows } = await pool.query(`
       SELECT 
         sp.seccion_id,
-        sp.product_id,
+        sp.producto_id,
         sp.segmentos_id,
         s.texto as seccion_nombre,
         s.pagina_id,
@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
       FROM secciones_prod sp
       INNER JOIN secciones s ON sp.seccion_id = s.id
       INNER JOIN paginas p ON s.pagina_id = p.id
-      WHERE sp.product_id = $1
+      WHERE sp.producto_id = $1
       ORDER BY sp.seccion_id ASC
     `, [product_id])
 
