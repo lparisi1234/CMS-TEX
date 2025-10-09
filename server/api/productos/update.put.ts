@@ -135,7 +135,7 @@ export default defineEventHandler(async (event) => {
           const segmentosArray = seccion.segmentos_excluidos.map((seg: any) => parseInt(seg));
           
           const querySeccionesProd = `
-            INSERT INTO secciones_prod (seccion_id, product_id, segmentos_id) 
+            INSERT INTO secciones_prod (seccion_id, producto_id, segmentos_id) 
             VALUES ($1, $2, $3);
           `;
           

@@ -299,7 +299,7 @@ const loadData = async () => {
         productosData.value = productos || []
         itinerarioData.value = itinerario || []
         paginasData.value = paginas || []
-        console.log('Páginas cargadas:', paginasData.value)
+        
     } catch (err) {
         console.error('Error cargando datos:', err)
         error('Error al cargar los datos')
@@ -646,7 +646,7 @@ const handleSubmit = async () => {
             dataToSubmit.secciones = []
         }
         
-        console.log('Datos a enviar:', dataToSubmit)
+        
         
         if (!props.isEditing) {
             const timestamp = Date.now()
