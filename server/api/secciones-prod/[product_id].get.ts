@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   const product_id = getRouterParam(event, 'product_id')
   
   try {
-    // Consulta con JOINs para obtener todos los datos relacionados
+    // Consulta para obtener todas las secciones del producto
     const { rows } = await pool.query(`
       SELECT 
         sp.seccion_id,
@@ -13,35 +13,38 @@ export default defineEventHandler(async (event) => {
         sp.segmentos_id,
         s.texto as seccion_nombre,
         s.pagina_id,
-        p.texto as pagina_nombre,
-        seg.descripcion as segmento_nombre
+        p.texto as pagina_nombre
       FROM secciones_prod sp
       INNER JOIN secciones s ON sp.seccion_id = s.id
-      INNER JOIN pagina p ON s.pagina_id = p.id
-      LEFT JOIN segmentos seg ON sp.segmentos_id = seg.id
+      INNER JOIN paginas p ON s.pagina_id = p.id
       WHERE sp.product_id = $1
-      ORDER BY sp.seccion_id, sp.segmentos_id ASC
+      ORDER BY sp.seccion_id ASC
     `, [product_id])
 
-    // Si no hay datos, devolver estructura vacía
+    // Si no hay datos, devolver array vacío
     if (rows.length === 0) {
-      return null
+      return []
     }
 
-    // Agrupar por sección (solo debería haber una sección por producto)
-    const seccion = rows[0]
-    const segmentos_excluidos = rows.map((row: any) => row.segmentos_id.toString())
+    // Mapear cada fila a un objeto de sección
+    const secciones = rows.map((row: any) => {
+      // segmentos_id ya es un array en PostgreSQL, solo necesitamos convertirlo a strings
+      const segmentos_excluidos = Array.isArray(row.segmentos_id) 
+        ? row.segmentos_id.map((id: number) => id.toString())
+        : []
 
-    // Devolver el formato esperado por el frontend
-    return {
-      id: Date.now(), // ID temporal para el frontend
-      seccion_id: seccion.seccion_id,
-      pagina: seccion.pagina_nombre,
-      seccion: seccion.seccion_nombre,
-      segmentos_excluidos: segmentos_excluidos
-    }
+      return {
+        id: Date.now() + Math.random(), // ID temporal único para el frontend
+        seccion_id: row.seccion_id,
+        pagina: row.pagina_nombre,
+        seccion: row.seccion_nombre,
+        segmentos_excluidos: segmentos_excluidos
+      }
+    })
+
+    return secciones
   } catch (error) {
     console.error('Error obteniendo secciones del producto:', error)
-    return null
+    return []
   }
 })

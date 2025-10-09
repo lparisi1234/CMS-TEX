@@ -640,7 +640,14 @@ const handleSubmit = async () => {
         // Preparar datos del producto
         const dataToSubmit = { ...formData.value }
         delete dataToSubmit.itinerario 
-console.log('Datos a enviar:', dataToSubmit)
+        
+        // Mantener secciones como array (el backend ahora acepta múltiples secciones)
+        if (!dataToSubmit.secciones || !Array.isArray(dataToSubmit.secciones) || dataToSubmit.secciones.length === 0) {
+            dataToSubmit.secciones = []
+        }
+        
+        console.log('Datos a enviar:', dataToSubmit)
+        
         if (!props.isEditing) {
             const timestamp = Date.now()
             const lastDigits = timestamp.toString().slice(-6)
@@ -811,9 +818,9 @@ const loadSecciones = async (productoId) => {
             method: 'GET'
         })
         
-        if (secciones) {
-            // Cargar las secciones en el formato esperado
-            formData.value.secciones = [secciones]
+        // El endpoint ahora devuelve un array de secciones
+        if (secciones && Array.isArray(secciones) && secciones.length > 0) {
+            formData.value.secciones = secciones
             console.log('Secciones cargadas:', formData.value.secciones)
         } else {
             formData.value.secciones = []

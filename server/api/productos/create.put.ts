@@ -99,16 +99,26 @@ export default defineEventHandler(async (event) => {
     }
 
     // Paso 3: Insertar en la tabla "Secciones_prod" si vienen datos de secciones
-    if (secciones && secciones.seccion_id && secciones.segmentos_excluidos && Array.isArray(secciones.segmentos_excluidos)) {
+    // Ahora secciones puede ser un array o un solo objeto
+    const seccionesArray = Array.isArray(secciones) ? secciones : (secciones ? [secciones] : []);
+    
+    if (seccionesArray.length > 0) {
       const querySeccionesProd = `
-        INSERT INTO secciones_prod (seccion_id, product_id, segmentos_id) VALUES ($1, $2, $3);
+        INSERT INTO secciones_prod (seccion_id, product_id, segmentos_id) 
+        VALUES ($1, $2, $3);
       `;
-      for (const segmentoId of secciones.segmentos_excluidos) {
-        await pool.query(querySeccionesProd, [
-          secciones.seccion_id,
-          productoId,
-          segmentoId
-        ]);
+      
+      for (const seccion of seccionesArray) {
+        if (seccion.seccion_id && seccion.segmentos_excluidos && Array.isArray(seccion.segmentos_excluidos) && seccion.segmentos_excluidos.length > 0) {
+          // Convertir el array de strings a array de integers para PostgreSQL
+          const segmentosArray = seccion.segmentos_excluidos.map((seg: any) => parseInt(seg));
+          
+          await pool.query(querySeccionesProd, [
+            parseInt(seccion.seccion_id),
+            productoId,
+            segmentosArray  // PostgreSQL convertirá esto a un array {1,3,5}
+          ]);
+        }
       }
     }
 

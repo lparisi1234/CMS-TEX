@@ -26,6 +26,7 @@ export default defineEventHandler(async (event) => {
       salidas,
       aereo_incluido,
       segmentos_excluidos,
+      secciones,
       itinerario
     } = await readBody(event)
 
@@ -114,6 +115,36 @@ export default defineEventHandler(async (event) => {
       `;
       for (const segmentoId of segmentos_excluidos) {
         await pool.query(queryInsertSegmentos, [id, parseInt(segmentoId)]);
+      }
+    }
+
+    // Eliminar secciones existentes y agregar las nuevas
+    const queryDeleteSecciones = `
+      DELETE FROM secciones_prod
+      WHERE product_id = $1;
+    `;
+    await pool.query(queryDeleteSecciones, [id]);
+
+    // Si vienen secciones, puede ser un array o un solo objeto
+    const seccionesArray = Array.isArray(secciones) ? secciones : (secciones ? [secciones] : []);
+    
+    if (seccionesArray.length > 0) {
+      for (const seccion of seccionesArray) {
+        if (seccion.seccion_id && seccion.segmentos_excluidos && Array.isArray(seccion.segmentos_excluidos) && seccion.segmentos_excluidos.length > 0) {
+          // Convertir el array de strings a array de integers para PostgreSQL
+          const segmentosArray = seccion.segmentos_excluidos.map((seg: any) => parseInt(seg));
+          
+          const querySeccionesProd = `
+            INSERT INTO secciones_prod (seccion_id, product_id, segmentos_id) 
+            VALUES ($1, $2, $3);
+          `;
+          
+          await pool.query(querySeccionesProd, [
+            parseInt(seccion.seccion_id),
+            id,
+            segmentosArray  // PostgreSQL convertirá esto a un array {1,3,5}
+          ]);
+        }
       }
     }
 /*
