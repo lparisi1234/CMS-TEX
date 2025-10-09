@@ -121,7 +121,7 @@ export default defineEventHandler(async (event) => {
     // Eliminar secciones existentes y agregar las nuevas
     const queryDeleteSecciones = `
       DELETE FROM secciones_prod
-      WHERE product_id = $1;
+      WHERE producto_id = $1;
     `;
     await pool.query(queryDeleteSecciones, [id]);
 

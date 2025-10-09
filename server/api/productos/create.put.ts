@@ -104,7 +104,7 @@ export default defineEventHandler(async (event) => {
     
     if (seccionesArray.length > 0) {
       const querySeccionesProd = `
-        INSERT INTO secciones_prod (seccion_id, product_id, segmentos_id) 
+        INSERT INTO secciones_prod (seccion_id, producto_id, segmentos_id) 
         VALUES ($1, $2, $3);
       `;
       
