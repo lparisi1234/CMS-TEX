@@ -8,28 +8,23 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'ID requerido' }
     }
 
-    // Primero obtener la imagen antes de eliminar el registro
     const result = await pool.query('SELECT img FROM nota_prensa WHERE id = $1', [id])
     const notadeprensa = result.rows[0]
-    
+
     if (!notadeprensa) {
       return { success: false, message: 'Nota de Prensa no encontrada' }
     }
 
-    // Eliminar el registro de la base de datos
     await pool.query('DELETE FROM nota_prensa WHERE id = $1', [id])
 
-    // Eliminar la imagen de S3 si existe
     if (notadeprensa.img) {
       try {
         const deleteResponse = await $fetch('/api/delete-image', {
           method: 'POST',
           body: { imageUrl: notadeprensa.img }
         }) as { success: boolean }
-        
-        if (deleteResponse.success) {
-          console.log('Imagen eliminada de S3:', notadeprensa.img)
-        } else {
+
+        if (!deleteResponse.success) {
           console.warn('No se pudo eliminar la imagen de S3:', notadeprensa.img)
         }
       } catch (error) {

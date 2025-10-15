@@ -26,15 +26,14 @@ export default defineEventHandler(async (event) => {
       img === undefined ||
       txt_contacto === undefined ||
       txt_cancelaciones === undefined ||
-      nomenclatura === undefined 
+      nomenclatura === undefined
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
-    // Primero obtener la imagen anterior antes de actualizar
     const oldResult = await pool.query('SELECT img FROM operador WHERE id = $1', [id])
     const oldOperador = oldResult.rows[0]
-    
+
     if (!oldOperador) {
       return { success: false, message: 'Operador no encontrado' }
     }
@@ -72,17 +71,14 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'No se encontró el Operador para modificar' }
     }
 
-    // Eliminar la imagen anterior de S3 si es diferente a la nueva
     if (oldOperador.img && oldOperador.img !== img) {
       try {
         const deleteResponse = await $fetch('/api/delete-image', {
           method: 'POST',
           body: { imageUrl: oldOperador.img }
         }) as { success: boolean }
-        
-        if (deleteResponse.success) {
-          console.log('Imagen anterior eliminada de S3:', oldOperador.img)
-        } else {
+
+        if (!deleteResponse.success) {
           console.warn('No se pudo eliminar la imagen anterior de S3:', oldOperador.img)
         }
       } catch (error) {

@@ -22,10 +22,9 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
-    // Primero obtener la imagen anterior antes de actualizar
     const oldResult = await pool.query('SELECT img FROM que_esperar WHERE id = $1', [id])
     const oldQueEsperar = oldResult.rows[0]
-    
+
     if (!oldQueEsperar) {
       return { success: false, message: 'Que esperar no encontrado' }
     }
@@ -55,17 +54,14 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'No se encontró el que esperar para modificar' }
     }
 
-    // Eliminar la imagen anterior de S3 si es diferente a la nueva
     if (oldQueEsperar.img && oldQueEsperar.img !== img) {
       try {
         const deleteResponse = await $fetch('/api/delete-image', {
           method: 'POST',
           body: { imageUrl: oldQueEsperar.img }
         }) as { success: boolean }
-        
-        if (deleteResponse.success) {
-          console.log('Imagen anterior eliminada de S3:', oldQueEsperar.img)
-        } else {
+
+        if (!deleteResponse.success) {
           console.warn('No se pudo eliminar la imagen anterior de S3:', oldQueEsperar.img)
         }
       } catch (error) {

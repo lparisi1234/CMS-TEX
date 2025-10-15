@@ -152,7 +152,6 @@ const handleDelete = async (item) => {
             body: { id: item.id }
         })
 
-        // Recargar datos
         await loadData()
         success('Elemento eliminado exitosamente')
     } catch (err) {

@@ -11,13 +11,11 @@ export default defineEventHandler(async (event) => {
     try {
       await client.query('BEGIN')
 
-      // Primero obtenemos los IDs de los itinerarios actuales
       const { rows: currentItinerarios } = await client.query(
         'SELECT id FROM itinerario WHERE producto_id = $1',
         [producto_id]
       )
 
-      // Eliminamos primero los destacados asociados a estos itinerarios
       if (currentItinerarios.length > 0) {
         const itinerarioIds = currentItinerarios.map(it => it.id)
         await client.query(
@@ -26,10 +24,8 @@ export default defineEventHandler(async (event) => {
         )
       }
 
-      // Ahora sí podemos eliminar los itinerarios
       await client.query('DELETE FROM itinerario WHERE producto_id = $1', [producto_id])
 
-      // Insertamos los nuevos itinerarios y guardamos sus IDs
       const insertedItinerarios = []
       for (const itinerario of itinerarios) {
         const result = await client.query(

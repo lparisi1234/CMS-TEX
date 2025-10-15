@@ -6,8 +6,8 @@
                     <FormFieldsContainer>
                         <FormTextField v-model="formData.nombreprod" id="nombreprod" label="Nombre del Producto"
                             required placeholder="Ingresa el nombre del producto" :error="errors.nombreprod" />
-<FormTextField v-model="formData.cod_newton" id="cod_newton" label="Código" type="text" required
-    placeholder="Código del producto" :error="errors.cod_newton" />
+                        <FormTextField v-model="formData.cod_newton" id="cod_newton" label="Código" type="text" required
+                            placeholder="Código del producto" :error="errors.cod_newton" />
                     </FormFieldsContainer>
 
                     <FormFieldsContainer>
@@ -188,7 +188,8 @@
                     @click="handleDestacadosModalBackgroundClick">
                     <div class="w-full max-w-[60rem] flex flex-col gap-6 bg-light rounded-[20px] p-8" @click.stop>
                         <HeadingH2 class="text-center">
-                            Destacados - Día del itinerario: {{ formData.itinerario[currentDiaIndex]?.dia || currentDiaIndex + 1 }}
+                            Destacados - Día del itinerario: {{ formData.itinerario[currentDiaIndex]?.dia ||
+                                currentDiaIndex + 1 }}
                         </HeadingH2>
 
                         <div class="flex flex-col gap-5">
@@ -299,7 +300,7 @@ const loadData = async () => {
         productosData.value = productos || []
         itinerarioData.value = itinerario || []
         paginasData.value = paginas || []
-        
+
     } catch (err) {
         console.error('Error cargando datos:', err)
         error('Error al cargar los datos')
@@ -389,7 +390,7 @@ const seccionesColumns = [
     { key: 'segmentos_excluidos', label: 'Segmentos excluidos', type: 'array-ids', required: false }
 ]
 
-const paginaOptions = computed(() => 
+const paginaOptions = computed(() =>
     paginasData.value.map(p => ({
         value: p.texto,
         label: p.texto
@@ -398,12 +399,10 @@ const paginaOptions = computed(() =>
 
 const seccionOptions = computed(() => {
     if (!modalSeccion.value.pagina) return []
-    
-    // Buscar el ID de la página seleccionada
+
     const paginaSeleccionada = paginasData.value.find(p => p.texto === modalSeccion.value.pagina)
     if (!paginaSeleccionada) return []
-    
-    // Filtrar las secciones por pagina_id
+
     return seccionesData.value
         .filter(s => s.pagina_id === paginaSeleccionada.id)
         .map(s => ({
@@ -441,10 +440,8 @@ const showSeccionModal = ref(false)
 const isEditingSeccion = ref(false)
 const editingSeccionIndex = ref(-1)
 
-// Watcher para cargar secciones cuando cambia la página
 watch(() => modalSeccion.value.pagina, async (nuevaPagina) => {
     if (nuevaPagina) {
-        // Buscar el ID de la página seleccionada
         const paginaSeleccionada = paginasData.value.find(p => p.texto === nuevaPagina)
         if (paginaSeleccionada) {
             try {
@@ -458,7 +455,6 @@ watch(() => modalSeccion.value.pagina, async (nuevaPagina) => {
     } else {
         seccionesData.value = []
     }
-    // Resetear la sección seleccionada cuando cambia la página
     modalSeccion.value.seccion = ''
 })
 
@@ -518,7 +514,6 @@ const handleSeccionModalBackgroundClick = (event) => {
 const saveSeccion = () => {
     if (!modalSeccion.value.pagina || !modalSeccion.value.seccion) return
 
-    // Buscar el ID de la sección seleccionada
     const seccionSeleccionada = seccionesData.value.find(s => s.texto === modalSeccion.value.seccion)
     if (!seccionSeleccionada) {
         error('No se encontró la sección seleccionada')
@@ -531,7 +526,7 @@ const saveSeccion = () => {
             : Date.now(),
         pagina: modalSeccion.value.pagina,
         seccion: modalSeccion.value.seccion,
-        seccion_id: seccionSeleccionada.id, // Guardamos el ID de la sección
+        seccion_id: seccionSeleccionada.id,
         segmentos_excluidos: Array.isArray(modalSeccion.value.segmentos_excluidos)
             ? modalSeccion.value.segmentos_excluidos.map(v => v.toString())
             : []
@@ -607,7 +602,6 @@ const eliminarDestacado = (index) => {
 }
 
 const saveDestacadosModal = () => {
-    // Guardar todos los destacados, incluso si están vacíos
     formData.value.itinerario[currentDiaIndex.value].destacados = [...currentDestacados.value]
     closeDestacadosModal()
 }
@@ -633,21 +627,19 @@ const handleSubmit = async () => {
         error('Por favor completa todos los campos requeridos')
         return
     }
-   
+
     isSubmitting.value = true
-    
+
     try {
-        // Preparar datos del producto
         const dataToSubmit = { ...formData.value }
-        delete dataToSubmit.itinerario 
-        
-        // Mantener secciones como array (el backend ahora acepta múltiples secciones)
+        delete dataToSubmit.itinerario
+
         if (!dataToSubmit.secciones || !Array.isArray(dataToSubmit.secciones) || dataToSubmit.secciones.length === 0) {
             dataToSubmit.secciones = []
         }
-        
-        
-        
+
+
+
         if (!props.isEditing) {
             const timestamp = Date.now()
             const lastDigits = timestamp.toString().slice(-6)
@@ -661,9 +653,7 @@ const handleSubmit = async () => {
 
         let productId
 
-        // Guardar el producto primero
         if (props.isEditing && props.editingData?.id) {
-            // Actualizar producto existente
             dataToSubmit.id = props.editingData.id
             productId = props.editingData.id
             const result = await $fetch('/api/productos/update', {
@@ -675,7 +665,6 @@ const handleSubmit = async () => {
                 throw new Error(result.message || 'Error al actualizar el producto')
             }
         } else {
-            // Crear nuevo producto
             const result = await $fetch('/api/productos/create', {
                 method: 'PUT',
                 body: dataToSubmit
@@ -684,17 +673,15 @@ const handleSubmit = async () => {
             if (!result.success) {
                 throw new Error(result.message || 'Error al crear el producto')
             }
-            
+
             productId = result.id
             if (!productId) {
                 console.error('Respuesta del servidor:', result)
                 throw new Error('No se recibió el ID del producto creado')
             }
-            
-            console.log('Producto creado con ID:', productId)
+
         }
 
-        // Si hay itinerarios, guardarlos
         if (formData.value.itinerario && formData.value.itinerario.length > 0) {
             const itinerariosToSubmit = formData.value.itinerario.map(dia => ({
                 nro_dia: dia.dia,
@@ -703,7 +690,6 @@ const handleSubmit = async () => {
                 destacados: dia.destacados || []
             }))
 
-            // Enviar los itinerarios al backend
             const itinerariosResult = await $fetch(`/api/itinerarios/${productId}`, {
                 method: 'PUT',
                 body: {
@@ -716,17 +702,13 @@ const handleSubmit = async () => {
                 throw new Error(itinerariosResult.message || 'Error al guardar los itinerarios')
             }
 
-            console.log('Itinerarios creados con sus IDs:', itinerariosResult)
 
-            // Guardar los destacados usando los IDs de los itinerarios recién creados
             const { itinerarios: itinerariosCreados } = itinerariosResult
-            
-            // Validar que tenemos los IDs de los itinerarios
+
             if (!itinerariosCreados || !Array.isArray(itinerariosCreados)) {
                 throw new Error('No se recibieron los IDs de los itinerarios correctamente')
             }
 
-            // Guardar los destacados de cada día con el ID correcto del itinerario
             for (let i = 0; i < formData.value.itinerario.length; i++) {
                 const dia = formData.value.itinerario[i]
                 const itinerarioCreado = itinerariosCreados[i]
@@ -736,7 +718,7 @@ const handleSubmit = async () => {
                         const destacadoData = {
                             texto: destacado.titulo,
                             img: destacado.imagen,
-                            itinerario_id: itinerarioCreado.id, // Usamos el ID del itinerario recién creado
+                            itinerario_id: itinerarioCreado.id,
                             nro_orden: dia.dia
                         }
 
@@ -765,15 +747,13 @@ const handleSubmit = async () => {
 }
 
 const loadItinerarios = async (productoId) => {
-   
+
     try {
-        // Cargar itinerarios
         const response = await $fetch(`/api/itinerarios/${productoId}`, {
             method: 'GET'
         })
-        
+
         if (response && Array.isArray(response)) {
-            // Sort by nro_dia and transform to expected format
             const itinerariosOrdenados = response
                 .sort((a, b) => a.nro_dia - b.nro_dia)
                 .map(item => ({
@@ -785,7 +765,6 @@ const loadItinerarios = async (productoId) => {
                     isOpen: true
                 }))
 
-            // Cargar destacados para cada itinerario
             for (const itinerario of itinerariosOrdenados) {
                 try {
                     const destacados = await $fetch(`/api/destacados/${itinerario.id}`, {
@@ -803,7 +782,7 @@ const loadItinerarios = async (productoId) => {
                     console.error(`Error cargando destacados del itinerario ${itinerario.id}:`, err)
                 }
             }
-            
+
             formData.value.itinerario = itinerariosOrdenados
         }
     } catch (error) {
@@ -817,11 +796,9 @@ const loadSecciones = async (productoId) => {
         const secciones = await $fetch(`/api/secciones-prod/${productoId}`, {
             method: 'GET'
         })
-        
-        // El endpoint ahora devuelve un array de secciones
+
         if (secciones && Array.isArray(secciones) && secciones.length > 0) {
             formData.value.secciones = secciones
-            console.log('Secciones cargadas:', formData.value.secciones)
         } else {
             formData.value.secciones = []
         }
@@ -831,24 +808,39 @@ const loadSecciones = async (productoId) => {
     }
 }
 
+const loadSegmentosExcluidos = async (productoId) => {
+    try {
+        const segmentos = await $fetch(`/api/segmento_prod/${productoId}`, {
+            method: 'GET'
+        })
+
+
+        if (segmentos && Array.isArray(segmentos) && segmentos.length > 0) {
+            formData.value.segmentos_excluidos = segmentos
+                .filter(s => s && s.segmentos_id !== undefined && s.segmentos_id !== null)
+                .map(s => String(s.segmentos_id))
+        } else {
+            formData.value.segmentos_excluidos = []
+        }
+    } catch (error) {
+        console.error('Error loading segmentos excluidos:', error)
+        formData.value.segmentos_excluidos = []
+    }
+}
+
 const loadProductData = async () => {
     if (props.isEditing && props.productId) {
-        
+
         const producto = productosData.value.find(p =>
             String(p.id) === String(props.productId)
         )
 
-       
+
 
         if (producto) {
-            // Load basic product data
             Object.keys(formData.value).forEach(key => {
                 if (producto.hasOwnProperty(key)) {
-                    if (key === 'segmentos_excluidos') {
-                        formData.value[key] = Array.isArray(producto[key])
-                            ? [...producto[key]]
-                            : []
-                    } else if (key !== 'itinerario' && key !== 'secciones') { // Skip itinerario and secciones as they're loaded separately
+                    if (key !== 'segmentos_excluidos' && key !== 'itinerario' && key !== 'secciones') { // Skip these as they're loaded separately
                         if (key === 'estado') {
                             formData.value[key] = producto[key] == 1 || producto[key] === true
                         } else {
@@ -858,25 +850,19 @@ const loadProductData = async () => {
                 }
             })
 
-            // Load itinerarios and secciones separately
             await Promise.all([
                 loadItinerarios(props.productId),
-                loadSecciones(props.productId)
+                loadSecciones(props.productId),
+                loadSegmentosExcluidos(props.productId)
             ])
 
         } else {
             console.warn('Product not found in productosData')
         }
     } else if (props.editingData) {
-        console.log('Loading from editingData:', props.editingData)
         Object.keys(formData.value).forEach(key => {
             if (props.editingData.hasOwnProperty(key)) {
-                if (key === 'segmentos_excluidos') {
-                    formData.value[key] = Array.isArray(props.editingData[key])
-                        ? [...props.editingData[key]]
-                        : []
-                    console.log(`Loaded ${key}:`, formData.value[key])
-                } else if (key !== 'itinerario' && key !== 'secciones') { // Skip itinerario and secciones as they're loaded separately
+                if (key !== 'segmentos_excluidos' && key !== 'itinerario' && key !== 'secciones') {
                     if (key === 'estado') {
                         formData.value[key] = props.editingData[key] == 1 || props.editingData[key] === true
                     } else {
@@ -886,11 +872,11 @@ const loadProductData = async () => {
             }
         })
 
-        // Load itinerarios and secciones if we have a product ID
         if (props.editingData.id) {
             await Promise.all([
                 loadItinerarios(props.editingData.id),
-                loadSecciones(props.editingData.id)
+                loadSecciones(props.editingData.id),
+                loadSegmentosExcluidos(props.editingData.id)
             ])
         }
     }

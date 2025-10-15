@@ -9,19 +9,16 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'ID del subgrupo es requerido' }
     }
 
-    // Iniciar transacción
     const client = await pool.connect()
 
     try {
       await client.query('BEGIN')
 
-      // 1. Eliminar todas las relaciones en subgrupos_prod
       await client.query(`
         DELETE FROM subgrupos_prod 
         WHERE subgrupo_cat_id = $1
       `, [id])
 
-      // 2. Eliminar el subgrupo de categoría
       const deleteResult = await client.query(`
         DELETE FROM subgrupos_cat 
         WHERE id = $1

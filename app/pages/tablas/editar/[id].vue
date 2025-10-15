@@ -193,11 +193,9 @@ const handleSuccess = () => {
     }
 }
 
-// Función para obtener todas las URLs de imágenes cargadas
 const getUploadedImageUrls = () => {
     const imageUrls = []
     
-    // Buscar en formData todas las columnas de tipo 'image'
     if (tabla?.columns) {
         tabla.columns.forEach(column => {
             if (column.type === 'image' && formData.value[column.key]) {
@@ -212,13 +210,11 @@ const getUploadedImageUrls = () => {
     return imageUrls
 }
 
-// Función para eliminar todas las imágenes de S3
 const deleteAllUploadedImages = async () => {
     const imageUrls = getUploadedImageUrls()
     
     if (imageUrls.length === 0) return
     
-    // Eliminar todas las imágenes en paralelo
     const deletePromises = imageUrls.map(async (imageUrl) => {
         try {
             await $fetch('/api/delete-image', {
@@ -235,14 +231,11 @@ const deleteAllUploadedImages = async () => {
 
 const handleCancel = async () => {
     try {
-        // Eliminar todas las imágenes subidas de S3
         await deleteAllUploadedImages()
     } catch (error) {
         console.error('Error eliminando imágenes al cancelar:', error)
-        // Continuar con la cancelación aunque falle la eliminación
     }
     
-    // Navegar de vuelta
     handleSuccess()
 }
 

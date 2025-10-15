@@ -73,12 +73,11 @@ export default defineEventHandler(async (event) => {
       nro_orden,
       url,
       estado,
-      descuento_id     
+      descuento_id
     ])
 
     const grupodeOfertaId = resultadoGrupoOferta.rows[0].id;
 
-     // Paso 2: Insertar en la tabla de unión grupos_de_ofertas_segmentos
     if (segmentos_id && Array.isArray(segmentos_id) && segmentos_id.length > 0) {
       const querySegmentos = `
         INSERT INTO grupos_de_ofertas_segmentos (grupodeoferta_id, segmento_id) VALUES ($1, $2);
@@ -93,14 +92,16 @@ export default defineEventHandler(async (event) => {
     return {
       success: true,
       message: 'Grupo de oferta creado correctamente',
-      destino: { id: grupodeOfertaId, descripcion, titulo, subtitulo, segunda_descripcion, img_desktop, img_tablet, img_mobile, hasta_fecha, nro_orden, url, estado,
-       descuento_id, segmentos_id }
+      destino: {
+        id: grupodeOfertaId, descripcion, titulo, subtitulo, segunda_descripcion, img_desktop, img_tablet, img_mobile, hasta_fecha, nro_orden, url, estado,
+        descuento_id, segmentos_id
+      }
     };
-  }catch (error) {
+  } catch (error) {
     await client.query('ROLLBACK');
     console.error('Error creando Grupo de oferta:', error);
     return { success: false, message: 'Error creando Grupo de oferta' };
   } finally {
     client.release();
-  } 
+  }
 })

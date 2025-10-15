@@ -18,13 +18,11 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
-    // Iniciar transacción
     const client = await pool.connect()
     
     try {
       await client.query('BEGIN')
 
-      // 1. Crear el subgrupo de destino
       const createSubgrupoQuery = `
         INSERT INTO subgrupos_dst (
           nombre,
@@ -39,7 +37,6 @@ export default defineEventHandler(async (event) => {
       const subgrupoResult = await client.query(createSubgrupoQuery, subgrupoValues)
       const subgrupoCreado = subgrupoResult.rows[0]
 
-      // 2. Si hay productos_ids, crear las relaciones en subgrupos_prod
       if (productos_ids && productos_ids.length > 0) {
         const createRelacionQuery = `
           INSERT INTO subgrupos_prod (

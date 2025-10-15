@@ -26,10 +26,9 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
-    // Primero obtener la imagen anterior antes de la transacción
     const oldResult = await pool.query('SELECT img FROM destino_home WHERE id = $1', [id])
     const oldDestinoHome = oldResult.rows[0]
-    
+
     if (!oldDestinoHome) {
       return { success: false, message: 'Destino destacado no encontrado' }
     }
@@ -59,7 +58,7 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'El registro no se encontró.' };
     }
 
-     const queryDeleteSegmentos = `
+    const queryDeleteSegmentos = `
       DELETE FROM destino_home_segmentos
       WHERE destino_home_id = $1;
     `;
@@ -76,17 +75,14 @@ export default defineEventHandler(async (event) => {
 
     await client.query('COMMIT');
 
-    // Eliminar la imagen anterior de S3 si es diferente a la nueva (después de la transacción)
     if (oldDestinoHome.img && oldDestinoHome.img !== img) {
       try {
         const deleteResponse = await $fetch('/api/delete-image', {
           method: 'POST',
           body: { imageUrl: oldDestinoHome.img }
         }) as { success: boolean }
-        
-        if (deleteResponse.success) {
-          console.log('Imagen anterior eliminada de S3:', oldDestinoHome.img)
-        } else {
+
+        if (!deleteResponse.success) {
           console.warn('No se pudo eliminar la imagen anterior de S3:', oldDestinoHome.img)
         }
       } catch (error) {
@@ -100,7 +96,7 @@ export default defineEventHandler(async (event) => {
       destino: { ...resultadoDestinoHome.rows[0], segmentos_id }
     };
   } catch (error) {
-    await client.query('ROLLBACK'); // Deshacer los cambios en caso de error
+    await client.query('ROLLBACK');
     console.error('Error actualizando Destino Home Destacado:', error);
     return { success: false, message: 'Error actualizando Destino Home Destacado.' };
   } finally {

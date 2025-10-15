@@ -79,7 +79,6 @@ watchEffect(() => {
     }
 })
 
-// Expose focus method for parent components
 const focus = () => {
     if (inputElement.value) {
         inputElement.value.focus()

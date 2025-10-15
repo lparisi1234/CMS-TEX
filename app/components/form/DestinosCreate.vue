@@ -500,23 +500,19 @@ const handleEditTablaEspecial = (tipo, item) => {
     currentTablaEspecial.value = tipo
     currentTablaEspecialName.value = item.nombre
 
-    // Asegurarse de que los datos existentes estén cargados para TODAS las secciones
     if (props.isEditing && props.editingData?.id) {
-        // Cargar datos de más vendidos si no están cargados
         if (!formData.value.masVendidos || formData.value.masVendidos.length === 0) {
             formData.value.masVendidos = masVendidosData.value
                 .filter(item => item.destino_id === props.editingData.id)
                 .map(item => item.ProductoId)
         }
         
-        // Cargar datos de vuelo incluido si no están cargados
         if (!formData.value.vueloIncluido || formData.value.vueloIncluido.length === 0) {
             formData.value.vueloIncluido = vueloIncluidoData.value
                 .filter(item => item.destino_id === props.editingData.id)
                 .map(item => item.ProductoId)
         }
         
-        // Cargar datos de recomendados si no están cargados
         if (!formData.value.recomendados || formData.value.recomendados.length === 0) {
             formData.value.recomendados = recomendadosData.value
                 .filter(item => item.destino_id === props.editingData.id)
@@ -542,7 +538,6 @@ const handleTablaEspecialModalBackgroundClick = (event) => {
 }
 
 const saveTablaEspecial = () => {
-    // Obtener los productos del modal
     const nuevosProductos = modalTablaEspecial.value.productos_text
         ? modalTablaEspecial.value.productos_text
             .split(/\s+/)
@@ -550,27 +545,26 @@ const saveTablaEspecial = () => {
             .filter(id => id.length > 0)
         : []
 
-    // Actualizar solo la sección específica sin tocar las otras
     switch (currentTablaEspecial.value) {
         case 'masVendidos':
             formData.value = {
                 ...formData.value,
                 masVendidos: nuevosProductos,
-                _masVendidosModified: true // Flag para indicar modificación
+                _masVendidosModified: true
             }
             break
         case 'vueloIncluido':
             formData.value = {
                 ...formData.value,
                 vueloIncluido: nuevosProductos,
-                _vueloIncluidoModified: true // Flag para indicar modificación
+                _vueloIncluidoModified: true
             }
             break
         case 'recomendados':
             formData.value = {
                 ...formData.value,
                 recomendados: nuevosProductos,
-                _recomendadosModified: true // Flag para indicar modificación
+                _recomendadosModified: true
             }
             break
     }
@@ -960,7 +954,6 @@ const handleSubmit = async () => {
                 subgrupos: formData.value.subgrupos || []
             }
 
-            // Solo incluir los arrays que fueron modificados
             if (formData.value._masVendidosModified) {
                 destinoData.masVendidos = formData.value.masVendidos || []
             }
@@ -971,7 +964,6 @@ const handleSubmit = async () => {
                 destinoData.recomendados = formData.value.recomendados || []
             }
 
-            // Limpiar flags temporales
             delete destinoData._masVendidosModified
             delete destinoData._vueloIncluidoModified
             delete destinoData._recomendadosModified
