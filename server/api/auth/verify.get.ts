@@ -12,7 +12,6 @@ export default defineEventHandler(async (event) => {
         message: 'No tokens found'
       }
     }
-    // FUTURO, verificar expiración
 
     return {
       authenticated: true,

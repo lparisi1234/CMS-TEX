@@ -1,7 +1,7 @@
 import getDbPool from "../../db"
 
 export default defineEventHandler(async (event) => {
-    try {
+  try {
     const pool = await getDbPool()
     const {
       id,
@@ -23,10 +23,9 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
-    // Primero obtener la imagen anterior antes de actualizar
     const oldResult = await pool.query('SELECT img FROM nota_prensa WHERE id = $1', [id])
     const oldNotadeprensa = oldResult.rows[0]
-    
+
     if (!oldNotadeprensa) {
       return { success: false, message: 'Nota de Prensa no encontrada' }
     }
@@ -43,7 +42,7 @@ export default defineEventHandler(async (event) => {
     `;
 
     const values = [
-     descripcion,
+      descripcion,
       img,
       url,
       estado,
@@ -56,17 +55,14 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'No se encontró la Nota De Prensa para modificar' }
     }
 
-    // Eliminar la imagen anterior de S3 si es diferente a la nueva
     if (oldNotadeprensa.img && oldNotadeprensa.img !== img) {
       try {
         const deleteResponse = await $fetch('/api/delete-image', {
           method: 'POST',
           body: { imageUrl: oldNotadeprensa.img }
         }) as { success: boolean }
-        
-        if (deleteResponse.success) {
-          console.log('Imagen anterior eliminada de S3:', oldNotadeprensa.img)
-        } else {
+
+        if (!deleteResponse.success) {
           console.warn('No se pudo eliminar la imagen anterior de S3:', oldNotadeprensa.img)
         }
       } catch (error) {

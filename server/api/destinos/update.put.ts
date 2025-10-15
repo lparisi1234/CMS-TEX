@@ -33,7 +33,6 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'ID es requerido para actualizar' }
     }
 
-    // Primero obtener la imagen anterior antes de la transacción
     const oldResult = await pool.query('SELECT img FROM destinos WHERE id = $1', [id])
     const oldDestino = oldResult.rows[0]
     
@@ -46,7 +45,6 @@ export default defineEventHandler(async (event) => {
     try {
       await client.query('BEGIN')
       
-      // 1. Actualizar datos principales del destino
       const query = `
         UPDATE destinos SET
           url = $1,
@@ -95,15 +93,12 @@ export default defineEventHandler(async (event) => {
 
       const result = await client.query(query, values)
 
-      // 2. Función para actualizar las tablas relacionadas
       const updateRelatedProducts = async (tableName: string, products: string[]) => {
-        // Primero eliminamos todas las relaciones existentes
         await client.query(`
           DELETE FROM ${tableName}
           WHERE destino_id = $1
         `, [id])
 
-        // Si hay productos nuevos, los insertamos
         if (Array.isArray(products) && products.length > 0) {
           const insertValues = products.map((productoId, index) => {
             return `($1, $${index + 2})`
@@ -118,7 +113,6 @@ export default defineEventHandler(async (event) => {
         }
       }
 
-      // 3. Actualizar cada tabla relacionada si los datos vienen en el body
       if (body.hasOwnProperty('masVendidos')) {
         await updateRelatedProducts('mas_vendidos_dst', masVendidos || [])
       }
@@ -133,7 +127,6 @@ export default defineEventHandler(async (event) => {
 
       await client.query('COMMIT')
 
-      // Eliminar la imagen anterior de S3 si es diferente a la nueva (después de la transacción)
       if (oldDestino.img && oldDestino.img !== img) {
         try {
           const deleteResponse = await $fetch('/api/delete-image', {
@@ -141,9 +134,7 @@ export default defineEventHandler(async (event) => {
             body: { imageUrl: oldDestino.img }
           }) as { success: boolean }
           
-          if (deleteResponse.success) {
-            console.log('Imagen anterior eliminada de S3:', oldDestino.img)
-          } else {
+          if (!deleteResponse.success) {
             console.warn('No se pudo eliminar la imagen anterior de S3:', oldDestino.img)
           }
         } catch (error) {

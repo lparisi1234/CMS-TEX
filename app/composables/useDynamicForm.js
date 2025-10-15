@@ -77,11 +77,9 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
             const column = tabla.columns[i]
 
             if (column.fullWidth) {
-                // Full width fields go in their own chunk
                 chunks.push([column])
                 i++
             } else {
-                // Regular fields are grouped in pairs
                 const nextColumn = tabla.columns[i + 1]
                 if (nextColumn && !nextColumn.fullWidth) {
                     chunks.push([column, nextColumn])
@@ -168,16 +166,13 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
                             formData.value[column.key] = value != null ? String(value).toLowerCase() : ''
                         } else if (column.type === 'checkbox-multiple') {
                             if (typeof value === 'string' && value) {
-                                // Convertir string separado por comas a array de strings
                                 formData.value[column.key] = value.split(',').map(v => String(v.trim())).filter(Boolean)
                             } else if (Array.isArray(value)) {
-                                // Asegurar que todos los valores sean strings para los checkboxes
                                 formData.value[column.key] = value.map(v => String(v)).filter(v => v !== 'null' && v !== 'undefined' && v !== '')
                             } else {
                                 formData.value[column.key] = []
                             }
                         } else if (column.type === 'select') {
-                            // Asegurar que los valores de select se conviertan a string para comparación
                             formData.value[column.key] = value != null ? String(value) : ''
                         } else if (column.type === 'array') {
                             if (Array.isArray(value)) {
@@ -243,7 +238,6 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
             if (column.type === 'number' || column.type === 'currency') {
                 dataToSubmit[column.key] = value ? Number(value) : null
             } else if (column.type === 'image') {
-                // Asegurar que los campos de imagen se incluyan como strings
                 dataToSubmit[column.key] = value || ''
             }
         })

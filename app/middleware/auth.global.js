@@ -1,5 +1,4 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  // Solo ejecutar en el cliente para evitar problemas de hidratación
   if (process.server) return
   
   try {

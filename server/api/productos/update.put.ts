@@ -38,7 +38,6 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'ID, nombre del producto y código Newton son requeridos' }
     }
 
-    // Primero obtener las imágenes anteriores antes de actualizar
     const oldResult = await pool.query('SELECT img, imagen_mobile FROM productos WHERE id = $1', [id])
     const oldProducto = oldResult.rows[0]
     
@@ -102,7 +101,6 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'No se encontró el producto para modificar' }
     }
     
-    // Eliminar segmentos existentes y agregar los nuevos
     const queryDeleteSegmentos = `
       DELETE FROM segmentos_productos
       WHERE producto_id = $1;
@@ -118,20 +116,17 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Eliminar secciones existentes y agregar las nuevas
     const queryDeleteSecciones = `
       DELETE FROM secciones_prod
       WHERE producto_id = $1;
     `;
     await pool.query(queryDeleteSecciones, [id]);
 
-    // Si vienen secciones, puede ser un array o un solo objeto
     const seccionesArray = Array.isArray(secciones) ? secciones : (secciones ? [secciones] : []);
     
     if (seccionesArray.length > 0) {
       for (const seccion of seccionesArray) {
         if (seccion.seccion_id && seccion.segmentos_excluidos && Array.isArray(seccion.segmentos_excluidos) && seccion.segmentos_excluidos.length > 0) {
-          // Convertir el array de strings a array de integers para PostgreSQL
           const segmentosArray = seccion.segmentos_excluidos.map((seg: any) => parseInt(seg));
           
           const querySeccionesProd = `
@@ -142,7 +137,7 @@ export default defineEventHandler(async (event) => {
           await pool.query(querySeccionesProd, [
             parseInt(seccion.seccion_id),
             id,
-            segmentosArray  // PostgreSQL convertirá esto a un array {1,3,5}
+            segmentosArray
           ]);
         }
       }
@@ -171,7 +166,6 @@ export default defineEventHandler(async (event) => {
 
     await pool.query('COMMIT');
 
-    // Función auxiliar para eliminar imagen de S3
     const deleteImageFromS3 = async (imageUrl: string) => {
       if (!imageUrl) return
       
@@ -181,9 +175,7 @@ export default defineEventHandler(async (event) => {
           body: { imageUrl }
         }) as { success: boolean }
         
-        if (deleteResponse.success) {
-          console.log('Imagen anterior eliminada de S3:', imageUrl)
-        } else {
+        if (!deleteResponse.success) {
           console.warn('No se pudo eliminar la imagen anterior de S3:', imageUrl)
         }
       } catch (error) {
@@ -191,7 +183,6 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Eliminar las imágenes anteriores de S3 si son diferentes a las nuevas (después de la transacción)
     await Promise.all([
       oldProducto.img !== img ? deleteImageFromS3(oldProducto.img) : Promise.resolve(),
       oldProducto.imagen_mobile !== imagen_mobile ? deleteImageFromS3(oldProducto.imagen_mobile) : Promise.resolve()
@@ -206,7 +197,5 @@ export default defineEventHandler(async (event) => {
     await pool.query('ROLLBACK');
     console.error('Error modificando producto:', error)
     return { success: false, message: 'Error modificando producto' }
-  } finally {
-    // No need to release when using pool directly
   }
 })

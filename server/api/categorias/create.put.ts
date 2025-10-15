@@ -106,17 +106,14 @@ export default defineEventHandler(async (event) => {
       url
     ]
 
-    // Iniciar transacción
     const client = await pool.connect()
     
     try {
       await client.query('BEGIN')
       
-      // 1. Crear la categoría
       const result = await client.query(query, values)
       const categoriaCreada = result.rows[0]
       
-      // 2. Si hay subgrupos, crearlos
       if (subgrupos && Array.isArray(subgrupos) && subgrupos.length > 0) {
         for (const subgrupo of subgrupos) {
           const createSubgrupoQuery = `
@@ -138,7 +135,6 @@ export default defineEventHandler(async (event) => {
           const subgrupoResult = await client.query(createSubgrupoQuery, subgrupoValues)
           const subgrupoCreado = subgrupoResult.rows[0]
           
-          // 3. Si el subgrupo tiene productos_ids, crear las relaciones
           if (subgrupo.productos_ids && Array.isArray(subgrupo.productos_ids) && subgrupo.productos_ids.length > 0) {
             for (const producto_id of subgrupo.productos_ids) {
               await client.query(`

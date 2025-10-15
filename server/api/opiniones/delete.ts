@@ -8,7 +8,6 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'ID requerido' }
     }
 
-    // Primero obtener la imagen antes de eliminar el registro
     const result = await pool.query('SELECT img FROM opinion WHERE id = $1', [id])
     const opinion = result.rows[0]
     
@@ -16,10 +15,8 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Opinión no encontrada' }
     }
 
-    // Eliminar el registro de la base de datos
     await pool.query('DELETE FROM opinion WHERE id = $1', [id])
 
-    // Eliminar la imagen de S3 si existe
     if (opinion.img) {
       try {
         const deleteResponse = await $fetch('/api/delete-image', {
@@ -27,9 +24,7 @@ export default defineEventHandler(async (event) => {
           body: { imageUrl: opinion.img }
         }) as { success: boolean }
         
-        if (deleteResponse.success) {
-          console.log('Imagen eliminada de S3:', opinion.img)
-        } else {
+        if (!deleteResponse.success) {
           console.warn('No se pudo eliminar la imagen de S3:', opinion.img)
         }
       } catch (error) {

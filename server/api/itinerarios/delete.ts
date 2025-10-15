@@ -5,17 +5,15 @@ export default defineEventHandler(async (event) => {
   try {
     const pool = await getDbPool()
     const { id } = await readBody(event)
-    
+
     if (!id) {
       return { success: false, message: 'ID requerido' }
     }
 
-    // Comenzar una transacción
     const client = await pool.connect()
     try {
       await client.query('BEGIN')
 
-      // Obtener el producto_id y nro_dia del itinerario a eliminar
       const { rows: [itinerario] } = await client.query(
         'SELECT producto_id, nro_dia FROM itinerario WHERE id = $1',
         [id]
@@ -25,10 +23,7 @@ export default defineEventHandler(async (event) => {
         return { success: false, message: 'Itinerario no encontrado' }
       }
 
-      // Eliminar el itinerario
       await client.query('DELETE FROM itinerario WHERE id = $1', [id])
-
-      // Actualizar los números de día de los itinerarios posteriores
       await client.query(
         `UPDATE itinerario 
          SET nro_dia = nro_dia - 1 

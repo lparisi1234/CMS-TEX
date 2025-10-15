@@ -5,7 +5,6 @@ export default defineEventHandler(async (event) => {
   const product_id = getRouterParam(event, 'product_id')
   
   try {
-    // Consulta para obtener todas las secciones del producto
     const { rows } = await pool.query(`
       SELECT 
         sp.seccion_id,
@@ -21,20 +20,17 @@ export default defineEventHandler(async (event) => {
       ORDER BY sp.seccion_id ASC
     `, [product_id])
 
-    // Si no hay datos, devolver array vacío
     if (rows.length === 0) {
       return []
     }
 
-    // Mapear cada fila a un objeto de sección
     const secciones = rows.map((row: any) => {
-      // segmentos_id ya es un array en PostgreSQL, solo necesitamos convertirlo a strings
       const segmentos_excluidos = Array.isArray(row.segmentos_id) 
         ? row.segmentos_id.map((id: number) => id.toString())
         : []
 
       return {
-        id: Date.now() + Math.random(), // ID temporal único para el frontend
+        id: Date.now() + Math.random(),
         seccion_id: row.seccion_id,
         pagina: row.pagina_nombre,
         seccion: row.seccion_nombre,

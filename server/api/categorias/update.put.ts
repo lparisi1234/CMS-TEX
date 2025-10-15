@@ -56,7 +56,6 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
-    // Primero obtener las imágenes anteriores antes de la transacción
     const oldResult = await pool.query('SELECT img_carousel, img_search FROM categorias WHERE id = $1', [id])
     const oldCategoria = oldResult.rows[0]
     
@@ -116,13 +115,11 @@ export default defineEventHandler(async (event) => {
       id
     ]
 
-    // Iniciar transacción
     const client = await pool.connect()
     
     try {
       await client.query('BEGIN')
       
-      // 1. Actualizar la categoría
       const result = await client.query(query, values)
       if (result.rows.length === 0) {
         await client.query('ROLLBACK')
@@ -131,10 +128,8 @@ export default defineEventHandler(async (event) => {
       
       const categoriaActualizada = result.rows[0]
       
-      // 2. Si hay subgrupos y son nuevos (IDs temporales), crearlos
       if (subgrupos && Array.isArray(subgrupos) && subgrupos.length > 0) {
         for (const subgrupo of subgrupos) {
-          // Solo crear subgrupos con IDs temporales (muy altos)
           if (subgrupo.id && subgrupo.id > Date.now() - 10000000) {
             const createSubgrupoQuery = `
               INSERT INTO subgrupos_cat (
@@ -155,7 +150,6 @@ export default defineEventHandler(async (event) => {
             const subgrupoResult = await client.query(createSubgrupoQuery, subgrupoValues)
             const subgrupoCreado = subgrupoResult.rows[0]
             
-            // 3. Si el subgrupo tiene productos_ids, crear las relaciones
             if (subgrupo.productos_ids && Array.isArray(subgrupo.productos_ids) && subgrupo.productos_ids.length > 0) {
               for (const producto_id of subgrupo.productos_ids) {
                 await client.query(`
@@ -175,7 +169,6 @@ export default defineEventHandler(async (event) => {
       
       await client.query('COMMIT')
 
-      // Función auxiliar para eliminar imagen de S3
       const deleteImageFromS3 = async (imageUrl: string) => {
         if (!imageUrl) return
         
@@ -185,9 +178,7 @@ export default defineEventHandler(async (event) => {
             body: { imageUrl }
           }) as { success: boolean }
           
-          if (deleteResponse.success) {
-            console.log('Imagen anterior eliminada de S3:', imageUrl)
-          } else {
+          if (!deleteResponse.success) {
             console.warn('No se pudo eliminar la imagen anterior de S3:', imageUrl)
           }
         } catch (error) {
@@ -195,7 +186,6 @@ export default defineEventHandler(async (event) => {
         }
       }
 
-      // Eliminar las imágenes anteriores de S3 si son diferentes a las nuevas (después de la transacción)
       await Promise.all([
         oldCategoria.img_carousel !== img_carousel ? deleteImageFromS3(oldCategoria.img_carousel) : Promise.resolve(),
         oldCategoria.img_search !== img_search ? deleteImageFromS3(oldCategoria.img_search) : Promise.resolve()

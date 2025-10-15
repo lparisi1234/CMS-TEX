@@ -38,7 +38,7 @@ export default defineEventHandler(async (event) => {
       onSuccess: (result) => {
         const cookieOptions = {
           httpOnly: true,
-          secure: false, // true en producción
+          secure: false,
           sameSite: 'lax' as const,
           maxAge: 60 * 60 * 24,
           path: '/',

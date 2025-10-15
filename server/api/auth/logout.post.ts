@@ -2,7 +2,6 @@ import { deleteCookie } from 'h3'
 
 export default defineEventHandler(async (event) => {
   try {
-    // Eliminar todas las cookies de autenticación
     deleteCookie(event, 'AccessToken', { path: '/' })
     deleteCookie(event, 'IdToken', { path: '/' })
     deleteCookie(event, 'RefreshToken', { path: '/' })

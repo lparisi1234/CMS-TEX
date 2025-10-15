@@ -37,7 +37,6 @@ export default defineEventHandler(async (event) => {
 
     await pool.query('BEGIN');
 
-    // Paso 1: Insertar en la tabla principal "productos"
     const query = `
       INSERT INTO productos (
         nombreprod,
@@ -88,7 +87,6 @@ export default defineEventHandler(async (event) => {
     const result = await pool.query(query, values);
     const productoId = result.rows[0].id;
     
-    // Paso 2: Insertar en la tabla de unión "segmentos_productos"
     if (segmentos_excluidos && Array.isArray(segmentos_excluidos) && segmentos_excluidos.length > 0) {
       const querySegmentos = `
         INSERT INTO segmentos_productos (producto_id, segmentos_id) VALUES ($1, $2);
@@ -98,8 +96,6 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Paso 3: Insertar en la tabla "Secciones_prod" si vienen datos de secciones
-    // Ahora secciones puede ser un array o un solo objeto
     const seccionesArray = Array.isArray(secciones) ? secciones : (secciones ? [secciones] : []);
     
     if (seccionesArray.length > 0) {
@@ -110,13 +106,12 @@ export default defineEventHandler(async (event) => {
       
       for (const seccion of seccionesArray) {
         if (seccion.seccion_id && seccion.segmentos_excluidos && Array.isArray(seccion.segmentos_excluidos) && seccion.segmentos_excluidos.length > 0) {
-          // Convertir el array de strings a array de integers para PostgreSQL
           const segmentosArray = seccion.segmentos_excluidos.map((seg: any) => parseInt(seg));
           
           await pool.query(querySeccionesProd, [
             parseInt(seccion.seccion_id),
             productoId,
-            segmentosArray  // PostgreSQL convertirá esto a un array {1,3,5}
+            segmentosArray
           ]);
         }
       }
@@ -127,14 +122,12 @@ export default defineEventHandler(async (event) => {
     return { 
       success: true, 
       message: 'Producto creado correctamente',
-      id: productoId, // Aseguramos que se devuelva el ID explícitamente
+      id: productoId,
       producto: { ...result.rows[0], segmentos_excluidos } 
     };
   } catch (error) {
     await pool.query('ROLLBACK');
     console.error('Error creando producto:', error);
     return { success: false, message: 'Error creando producto' };
-  } finally {
-    // No need to release when using pool directly
   }
 })

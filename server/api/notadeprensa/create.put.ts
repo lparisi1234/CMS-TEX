@@ -6,9 +6,7 @@ export default defineEventHandler(async (event) => {
 
     const { descripcion, img, estado, url } = await readBody(event)
 
-    // Validar que los campos existan
     if (!descripcion || !img || !estado) {
-      // Ahora validamos solo los campos necesarios
       return { success: false, message: 'Faltan campos requeridos' }
     }
 

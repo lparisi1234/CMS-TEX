@@ -45,7 +45,6 @@ if (nombreSlug === 'que-esperar-categorias') {
     await navigateTo(`${ROUTE_NAMES.TABLAS}${ROUTE_NAMES.QUE_ESPERAR}`)
 }
 
-// Endpoint
 const tableData = await $fetch(`/api/${tabla.endpoint}`).catch(err => {
     console.error('Error cargando datos:', err)
     return []
@@ -89,14 +88,13 @@ const handleEdit = (item) => {
 
 const handleDelete = async (item) => {
     try {
-        const endpointBase = tabla.endpoint.split('/')[0] // Obtener 'segmentos' de 'segmentos/segmentos'
+        const endpointBase = tabla.endpoint.split('/')[0]
         await $fetch(`/api/${endpointBase}/delete`, {
             method: 'POST',
             body: { id: item.id }
         })
         
         success(`${tabla.name} eliminado exitosamente`)
-        // Recargar datos después de eliminar
         location.reload()
     } catch (err) {
         console.error('Error al eliminar:', err)

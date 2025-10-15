@@ -28,26 +28,20 @@ export default defineEventHandler(async (event) => {
 
     const targetFolder = targetFolderField.data.toString('utf-8');
 
-    // Usar el nombre original del archivo
     const fileName = imageFile.filename || 'default.jpg'
     const tempFilePath = join(tmpdir(), fileName)
 
-    // Guardar archivo temporalmente
     await writeFile(tempFilePath, imageFile.data)
 
-    // Comando AWS S3 CP
     const bucketName = 'tex2-static-images-prd'
     const s3Key = `${targetFolder}/${fileName}`;
     const s3Url = `s3://${bucketName}/${s3Key}`
     
     const command = `aws s3 cp "${tempFilePath}" "s3://${bucketName}/${s3Key}"`
 
-    console.log('Ejecutando comando:', command)
 
-    // Ejecutar comando AWS CLI
     const { stdout, stderr } = await execAsync(command)
 
-    // Limpiar archivo temporal
     await unlink(tempFilePath).catch(console.error)
 
     if (stderr && !stderr.includes('upload:')) {
@@ -58,8 +52,6 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    console.log('AWS CLI output:', stdout)
-    
     const objectUrl = `https://${bucketName}.s3.us-east-1.amazonaws.com/${s3Key}`
 
     return {

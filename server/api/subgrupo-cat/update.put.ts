@@ -27,13 +27,11 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Número de orden debe ser mayor a 0' }
     }
 
-    // Iniciar transacción
     const client = await pool.connect()
     
     try {
       await client.query('BEGIN')
 
-      // 1. Actualizar el subgrupo de categoría
       const updateSubgrupoQuery = `
         UPDATE subgrupos_cat SET
           nombre = $1,
@@ -53,13 +51,11 @@ export default defineEventHandler(async (event) => {
 
       const subgrupoActualizado = subgrupoResult.rows[0]
 
-      // 2. Eliminar todas las relaciones existentes para este subgrupo
       await client.query(`
         DELETE FROM subgrupos_prod 
         WHERE subgrupo_cat_id = $1
       `, [id])
 
-      // 3. Si hay productos_ids, crear las nuevas relaciones en subgrupos_prod
       if (productos_ids && productos_ids.length > 0) {
         const createRelacionQuery = `
           INSERT INTO subgrupos_prod (

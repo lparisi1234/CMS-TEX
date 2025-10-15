@@ -3,7 +3,6 @@ export const useAuth = () => {
   const user = ref(null)
   const router = useRouter()
 
-  // Verificar si el usuario está autenticado
   const checkAuth = async () => {
     try {
       const response = await $fetch('/api/auth/verify')
@@ -24,7 +23,6 @@ export const useAuth = () => {
     }
   }
 
-  // Logout
   const logout = async () => {
     try {
       await $fetch('/api/auth/logout', { method: 'POST' })
@@ -37,7 +35,6 @@ export const useAuth = () => {
     }
   }
 
-  // Proteger rutas
   const requireAuth = async () => {
     const authenticated = await checkAuth()
     if (!authenticated) {
