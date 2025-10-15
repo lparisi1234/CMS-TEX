@@ -1015,39 +1015,23 @@ const tablas = {
             name: 'Traducciones',
             slug: 'traducciones',
             icon: 'book',
-            endpoint: 'traducciones/traducciones',
             botonTexto: 'Crear nueva traducción',
-            columns: [
-                {
-                    key: 'img',
-                    label: 'Imagen',
-                    type: 'image',
-                    size: '80px x 80px',
-                    required: true
-                },
-                {
-                    key: 'nombre',
-                    label: 'Nombre',
-                    type: 'text',
-                    required: true
-                }
-            ]
         },
         {
             name: 'Personalizar',
             slug: 'personalizar',
-            endpoint: 'personalizar/personalizar',
+            endpoint: 'traducciones/traducciones',  
             botonTexto: 'Crear nueva traducción',
             showInNav: false,
             columns: [
                 {
-                    key: 'cod_newton',
+                    key: 'nombre_original',
                     label: 'Código Newton',
                     type: 'text',
                     required: true
                 },
                 {
-                    key: 'traduccion_titulo',
+                    key: 'nombre_personalizado',
                     label: 'Traducción Título',
                     type: 'text',
                     required: true
