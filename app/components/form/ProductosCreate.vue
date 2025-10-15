@@ -154,7 +154,7 @@
                                 <div class="flex flex-col gap-4">
                                     <FormFieldsContainer>
                                         <FormTextField v-model="dia.titulo" :id="`titulo-dia-${index}`" label="Título"
-                                            required placeholder="Escribe el nombre del tour" />
+                                            required placeholder="Escribe el título del día" />
                                         <div class="flex flex-col gap-2">
                                             <FormLabel :id="`destacados-dia-${index}`">Destacados</FormLabel>
                                             <div class="flex items-center gap-6">
@@ -170,7 +170,7 @@
                                     </FormFieldsContainer>
 
                                     <FormTextareaField v-model="dia.texto" :id="`texto-dia-${index}`" label="Texto"
-                                        required placeholder="Escribe el ID del tour" :rows="3" />
+                                        required placeholder="Escribe el texto del día" :rows="3" />
                                 </div>
                             </div>
                         </Transition>
