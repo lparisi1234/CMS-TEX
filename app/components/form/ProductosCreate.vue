@@ -11,9 +11,9 @@
                     </FormFieldsContainer>
 
                     <FormFieldsContainer>
-                        <FormTextField v-model="formData.url" id="url" label="URL" required
+                        <FormTextField v-model="formData.url" id="url" label="URL"
                             placeholder="/productos/nombre-producto" :error="errors.url" />
-                        <FormTextField v-model="formData.h1" id="h1" label="H1" required
+                        <FormTextField v-model="formData.h1" id="h1" label="H1"
                             placeholder="Título principal del producto" :error="errors.h1" />
                     </FormFieldsContainer>
 
@@ -65,6 +65,10 @@
                     <FormFieldsContainer>
                         <FormTextareaField v-model="formData.podcast" id="podcast" label="Podcast"
                             placeholder="Escribe el iframe del podcast del tour" :error="errors.podcast" />
+                    </FormFieldsContainer>
+                    <FormFieldsContainer>
+                        <FormTextField v-model="formData.producto_anterior" id="producto_anterior" label="Producto Anterior"
+                            placeholder="Escribe el código del producto anterior" :error="errors.producto_anterior" />
                     </FormFieldsContainer>
                 </div>
             </template>
@@ -342,6 +346,7 @@ const formData = ref({
     meta_descripcion: '',
     precio_total: 0,
     estado: true,
+    producto_anterior: '',
     segmentos_excluidos: [],
     secciones: [],
     itinerario: []
