@@ -35,7 +35,94 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Nombre del producto y código Newton son requeridos' }
     }
 
+    // Separar el cod_newton del formato "operador_id/cod_newton" (ej: "3/5532")
+    let codNewtonFinal = cod_newton;
+    let operadorId: number | null = null;
+
+    if (typeof cod_newton === 'string' && cod_newton.includes('/')) {
+      const [operador, codigo] = cod_newton.split('/');
+      if (operador && codigo) {
+        operadorId = parseInt(operador);
+        codNewtonFinal = codigo;
+      }
+    }
+
     await pool.query('BEGIN');
+
+    // Verificar si existe en producto_newton usando tour_id y operador separados
+    const checkProductoNewton = await pool.query(
+      'SELECT * FROM producto_newton WHERE tour_id = $1 AND operador = $2',
+      [codNewtonFinal, operadorId]
+    );
+
+    // Si no existe en producto_newton, hacer fetch a la API
+    if (checkProductoNewton.rows.length === 0) {
+      try {
+        const apiUrl = `https://vietur.com.ar/api/api-tour/${cod_newton}?tokenAgency=a4e78623bb9e3bb8e0e06c89be90e72a&token=6ff20176e662661d5f1577bc9b3e02fa&currency=US&simplified=1`;
+        
+        const response = await fetch(apiUrl);
+        
+        if (!response.ok) {
+          await pool.query('ROLLBACK');
+          return { 
+            success: false, 
+            message: `Error al obtener información del producto Newton: ${response.statusText}` 
+          };
+        }
+
+        const productoNewtonData = await response.json();
+
+        // Insertar en producto_newton con todos los campos de la API
+        const insertProductoNewton = `
+          INSERT INTO producto_newton (
+            tour_id,
+            name,
+            duration_days,
+            duration_nights,
+            date_from,
+            date_untill,
+            price_from,
+            price_from_original,
+            moneda,
+            operador,
+            featured,
+            recomended,
+            main_image,
+            start_city,
+            end_city,
+            departure_month
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+          RETURNING *;
+        `;
+        
+        await pool.query(insertProductoNewton, [
+          codNewtonFinal,
+          productoNewtonData.data.name || '',
+          productoNewtonData.data.durationDays || null,
+          productoNewtonData.data.durationNights || null,
+          productoNewtonData.data.firstDeparture || null,
+          productoNewtonData.data.lastDeparture || null,
+          productoNewtonData.data.priceFrom.newAmount || null,
+          productoNewtonData.data.priceFrom.amountOriginal || null,
+          productoNewtonData.data.currency.code || null,
+          operadorId,
+          productoNewtonData.data.featured || false,
+          productoNewtonData.data.recommended || false,
+          productoNewtonData.data.main_image || null,
+          productoNewtonData.data.start_city || null,
+          productoNewtonData.data.end_city || null,
+          productoNewtonData.data.departure_month || null
+        ]);
+
+      } catch (fetchError) {
+        await pool.query('ROLLBACK');
+        console.error('Error al hacer fetch de producto Newton:', fetchError);
+        return { 
+          success: false, 
+          message: 'Error al obtener información del producto Newton desde la API' 
+        };
+      }
+    }
 
     const query = `
       INSERT INTO productos (
@@ -70,7 +157,7 @@ export default defineEventHandler(async (event) => {
       video_mapa_mobile || '',
       video_mapa_desktop || '',
       podcast || '',
-      cod_newton,
+      codNewtonFinal,
       url || '',
       cantidad_estrellas || 5,
       cantidadAport || 0,
