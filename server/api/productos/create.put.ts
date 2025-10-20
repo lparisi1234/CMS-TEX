@@ -95,6 +95,25 @@ export default defineEventHandler(async (event) => {
           RETURNING *;
         `;
         
+        // Extraer primera y última ciudad del itinerario
+        const itinerary = productoNewtonData.data.itinerary || [];
+        let startCity = null;
+        let endCity = null;
+
+        if (itinerary.length > 0) {
+          // Obtener la primera ciudad del primer día
+          const firstDay = itinerary[0];
+          if (firstDay.cities && firstDay.cities.length > 0) {
+            startCity = firstDay.cities[0].id;
+          }
+
+          // Obtener la última ciudad del último día
+          const lastDay = itinerary[itinerary.length - 1];
+          if (lastDay.cities && lastDay.cities.length > 0) {
+            endCity = lastDay.cities[lastDay.cities.length - 1].id;
+          }
+        }
+
         await pool.query(insertProductoNewton, [
           codNewtonFinal,
           productoNewtonData.data.name || '',
@@ -108,10 +127,10 @@ export default defineEventHandler(async (event) => {
           operadorId,
           productoNewtonData.data.featured || false,
           productoNewtonData.data.recommended || false,
-          productoNewtonData.data.main_image || null,
-          productoNewtonData.data.start_city || null,
-          productoNewtonData.data.end_city || null,
-          productoNewtonData.data.departure_month || null
+          productoNewtonData.data.allImages[0].url || null,
+          startCity,
+          endCity,
+          productoNewtonData.data.firstDeparture || null
         ]);
 
       } catch (fetchError) {
