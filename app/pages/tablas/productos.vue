@@ -22,7 +22,7 @@
                     class="flex justify-between items-center bg-white border rounded-lg shadow-sm p-4">
                     <div>
                         <p class="font-semibold">{{ producto.nombreprod }}</p>
-                        <p class="text-sm text-gray-dark">Código Newton: {{ producto.cod_newton }}</p>
+                        <p class="text-sm text-gray-dark">Código Newton: {{producto.operador}}/{{ producto.cod_newton }}</p>
                     </div>
                     <div class="flex gap-2">
                         <button @click="handleEdit(producto)" class="bg-secondary text-light rounded text-sm px-3 py-2">
@@ -71,13 +71,34 @@ onMounted(() => {
 const filteredProductos = computed(() => {
     if (!searchCodigoNewton.value) return []
 
-    const searchValue = searchCodigoNewton.value.toString().toLowerCase()
+    const searchValue = searchCodigoNewton.value.toString().trim()
 
+    // Verificar si el formato incluye operador/codigo (ej: 3/2500096)
+    if (searchValue.includes('/')) {
+        const parts = searchValue.split('/')
+        if (parts.length === 2) {
+            const operadorBuscado = parts[0].toLowerCase()
+            const codigoBuscado = parts[1].toLowerCase()
+
+            return productos.value.filter(producto => {
+                const operador = producto.operador?.toString().toLowerCase() || ''
+                const codigoNewton = producto.cod_newton?.toString().toLowerCase() || ''
+
+                return operador.includes(operadorBuscado) && codigoNewton.includes(codigoBuscado)
+            })
+        }
+    }
+
+    // Búsqueda normal por código Newton o nombre
+    const searchValueLower = searchValue.toLowerCase()
     return productos.value.filter(producto => {
         const codigoNewton = producto.cod_newton?.toString().toLowerCase() || ''
         const nombre = producto.nombreprod?.toLowerCase() || ''
+        const operador = producto.operador?.toString().toLowerCase() || ''
 
-        return codigoNewton.includes(searchValue) || nombre.includes(searchValue)
+        return codigoNewton.includes(searchValueLower) || 
+               nombre.includes(searchValueLower) ||
+               operador.includes(searchValueLower)
     })
 })
 

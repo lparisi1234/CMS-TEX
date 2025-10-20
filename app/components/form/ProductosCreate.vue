@@ -263,6 +263,18 @@
                 </div>
             </template>
         </TabsLayout>
+        <div class="w-full flex items-center gap-4">
+            <ButtonPrimary @click="handleRecachear" type="button" :disabled="isRecacheando || !props.isEditing" class="!bg-secondary">
+                <span v-if="!isRecacheando">Recachear producto</span>
+                <span v-else class="flex items-center gap-2">
+                    <Icon name="tabler:loader-2" class="animate-spin" />
+                    Recacheando...
+                </span>
+            </ButtonPrimary>
+            <span v-if="recacheSuccess" class="text-dark font-medium">
+                Producto actualizado
+            </span>
+        </div>
 
         <div class="flex justify-center items-center flex-wrap gap-8 mt-3">
             <ButtonPrimary @click="$emit('cancel')" class="!bg-gray-mid !text-dark">
@@ -375,6 +387,8 @@ const tabs = [
 
 const errors = ref({})
 const isSubmitting = ref(false)
+const isRecacheando = ref(false)
+const recacheSuccess = ref(false)
 
 const segmentosOptions = computed(() =>
     segmentosData.value.map(s => ({
@@ -624,6 +638,52 @@ const closeDestacadosModal = () => {
 const handleDestacadosModalBackgroundClick = (event) => {
     if (event.target === event.currentTarget) {
         cancelDestacadosModal()
+    }
+}
+
+const handleRecachear = async () => {
+    if (!props.isEditing || !props.productId) {
+        error('Debe estar editando un producto para recachearlo')
+        return
+    }
+
+    isRecacheando.value = true
+    recacheSuccess.value = false
+
+    try {
+        // TODO: Conectar con el endpoint /api/productos/recachear/${props.productId}
+        await new Promise(resolve => setTimeout(resolve, 2000)) // Simular delay de 2 segundos
+
+        // Simular respuesta exitosa
+        recacheSuccess.value = true
+        success('Producto recacheado correctamente')
+
+        // Ocultar el mensaje después de 3 segundos
+        setTimeout(() => {
+            recacheSuccess.value = false
+        }, 3000)
+
+        /* Código para cuando esté el endpoint:
+        const response = await $fetch(`/api/productos/recachear/${props.productId}`, {
+            method: 'POST'
+        })
+
+        if (response && response.success) {
+            recacheSuccess.value = true
+            success('Producto recacheado correctamente')
+
+            setTimeout(() => {
+                recacheSuccess.value = false
+            }, 3000)
+        } else {
+            throw new Error(response?.message || 'Error al recachear el producto')
+        }
+        */
+    } catch (err) {
+        console.error('Error al recachear producto:', err)
+        error('Error al recachear el producto')
+    } finally {
+        isRecacheando.value = false
     }
 }
 
