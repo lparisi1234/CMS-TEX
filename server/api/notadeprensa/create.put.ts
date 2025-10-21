@@ -4,9 +4,15 @@ export default defineEventHandler(async (event) => {
     try {
     const pool = await getDbPool()
 
-    const { descripcion, img, estado, url } = await readBody(event)
+    const { descripcion, img, estado, url, nro_orden } = await readBody(event)
 
-    if (!descripcion || !img || !estado) {
+    if (
+      descripcion === undefined || 
+      img === undefined || 
+      estado === undefined || 
+      url === undefined || 
+      nro_orden === undefined
+    ) {
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
@@ -25,7 +31,8 @@ export default defineEventHandler(async (event) => {
      descripcion,
       img,
       url,
-      estado
+      estado,
+      nro_orden
     ];
 
     const result = await pool.query(query, values)
