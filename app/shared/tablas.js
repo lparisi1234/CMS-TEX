@@ -905,7 +905,14 @@ const tablas = {
                     key: 'img',
                     label: 'Imagen',
                     type: 'image',
-                    size: '300px x 80px',
+                    size: '330px x 420px',
+                    required: true
+                },
+                {
+                    key: 'img-prensa',
+                    label: 'Imagen prensa',
+                    type: 'image',
+                    size: '150px x 50px',
                     required: true
                 },
                 {
@@ -965,15 +972,10 @@ const tablas = {
                     type: 'number'
                 },
                 {
-                    key: 'estado',
-                    label: 'Estado',
-                    type: 'boolean',
+                    key: 'url',
+                    label: 'Url',
+                    type: 'text',
                     required: true
-                },
-                {
-                    key: 'destacado_home',
-                    label: 'Destacado Home',
-                    type: 'boolean'
                 },
                 {
                     key: 'destino_id',
@@ -986,6 +988,17 @@ const tablas = {
                     label: 'Categoría',
                     type: 'select',
                     relatedTable: 'categorias'
+                },
+                {
+                    key: 'estado',
+                    label: 'Estado',
+                    type: 'boolean',
+                    required: true
+                },
+                {
+                    key: 'destacado_home',
+                    label: 'Destacado Home',
+                    type: 'boolean'
                 },
             ]
         },
@@ -1020,7 +1033,7 @@ const tablas = {
         {
             name: 'Personalizar',
             slug: 'personalizar',
-            endpoint: 'traducciones/traducciones',  
+            endpoint: 'traducciones/traducciones',
             botonTexto: 'Crear nueva traducción',
             showInNav: false,
             columns: [
