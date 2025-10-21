@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
       !autor ||
       !img ||
       !fecha ||
-      !estado ||
+      estado === undefined ||
       !titulo ||
       destacado_home === undefined ||
       !destino_id
