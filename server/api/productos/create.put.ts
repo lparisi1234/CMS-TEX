@@ -55,10 +55,13 @@ export default defineEventHandler(async (event) => {
       [codNewtonFinal, operadorId]
     );
 
+    
+    let productoNewtonData = null;
+
     // Si no existe en producto_newton, hacer fetch a la API
     if (checkProductoNewton.rows.length === 0) {
       try {
-        const apiUrl = `https://vietur.com.ar/api/api-tour/${cod_newton}?tokenAgency=a4e78623bb9e3bb8e0e06c89be90e72a&token=6ff20176e662661d5f1577bc9b3e02fa&currency=US&simplified=1`;
+        const apiUrl = `https://preprod.vietur.com.ar/api/api-tour/${cod_newton}?token=6ff20176e662661d5f1577bc9b3e02fa&currency=USD&simplified=1`;
         
         const response = await fetch(apiUrl);
         
@@ -70,7 +73,7 @@ export default defineEventHandler(async (event) => {
           };
         }
 
-        const productoNewtonData = await response.json();
+        productoNewtonData = await response.json();
 
         // Insertar en producto_newton con todos los campos de la API
         const insertProductoNewton = `
@@ -90,13 +93,15 @@ export default defineEventHandler(async (event) => {
             main_image,
             start_city,
             end_city,
-            departure_month
+            departure_month,
+            included
           ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
           RETURNING *;
         `;
         
         // Extraer primera y última ciudad del itinerario
         const itinerary = productoNewtonData.data.itinerary || [];
+        
         let startCity = null;
         let endCity = null;
 
@@ -130,34 +135,11 @@ export default defineEventHandler(async (event) => {
           productoNewtonData.data.allImages[0].url || null,
           startCity,
           endCity,
-          productoNewtonData.data.firstDeparture || null
+          productoNewtonData.data.firstDeparture || null,
+          productoNewtonData.data.included || ''
         ]);
 
-        // Insertar itinerarios en itinerario_newton
-        if (itinerary.length > 0) {
-          const insertItinerario = `
-            INSERT INTO itinerario_newton (
-              producto_id,
-              nro_dia,
-              titulo,
-              texto
-            ) VALUES ($1, $2, $3, $4);
-          `;
-
-          for (const dia of itinerary) {
-            // Crear el título con los nombres de las ciudades
-            const ciudadesNombres = dia.cities && dia.cities.length > 0 
-              ? dia.cities.map((city: any) => city.name).join(' , ')
-              : '';
-
-            await pool.query(insertItinerario, [
-              codNewtonFinal,
-              dia.day,
-              ciudadesNombres,
-              dia.description || ''
-            ]);
-          }
-        }
+        
 
       } catch (fetchError) {
         await pool.query('ROLLBACK');
@@ -167,6 +149,8 @@ export default defineEventHandler(async (event) => {
           message: 'Error al obtener información del producto Newton desde la API' 
         };
       }
+    } else {
+      
     }
 
     const query = `
@@ -248,6 +232,57 @@ export default defineEventHandler(async (event) => {
         }
       }
     }
+
+      try {
+        const itinerary = productoNewtonData.data.itinerary || [];
+        // Convertir cities a array si viene como objeto
+        const citiesData = productoNewtonData.data.cities || [];
+        const cities = Array.isArray(citiesData) ? citiesData : Object.values(citiesData);
+
+        // Insertar itinerarios en itinerario_newton
+        if (itinerary.length > 0) {
+          const insertItinerario = `
+            INSERT INTO itinerario_newton (
+              producto_id,
+              nro_dia,
+              titulo,
+              texto
+            ) VALUES ($1, $2, $3, $4);
+          `;
+
+          for (const dia of itinerary) {
+            // Crear el título con los nombres de las ciudades
+            const ciudadesNombres = dia.cities && dia.cities.length > 0 
+              ? dia.cities.map((city: any) => city.name).join(' , ')
+              : '';
+
+            await pool.query(insertItinerario, [
+              codNewtonFinal,
+              dia.day,
+              ciudadesNombres,
+              dia.description || ''
+            ]);
+          }
+        }
+
+      
+          const insertCiudadTour = `
+            INSERT INTO ciudades_tour (tour_id, ciudades_newton_id) 
+            VALUES ($1, $2)
+          `;
+
+          for (const city of cities) {
+            console.log('Insertando ciudad para tour:', codNewtonFinal, city.id);
+            if (city.id) {
+              await pool.query(insertCiudadTour, [codNewtonFinal, city.id]);
+            }
+          }
+        
+      } catch (error) {
+        console.error('Error insertando itinerarios y ciudades:', error);
+        // No hacemos rollback aquí porque el producto principal ya se creó
+      }
+    
 
     await pool.query('COMMIT');
 
