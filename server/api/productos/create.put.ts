@@ -133,6 +133,32 @@ export default defineEventHandler(async (event) => {
           productoNewtonData.data.firstDeparture || null
         ]);
 
+        // Insertar itinerarios en itinerario_newton
+        if (itinerary.length > 0) {
+          const insertItinerario = `
+            INSERT INTO itinerario_newton (
+              producto_id,
+              nro_dia,
+              titulo,
+              texto
+            ) VALUES ($1, $2, $3, $4);
+          `;
+
+          for (const dia of itinerary) {
+            // Crear el título con los nombres de las ciudades
+            const ciudadesNombres = dia.cities && dia.cities.length > 0 
+              ? dia.cities.map((city: any) => city.name).join(' - ')
+              : '';
+
+            await pool.query(insertItinerario, [
+              codNewtonFinal,
+              dia.day,
+              ciudadesNombres,
+              dia.description || ''
+            ]);
+          }
+        }
+
       } catch (fetchError) {
         await pool.query('ROLLBACK');
         console.error('Error al hacer fetch de producto Newton:', fetchError);
