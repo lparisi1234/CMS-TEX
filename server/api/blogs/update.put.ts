@@ -24,10 +24,6 @@ export default defineEventHandler(async (event) => {
       fecha === undefined ||
       estado === undefined ||
       titulo === undefined ||
-      destacado_home === undefined ||
-      categoria_id === undefined ||
-      nro_orden === undefined ||
-      destino_id === undefined ||
       url === undefined
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
@@ -52,7 +48,7 @@ export default defineEventHandler(async (event) => {
         destacado_home = $6,
         categoria_id = $7,
         destino_id = $8,
-        nro_orden = $9
+        nro_orden = $9,
         url = $10
       WHERE id = $11
       RETURNING *;

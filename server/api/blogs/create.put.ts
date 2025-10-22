@@ -23,8 +23,6 @@ export default defineEventHandler(async (event) => {
       !fecha ||
       estado === undefined ||
       !titulo ||
-      destacado_home === undefined ||
-      !destino_id ||
       !url
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
