@@ -909,7 +909,7 @@ const tablas = {
                     required: true
                 },
                 {
-                    key: 'img-prensa',
+                    key: 'img_prensa',
                     label: 'Imagen prensa',
                     type: 'image',
                     size: '150px x 50px',
