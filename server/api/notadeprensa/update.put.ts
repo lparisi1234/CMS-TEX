@@ -9,7 +9,8 @@ export default defineEventHandler(async (event) => {
       img,
       url,
       nro_orden,
-      estado
+      estado,
+      img_prensa
     } = await readBody(event)
 
     if (
@@ -18,7 +19,8 @@ export default defineEventHandler(async (event) => {
       img === undefined ||
       url === undefined ||
       nro_orden === undefined ||
-      estado === undefined
+      estado === undefined ||
+      img_prensa === undefined
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
     }
@@ -36,8 +38,9 @@ export default defineEventHandler(async (event) => {
         img = $2,
         url = $3,
         estado = $4,
-        nro_orden = $5
-      WHERE id = $6
+        nro_orden = $5,
+        img_prensa = $6
+      WHERE id = $7
       RETURNING *;
     `;
 
@@ -47,6 +50,7 @@ export default defineEventHandler(async (event) => {
       url,
       estado,
       nro_orden,
+      img_prensa,
       id
     ];
 
