@@ -126,7 +126,7 @@ export default defineEventHandler(async (event) => {
           productoNewtonData.data.durationNights || null,
           productoNewtonData.data.firstDeparture || null,
           productoNewtonData.data.lastDeparture || null,
-          productoNewtonData.data.priceFrom.newAmount || null,
+          productoNewtonData.data.priceFrom.amount || null,
           productoNewtonData.data.priceFrom.amountOriginal || null,
           productoNewtonData.data.currency.code || null,
           operadorId,
@@ -253,7 +253,7 @@ export default defineEventHandler(async (event) => {
           for (const dia of itinerary) {
             // Crear el título con los nombres de las ciudades
             const ciudadesNombres = dia.cities && dia.cities.length > 0 
-              ? dia.cities.map((city: any) => city.name).join(' , ')
+              ? dia.cities.map((city: any) => city.name).join(',')
               : '';
 
             await pool.query(insertItinerario, [
