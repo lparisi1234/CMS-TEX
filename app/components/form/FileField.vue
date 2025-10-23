@@ -73,6 +73,10 @@ const props = defineProps({
     acceptedTypes: {
         type: Array,
         default: () => ['pdf', 'doc', 'docx']
+    },
+    targetFolder: {
+        type: String,
+        required: true
     }
 })
 
@@ -157,7 +161,7 @@ const processFile = async (file) => {
         fileSize.value = formatFileSize(file.size)
         fileType.value = file.name.split('.').pop()?.toLowerCase() || ''
 
-        await simulateUpload(file)
+        await handlePdfUpload(file)
 
         if (showError.value) {
             showError.value = false
@@ -169,21 +173,38 @@ const processFile = async (file) => {
     }
 }
 
-const simulateUpload = async (file) => {
+const handlePdfUpload = async (file) => {
     uploading.value = true
     uploadProgress.value = 0
 
-    const interval = setInterval(() => {
-        uploadProgress.value += 10
-        if (uploadProgress.value >= 100) {
-            clearInterval(interval)
-            uploading.value = false
+    try {
+        const formData = new FormData()
+        formData.append('file', file)
+        formData.append('targetFolder', props.targetFolder)
 
-            const fileUrl = URL.createObjectURL(file)
-            emit('update:modelValue', fileUrl)
-            emit('upload-complete', fileUrl)
-        }
-    }, 100)
+        const response = await $fetch('/api/upload-file', {
+            method: 'POST',
+            body: formData
+        })
+
+        const interval = setInterval(() => {
+            uploadProgress.value += 20
+            if (uploadProgress.value >= 100) {
+                clearInterval(interval)
+                uploading.value = false
+
+                const fileUrl = response.s3Url
+                emit('update:modelValue', fileUrl)
+                emit('upload-complete', fileUrl)
+            }
+        }, 200)
+
+    } catch (error) {
+        uploading.value = false
+        uploadProgress.value = 0
+        emit('upload-error', error.message)
+        throw error
+    }
 }
 
 const removeFile = () => {
