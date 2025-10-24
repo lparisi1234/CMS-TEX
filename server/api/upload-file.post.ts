@@ -1,0 +1,70 @@
+import { exec } from 'child_process'
+import { promisify } from 'util'
+import { writeFile, unlink } from 'fs/promises'
+import { join } from 'path'
+import { tmpdir } from 'os'
+
+const execAsync = promisify(exec)
+
+export default defineEventHandler(async (event) => {
+  if (getMethod(event) !== 'POST') {
+    throw createError({
+      statusCode: 405,
+      statusMessage: 'Method Not Allowed'
+    })
+  }
+
+  try {
+    const formData = await readMultipartFormData(event)
+    const pdfFile = formData?.find(field => field.name === 'file')
+
+    if (!pdfFile) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'No se encontró archivo PDF'
+      })
+    }
+
+    const fileName = pdfFile.filename || 'default.pdf'
+    const tempFilePath = join(tmpdir(), fileName)
+
+    await writeFile(tempFilePath, pdfFile.data)
+
+    const bucketName = 'tex2-static-images-prd'
+    const s3Key = `pdf/${fileName}`
+    const s3Url = `s3://${bucketName}/${s3Key}`
+    
+    const command = `aws s3 cp "${tempFilePath}" "${s3Url}"`
+
+    const { stdout, stderr } = await execAsync(command)
+
+    await unlink(tempFilePath).catch(console.error)
+
+    if (stderr && !stderr.includes('upload:')) {
+      console.error('Error en AWS CLI:', stderr)
+      throw createError({
+        statusCode: 500,
+        statusMessage: `Error al subir a S3: ${stderr}`
+      })
+    }
+
+    const objectUrl = `https://${bucketName}.s3.us-east-1.amazonaws.com/${s3Key}`
+
+    return {
+      success: true,
+      message: 'Archivo subido exitosamente',
+      s3Url: objectUrl,
+      fileName: fileName,
+      stdout: stdout
+    }
+
+  } catch (error) {
+    const typedError = error as { statusCode?: number; statusMessage?: string }
+    console.error('Error en upload-file:', error)
+    
+    throw createError({
+      statusCode: typedError.statusCode || 500,
+      statusMessage: typedError.statusMessage || 'Error interno del servidor'
+    })
+  }
+})

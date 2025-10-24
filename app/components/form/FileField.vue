@@ -178,9 +178,10 @@ const handlePdfUpload = async (file) => {
     uploadProgress.value = 0
 
     try {
+        uploading.value = true
+        
         const formData = new FormData()
         formData.append('file', file)
-        formData.append('targetFolder', props.targetFolder)
 
         const response = await $fetch('/api/upload-file', {
             method: 'POST',
@@ -201,9 +202,7 @@ const handlePdfUpload = async (file) => {
 
     } catch (error) {
         uploading.value = false
-        uploadProgress.value = 0
-        emit('upload-error', error.message)
-        throw error
+        console.error('Error uploading file:', error)
     }
 }
 
