@@ -885,6 +885,13 @@ const tablas = {
                     type: 'select',
                     relatedTable: 'destinos',
                     required: true
+                },
+                {
+                    key: 'operador_id',
+                    label: 'Operador',
+                    type: 'select',
+                    relatedTable: 'operadores',
+                    required: true
                 }
             ]
         },
