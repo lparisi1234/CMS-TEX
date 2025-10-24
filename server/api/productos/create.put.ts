@@ -119,6 +119,14 @@ export default defineEventHandler(async (event) => {
           }
         }
 
+        // Seleccionar una imagen aleatoria del array allImages
+        const allImages = productoNewtonData.data.allImages || [];
+        let randomImageUrl = null;
+        if (allImages.length > 0) {
+          const randomIndex = Math.floor(Math.random() * allImages.length);
+          randomImageUrl = allImages[randomIndex].url;
+        }
+
         await pool.query(insertProductoNewton, [
           codNewtonFinal,
           productoNewtonData.data.name || '',
@@ -132,11 +140,11 @@ export default defineEventHandler(async (event) => {
           operadorId,
           productoNewtonData.data.featured || false,
           productoNewtonData.data.recommended || false,
-          productoNewtonData.data.allImages[0].url || null,
+          randomImageUrl,
           startCity,
           endCity,
           productoNewtonData.data.firstDeparture || null,
-          productoNewtonData.data.included || ''
+          productoNewtonData.data.included || '',
         ]);
 
         
@@ -272,9 +280,19 @@ export default defineEventHandler(async (event) => {
           `;
 
           for (const city of cities) {
-            console.log('Insertando ciudad para tour:', codNewtonFinal, city.id);
             if (city.id) {
-              await pool.query(insertCiudadTour, [codNewtonFinal, city.id]);
+              // Verificar si la ciudad existe en ciudades antes de insertar
+              const ciudadExiste = await pool.query(
+                'SELECT id FROM ciudades WHERE cod_newton = $1',
+                [city.id]
+              );
+              
+              if (ciudadExiste.rows.length > 0) {
+                console.log('Insertando ciudad para tour:', codNewtonFinal, city.id);
+                await pool.query(insertCiudadTour, [codNewtonFinal, city.id]);
+              } else {
+                console.log('Ciudad no encontrada en ciudades_newton, omitiendo:', city.id);
+              }
             }
           }
         

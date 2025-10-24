@@ -38,6 +38,18 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'ID, nombre del producto y código Newton son requeridos' }
     }
 
+    // Separar el cod_newton del formato "operador_id/cod_newton" (ej: "3/2500021")
+    let codNewtonFinal = cod_newton;
+    let operadorId: number | null = null;
+
+    if (typeof cod_newton === 'string' && cod_newton.includes('/')) {
+      const [operador, codigo] = cod_newton.split('/');
+      if (operador && codigo) {
+        operadorId = parseInt(operador);
+        codNewtonFinal = codigo;
+      }
+    }
+
     const oldResult = await pool.query('SELECT img, imagen_mobile FROM productos WHERE id = $1', [id])
     const oldProducto = oldResult.rows[0]
     
@@ -80,7 +92,7 @@ export default defineEventHandler(async (event) => {
       video_mapa_mobile || '',
       video_mapa_desktop || '',
       podcast || '',
-      cod_newton,
+      codNewtonFinal,
       url || '',
       cantidad_estrellas || 5,
       cantidadAport || 0,
