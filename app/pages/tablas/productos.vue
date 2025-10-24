@@ -22,7 +22,7 @@
                     class="flex justify-between items-center bg-white border rounded-lg shadow-sm p-4">
                     <div>
                         <p class="font-semibold">{{ producto.nombreprod }}</p>
-                        <p class="text-sm text-gray-dark">Código Newton: {{producto.operador}}/{{ producto.cod_newton }}</p>
+                        <p class="text-sm text-gray-dark">Código Newton: {{ producto.cod_newton }}</p>
                     </div>
                     <div class="flex gap-2">
                         <button @click="handleEdit(producto)" class="bg-secondary text-light rounded text-sm px-3 py-2">
