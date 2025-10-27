@@ -40,6 +40,8 @@
 </template>
 
 <script setup>
+import { IMAGES_URL } from '~/constants/IMAGES'
+
 const props = defineProps({
     modelValue: {
         type: String,
