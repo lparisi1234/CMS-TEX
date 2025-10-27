@@ -35,7 +35,6 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Nombre del producto y código Newton son requeridos' }
     }
 
-    // Separar el cod_newton del formato "operador_id/cod_newton" (ej: "3/5532")
     let codNewtonFinal = cod_newton;
     let operadorId: number | null = null;
 
@@ -49,7 +48,6 @@ export default defineEventHandler(async (event) => {
 
     await pool.query('BEGIN');
 
-    // Verificar si existe en producto_newton usando tour_id y operador separados
     const checkProductoNewton = await pool.query(
       'SELECT * FROM producto_newton WHERE tour_id = $1 AND operador = $2',
       [codNewtonFinal, operadorId]
@@ -58,7 +56,6 @@ export default defineEventHandler(async (event) => {
     
     let productoNewtonData = null;
 
-    // Si no existe en producto_newton, hacer fetch a la API
     if (checkProductoNewton.rows.length === 0) {
       try {
         const apiUrl = `https://preprod.vietur.com.ar/api/api-tour/${cod_newton}?token=6ff20176e662661d5f1577bc9b3e02fa&currency=USD&simplified=1`;
@@ -75,7 +72,6 @@ export default defineEventHandler(async (event) => {
 
         productoNewtonData = await response.json();
 
-        // Insertar en producto_newton con todos los campos de la API
         const insertProductoNewton = `
           INSERT INTO producto_newton (
             tour_id,
@@ -99,27 +95,23 @@ export default defineEventHandler(async (event) => {
           RETURNING *;
         `;
         
-        // Extraer primera y última ciudad del itinerario
         const itinerary = productoNewtonData.data.itinerary || [];
         
         let startCity = null;
         let endCity = null;
 
         if (itinerary.length > 0) {
-          // Obtener la primera ciudad del primer día
           const firstDay = itinerary[0];
           if (firstDay.cities && firstDay.cities.length > 0) {
             startCity = firstDay.cities[0].id;
           }
 
-          // Obtener la última ciudad del último día
           const lastDay = itinerary[itinerary.length - 1];
           if (lastDay.cities && lastDay.cities.length > 0) {
             endCity = lastDay.cities[lastDay.cities.length - 1].id;
           }
         }
 
-        // Seleccionar una imagen aleatoria del array allImages
         const allImages = productoNewtonData.data.allImages || [];
         let randomImageUrl = null;
         if (allImages.length > 0) {
@@ -243,11 +235,9 @@ export default defineEventHandler(async (event) => {
 
       try {
         const itinerary = productoNewtonData.data.itinerary || [];
-        // Convertir cities a array si viene como objeto
         const citiesData = productoNewtonData.data.cities || [];
         const cities = Array.isArray(citiesData) ? citiesData : Object.values(citiesData);
 
-        // Insertar itinerarios en itinerario_newton
         if (itinerary.length > 0) {
           const insertItinerario = `
             INSERT INTO itinerario_newton (
@@ -263,7 +253,6 @@ export default defineEventHandler(async (event) => {
             const ciudadesNombres = dia.cities && dia.cities.length > 0 
               ? dia.cities
                   .map((city: any) => {
-                    // Normalizar el nombre: primera letra mayúscula, resto minúsculas
                     const nombre = city.name || '';
                     return nombre
                       .toLowerCase()
@@ -291,7 +280,6 @@ export default defineEventHandler(async (event) => {
 
           for (const city of cities) {
             if (city.id) {
-              // Verificar si la ciudad existe en ciudades antes de insertar
               const ciudadExiste = await pool.query(
                 'SELECT id FROM ciudades WHERE cod_newton = $1',
                 [city.id]

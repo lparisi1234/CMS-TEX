@@ -2,7 +2,7 @@ import getDbPool from "../../db"
 
 export default defineEventHandler(async (event) => {
   const pool = await getDbPool();
-  
+
   try {
     const {
       id,
@@ -38,7 +38,6 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'ID, nombre del producto y código Newton son requeridos' }
     }
 
-    // Separar el cod_newton del formato "operador_id/cod_newton" (ej: "3/2500021")
     let codNewtonFinal = cod_newton;
     let operadorId: number | null = null;
 
@@ -52,7 +51,7 @@ export default defineEventHandler(async (event) => {
 
     const oldResult = await pool.query('SELECT img, imagen_mobile FROM productos WHERE id = $1', [id])
     const oldProducto = oldResult.rows[0]
-    
+
     if (!oldProducto) {
       return { success: false, message: 'Producto no encontrado' }
     }
@@ -112,7 +111,7 @@ export default defineEventHandler(async (event) => {
       await pool.query('ROLLBACK');
       return { success: false, message: 'No se encontró el producto para modificar' }
     }
-    
+
     const queryDeleteSegmentos = `
       DELETE FROM segmentos_productos
       WHERE producto_id = $1;
@@ -135,17 +134,17 @@ export default defineEventHandler(async (event) => {
     await pool.query(queryDeleteSecciones, [id]);
 
     const seccionesArray = Array.isArray(secciones) ? secciones : (secciones ? [secciones] : []);
-    
+
     if (seccionesArray.length > 0) {
       for (const seccion of seccionesArray) {
         if (seccion.seccion_id && seccion.segmentos_excluidos && Array.isArray(seccion.segmentos_excluidos) && seccion.segmentos_excluidos.length > 0) {
           const segmentosArray = seccion.segmentos_excluidos.map((seg: any) => parseInt(seg));
-          
+
           const querySeccionesProd = `
             INSERT INTO secciones_prod (seccion_id, producto_id, segmentos_id) 
             VALUES ($1, $2, $3);
           `;
-          
+
           await pool.query(querySeccionesProd, [
             parseInt(seccion.seccion_id),
             id,
@@ -154,23 +153,23 @@ export default defineEventHandler(async (event) => {
         }
       }
     }
-/*
-    // Eliminar itinerario existente y agregar el nuevo
-    const queryDeleteItinerario = `
-      DELETE FROM itinerario
-      WHERE producto_id = $1;
-    `;
-    await client.query(queryDeleteItinerario, [id]);
-*/
+    /*
+        // Eliminar itinerario existente y agregar el nuevo
+        const queryDeleteItinerario = `
+          DELETE FROM itinerario
+          WHERE producto_id = $1;
+        `;
+        await client.query(queryDeleteItinerario, [id]);
+    */
     if (itinerario && Array.isArray(itinerario) && itinerario.length > 0) {
       const queryInsertItinerario = `
         INSERT INTO itinerario (producto_id, nro_dia, titulo, texto) VALUES ($1, $2, $3, $4);
       `;
       for (const item of itinerario) {
         await pool.query(queryInsertItinerario, [
-          id, 
-          item.nro_dia || 1, 
-          item.titulo || '', 
+          id,
+          item.nro_dia || 1,
+          item.titulo || '',
           item.texto || ''
         ]);
       }
@@ -180,13 +179,13 @@ export default defineEventHandler(async (event) => {
 
     const deleteImageFromS3 = async (imageUrl: string) => {
       if (!imageUrl) return
-      
+
       try {
         const deleteResponse = await $fetch('/api/delete-image', {
           method: 'POST',
           body: { imageUrl }
         }) as { success: boolean }
-        
+
         if (!deleteResponse.success) {
           console.warn('No se pudo eliminar la imagen anterior de S3:', imageUrl)
         }
@@ -200,10 +199,10 @@ export default defineEventHandler(async (event) => {
       oldProducto.imagen_mobile !== imagen_mobile ? deleteImageFromS3(oldProducto.imagen_mobile) : Promise.resolve()
     ])
 
-    return { 
-      success: true, 
-      message: 'Producto modificado correctamente', 
-      producto: { ...result.rows[0], segmentos_excluidos, itinerario } 
+    return {
+      success: true,
+      message: 'Producto modificado correctamente',
+      producto: { ...result.rows[0], segmentos_excluidos, itinerario }
     }
   } catch (error) {
     await pool.query('ROLLBACK');

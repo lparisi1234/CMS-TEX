@@ -73,7 +73,6 @@ const filteredProductos = computed(() => {
 
     const searchValue = searchCodigoNewton.value.toString().trim()
 
-    // Verificar si el formato incluye operador/codigo (ej: 3/2500096)
     if (searchValue.includes('/')) {
         const parts = searchValue.split('/')
         if (parts.length === 2) {
@@ -89,16 +88,15 @@ const filteredProductos = computed(() => {
         }
     }
 
-    // Búsqueda normal por código Newton o nombre
     const searchValueLower = searchValue.toLowerCase()
     return productos.value.filter(producto => {
         const codigoNewton = producto.cod_newton?.toString().toLowerCase() || ''
         const nombre = producto.nombreprod?.toLowerCase() || ''
         const operador = producto.operador?.toString().toLowerCase() || ''
 
-        return codigoNewton.includes(searchValueLower) || 
-               nombre.includes(searchValueLower) ||
-               operador.includes(searchValueLower)
+        return codigoNewton.includes(searchValueLower) ||
+            nombre.includes(searchValueLower) ||
+            operador.includes(searchValueLower)
     })
 })
 

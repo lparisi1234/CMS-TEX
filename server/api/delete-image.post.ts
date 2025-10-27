@@ -21,9 +21,8 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Ya no necesitamos parsear la URL completa
     const bucketName = 'tex2-static-images-prd'
-    const s3Key = imageUrl // Ahora imageUrl es directamente el s3Key (ej: "categorias/imagen.jpg")
+    const s3Key = imageUrl
 
     const s3Path = `s3://${bucketName}/${s3Key}`
 
@@ -48,7 +47,7 @@ export default defineEventHandler(async (event) => {
 
   } catch (error) {
     console.error('Error eliminando imagen de S3:', error)
-    
+
     throw createError({
       statusCode: 500,
       statusMessage: 'Error eliminando imagen de S3'
