@@ -23,7 +23,12 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
 
     const tabla = findTableBySlug(tablaSlug)
 
-    const getDisplayLabel = (item, tabla) => {
+    const getDisplayLabel = (item, tabla, displayField = null) => {
+        // Si se especifica un displayField, usarlo
+        if (displayField && item[displayField]) {
+            return item[displayField]
+        }
+        
         if (item.nombre) return item.nombre
         if (item.descripcion) return item.descripcion
         if (item.titulo) return item.titulo
@@ -39,7 +44,7 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
         return `Item ${item.id}`
     }
 
-    const getRelatedTableData = async (tableName) => {
+    const getRelatedTableData = async (tableName, valueField = 'id', displayField = null) => {
         try {
             const tabla = findTableBySlug(tableName)
             if (!tabla) {
@@ -51,8 +56,8 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
             const data = response || []
 
             return data.map(item => ({
-                value: String(item.id),
-                label: getDisplayLabel(item, tabla)
+                value: String(item[valueField] || item.id),
+                label: getDisplayLabel(item, tabla, displayField)
             }))
 
         } catch (error) {
@@ -129,7 +134,9 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
                 loadingOptions.value[column.key] = true
 
                 try {
-                    const options = await getRelatedTableData(column.relatedTable)
+                    const valueField = column.valueField || 'id'
+                    const displayField = column.displayField || null
+                    const options = await getRelatedTableData(column.relatedTable, valueField, displayField)
                     selectOptions.value[column.key] = options
                 } catch (error) {
                     console.error(`Error cargando opciones para ${column.key}:`, error)

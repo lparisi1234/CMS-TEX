@@ -891,6 +891,8 @@ const tablas = {
                     label: 'Operador',
                     type: 'select',
                     relatedTable: 'operadores',
+                    displayField: 'nombre',
+                    valueField: 'codigo'
                 }
             ]
         },

@@ -72,8 +72,16 @@ const formatValue = (value, column) => {
     }
 
     if (column.type === 'select' && column.relatedTable && props.relatedData[column.relatedTable]) {
-        const relatedItem = props.relatedData[column.relatedTable].find(item => item.id === value)
+        const valueField = column.valueField || 'id'
+        const relatedItem = props.relatedData[column.relatedTable].find(item => {
+            const itemValue = item[valueField]
+            return itemValue !== null && itemValue !== undefined && itemValue.toString() === value.toString()
+        })
         if (relatedItem) {
+            const displayField = column.displayField
+            if (displayField && relatedItem[displayField]) {
+                return relatedItem[displayField]
+            }
             return relatedItem.nombre || relatedItem.descripcion || relatedItem.titulo || relatedItem.label || relatedItem.h1 || relatedItem.nombreprod || value
         }
         return value
