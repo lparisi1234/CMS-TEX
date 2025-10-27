@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
       comentario,
       estado,
       destacado,
-      producto_Id,
+      producto_id,
       categoria_id,
       destino_id,
       generico
@@ -22,17 +22,23 @@ export default defineEventHandler(async (event) => {
       id === undefined ||
       nombre === undefined ||
       tour === undefined ||
-      img === undefined ||
       rating === undefined ||
       comentario === undefined ||
-      estado === undefined ||
-      destacado === undefined ||
-      producto_Id === undefined ||
-      categoria_id === undefined ||
-      destino_id === undefined ||
-      generico === undefined 
+      estado === undefined
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
+    }
+
+    // Función para convertir valores vacíos a null
+    const parseIntOrNull = (value: any) => {
+      if (value === '' || value === null || value === undefined) return null
+      const parsed = parseInt(value)
+      return isNaN(parsed) ? null : parsed
+    }
+
+    const parseBooleanOrNull = (value: any) => {
+      if (value === '' || value === null || value === undefined) return null
+      return Boolean(value)
     }
 
     const oldResult = await pool.query('SELECT img FROM opinion WHERE id = $1', [id])
@@ -51,26 +57,26 @@ export default defineEventHandler(async (event) => {
         comentario = $5,
         estado = $6,
         destacado = $7,
-        "producto_Id" = $8,
+        producto_id = $8,
         categoria_id = $9,
         destino_id = $10,
         generico = $11
       WHERE id = $12
       RETURNING *;
     `;
-
+    
     const values = [
       nombre,
       tour,
-      img,
-      rating,
+      img || null,
+      parseInt(rating),
       comentario,
-      estado,
-      destacado,
-      producto_Id,
-      categoria_id,
-      destino_id,
-      generico,
+      Boolean(estado),
+      parseBooleanOrNull(destacado),
+      parseIntOrNull(producto_id),
+      parseIntOrNull(categoria_id),
+      parseIntOrNull(destino_id),
+      parseBooleanOrNull(generico),
       id
     ];
 

@@ -836,7 +836,7 @@ const tablas = {
                     type: 'boolean',
                 },
                 {
-                    key: 'producto_Id',
+                    key: 'producto_id',
                     label: 'Producto',
                     type: 'select',
                     relatedTable: 'productos',
