@@ -6,13 +6,14 @@ export default defineEventHandler(async (event) => {
     const {
       pregunta,
       respuesta,
-      destino_id
+      destino_id,
+      operador_id  // Agregamos el nuevo campo
     } = await readBody(event)
 
     if (
       pregunta === undefined ||
       respuesta === undefined ||
-      destino_id === undefined
+      destino_id === undefined ||
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
     }
@@ -21,15 +22,17 @@ export default defineEventHandler(async (event) => {
       INSERT INTO preguntas_frecuentes (
         pregunta,
         respuesta,
-        destino_id
-      ) VALUES ($1, $2, $3)
+        destino_id,
+        operador_id
+      ) VALUES ($1, $2, $3, $4)
       RETURNING *;
     `;
 
     const values = [
       pregunta,
       respuesta,
-      destino_id
+      destino_id,
+      operador_id
     ];
 
     const result = await pool.query(query, values)

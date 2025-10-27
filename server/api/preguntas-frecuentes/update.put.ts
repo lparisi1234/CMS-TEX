@@ -7,14 +7,15 @@ export default defineEventHandler(async (event) => {
       id,
       pregunta,
       respuesta,
-      destino_id
+      destino_id,
+      operador_id  // Agregamos el nuevo campo
     } = await readBody(event)
 
     if (
       id === undefined ||
       pregunta === undefined ||
       respuesta === undefined ||
-      destino_id === undefined
+      destino_id === undefined 
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
     }
@@ -23,8 +24,9 @@ export default defineEventHandler(async (event) => {
       UPDATE preguntas_frecuentes SET
         pregunta = $1,
         respuesta = $2,
-        destino_id = $3
-      WHERE id = $4
+        destino_id = $3,
+        operador_id = $4
+      WHERE id = $5
       RETURNING *;
     `;
 
@@ -32,6 +34,7 @@ export default defineEventHandler(async (event) => {
       pregunta,
       respuesta,
       destino_id,
+      operador_id,
       id
     ];
 
