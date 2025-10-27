@@ -820,12 +820,6 @@ const tablas = {
                     required: true
                 },
                 {
-                    key: 'comentario',
-                    label: 'Comentario',
-                    type: 'text',
-                    required: true
-                },
-                {
                     key: 'estado',
                     label: 'Estado',
                     type: 'boolean',
@@ -835,29 +829,36 @@ const tablas = {
                     key: 'destacado',
                     label: 'Destacado',
                     type: 'boolean',
-                    required: true
+                },
+                {
+                    key: 'generico',
+                    label: 'Genérico',
+                    type: 'boolean',
                 },
                 {
                     key: 'producto_Id',
                     label: 'Producto',
                     type: 'select',
                     relatedTable: 'productos',
-                    required: true
                 },
                 {
                     key: 'categoria_id',
                     label: 'Categoría',
                     type: 'select',
                     relatedTable: 'categorias',
-                    required: true
                 },
                 {
                     key: 'destino_id',
                     label: 'Destino',
                     type: 'select',
                     relatedTable: 'destinos',
+                },
+                {
+                    key: 'comentario',
+                    label: 'Comentario',
+                    type: 'textarea',
                     required: true
-                }
+                },
             ]
         },
         {
