@@ -14,6 +14,7 @@ export default defineEventHandler(async (event) => {
       pregunta === undefined ||
       respuesta === undefined ||
       destino_id === undefined ||
+      operador_id === undefined  // Validamos el nuevo campo
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
     }
