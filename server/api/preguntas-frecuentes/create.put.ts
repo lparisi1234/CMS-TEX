@@ -30,8 +30,8 @@ export default defineEventHandler(async (event) => {
     const values = [
       pregunta,
       respuesta,
-      destino_id,
-      operador_id
+      destino_id ?? null,  // Si es undefined, será null
+      operador_id ?? null
     ];
 
     const result = await pool.query(query, values)

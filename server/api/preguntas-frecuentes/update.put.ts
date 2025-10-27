@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
     if (
       id === undefined ||
       pregunta === undefined ||
-      respuesta === undefined 
+      respuesta === undefined ||
     ) {
       return { success: false, message: 'Faltan campos requeridos' }
     }
@@ -32,8 +32,8 @@ export default defineEventHandler(async (event) => {
     const values = [
       pregunta,
       respuesta,
-      destino_id,
-      operador_id,
+      destino_id ?? null,  // Si es undefined, será null
+      operador_id ?? null,
       id
     ];
 
