@@ -48,7 +48,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const objectUrl = `https://${bucketName}.s3.us-east-1.amazonaws.com/${s3Key}`
+    const objectUrl = `${s3Key}`
 
     return {
       success: true,
