@@ -262,7 +262,15 @@ export default defineEventHandler(async (event) => {
             
             const ciudadesNombres = dia.cities && dia.cities.length > 0 
               ? dia.cities
-                  .map((city: any) => city.name)
+                  .map((city: any) => {
+                    // Normalizar el nombre: primera letra mayúscula, resto minúsculas
+                    const nombre = city.name || '';
+                    return nombre
+                      .toLowerCase()
+                      .split(' ')
+                      .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+                      .join(' ');
+                  })
                   .join(', ')
               : '';
 
