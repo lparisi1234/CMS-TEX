@@ -17,7 +17,7 @@
 
                 <div v-else class="flex flex-col items-center gap-2">
                     <video v-if="isVideo" :src="imagePreview" class="mx-auto max-h-32 rounded border" controls />
-                    <img v-else :src="imagePreview" alt="Preview" class="mx-auto max-h-32 rounded border" />
+                    <img v-else :src="`${IMAGES_URL}${imagePreview}`" alt="Preview" class="mx-auto max-h-32 rounded border" />
                     <p class="text-sm text-dark">{{ fileName }}</p>
                     <button type="button" @click.stop="removeImage"
                         class="text-error text-sm">
