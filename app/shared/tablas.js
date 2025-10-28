@@ -871,14 +871,16 @@ const tablas = {
                 {
                     key: 'pregunta',
                     label: 'Pregunta',
-                    type: 'text',
-                    required: true
+                    type: 'textarea',
+                    required: true,
+                    fullWidth: true
                 },
                 {
                     key: 'respuesta',
                     label: 'Respuesta',
-                    type: 'text',
-                    required: true
+                    type: 'textarea',
+                    required: true,
+                    fullWidth: true
                 },
                 {
                     key: 'destino_id',
