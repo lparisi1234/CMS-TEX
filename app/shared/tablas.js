@@ -1076,7 +1076,7 @@ const tablas = {
         {
             name: 'Categoría Hotelera',
             slug: 'categoria_hotelera',
-            endpoint: 'categoria_hotelera/categoria_hotelera',
+            endpoint: 'traducciones-hoteles/traducciones-hoteles',
             botonTexto: 'Crear nueva traducción',
             showInNav: false,
             columns: [
@@ -1085,9 +1085,11 @@ const tablas = {
                     label: 'Operador',
                     type: 'select',
                     relatedTable: 'operadores',
+                    displayField: 'nombre',
+                    valueField: 'codigo'
                 },
                 {
-                    key: 'cod_newton',
+                    key: 'nombre_original',
                     label: 'Código Newton',
                     type: 'text',
                     required: true
