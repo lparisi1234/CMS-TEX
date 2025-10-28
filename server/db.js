@@ -69,6 +69,7 @@ async function getDbPool() {
 export default getDbPool;
 
 
+
 // ///FUNCIONA DE FORMA LOCAL
 
 //  import { Pool } from 'pg';
