@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
       pregunta,
       respuesta,
       destino_id,
-      operador_id  // Agregamos el nuevo campo
+      operador_id
     } = await readBody(event)
 
     if (
@@ -30,8 +30,8 @@ export default defineEventHandler(async (event) => {
     const values = [
       pregunta,
       respuesta,
-      destino_id ?? null,  // Si es undefined, será null
-      operador_id ?? null
+      destino_id === undefined || destino_id === '' ? null : destino_id,
+      operador_id === undefined || operador_id === '' ? null : operador_id
     ];
 
     const result = await pool.query(query, values)
