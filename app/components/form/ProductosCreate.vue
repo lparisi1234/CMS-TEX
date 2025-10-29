@@ -642,8 +642,8 @@ const handleDestacadosModalBackgroundClick = (event) => {
 }
 
 const handleRecachear = async () => {
-    if (!props.isEditing || !props.productId) {
-        error('Debe estar editando un producto para recachearlo')
+    if (!props.isEditing || !formData.value.cod_newton) {
+        error('Debe estar editando un producto y tener un código Newton para recachearlo')
         return
     }
 
@@ -651,37 +651,30 @@ const handleRecachear = async () => {
     recacheSuccess.value = false
 
     try {
-        // TODO: Conectar con el endpoint /api/productos/recachear/${props.productId}
-        await new Promise(resolve => setTimeout(resolve, 2000)) // Simular delay de 2 segundos
-
-        // Simular respuesta exitosa
-        recacheSuccess.value = true
-        success('Producto recacheado correctamente')
-
-        // Ocultar el mensaje después de 3 segundos
-        setTimeout(() => {
-            recacheSuccess.value = false
-        }, 3000)
-
-        /* Código para cuando esté el endpoint:
-        const response = await $fetch(`/api/productos/recachear/${props.productId}`, {
-            method: 'POST'
+        const response = await $fetch('/api/productos/recachear', {
+            method: 'PUT',
+            body: {
+                cod_newton: formData.value.cod_newton
+            }
         })
 
         if (response && response.success) {
             recacheSuccess.value = true
-            success('Producto recacheado correctamente')
+            success('Producto Newton recacheado correctamente')
 
+            // Ocultar el mensaje después de 3 segundos
             setTimeout(() => {
                 recacheSuccess.value = false
             }, 3000)
+
+            // Opcional: recargar los datos del producto para ver los cambios
+            // await loadProductData()
         } else {
             throw new Error(response?.message || 'Error al recachear el producto')
         }
-        */
     } catch (err) {
         console.error('Error al recachear producto:', err)
-        error('Error al recachear el producto')
+        error(err.message || 'Error al recachear el producto')
     } finally {
         isRecacheando.value = false
     }
