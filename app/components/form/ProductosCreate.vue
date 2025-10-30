@@ -188,69 +188,73 @@
                 </div>
 
                 <div v-if="showDestacadosModal"
-                    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+                    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
                     @click="handleDestacadosModalBackgroundClick">
-                    <div class="w-full max-w-[60rem] flex flex-col gap-6 bg-light rounded-[20px] p-8" @click.stop>
-                        <HeadingH2 class="text-center">
-                            Destacados - Día del itinerario: {{ formData.itinerario[currentDiaIndex]?.dia ||
-                                currentDiaIndex + 1 }}
-                        </HeadingH2>
+                    <div class="w-full max-w-[60rem] max-h-[90vh] flex flex-col bg-light rounded-[20px] overflow-hidden" @click.stop>
+                        <div class="flex-shrink-0 p-8 pb-4">
+                            <HeadingH2 class="text-center">
+                                Destacados - Día del itinerario: {{ formData.itinerario[currentDiaIndex]?.dia ||
+                                    currentDiaIndex + 1 }}
+                            </HeadingH2>
+                        </div>
 
-                        <div class="flex flex-col gap-5">
-                            <div v-if="currentDestacados.length === 0" class="text-center py-8">
-                                <p class="text-gray-600 mb-4">No hay destacados agregados</p>
-                            </div>
-
-                            <div v-for="(destacado, index) in currentDestacados" :key="destacado.id">
-                                <div class="flex items-center justify-between">
-                                    <div @click="toggleDestacadoAccordion(index)"
-                                        class="w-full flex items-center gap-3 cursor-pointer flex-1">
-                                        <div class="w-full flex items-center">
-                                            <button @click.stop="eliminarDestacado(index)"
-                                                aria-label="Eliminar destacado" type="button"
-                                                class="w-8 h-8 flex justify-center items-center text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors duration-200">
-                                                <Icon name="tabler:x" class="w-5 h-5" />
-                                            </button>
-                                            <div class="bg-gray-mid rounded-md p-1.5">
-                                                <p class="text-lg text-dark">Destacado: <span class="font-bold">{{ index
-                                                    + 1
-                                                        }}</span></p>
-                                            </div>
-                                        </div>
-                                        <Icon :name="destacado.isOpen ? 'tabler:chevron-up' : 'tabler:chevron-down'"
-                                            class="w-6 h-6 text-primary transition-transform duration-300 ease-in-out" />
-                                    </div>
-
+                        <div class="flex-1 overflow-y-auto px-8" style="-webkit-overflow-scrolling: touch;">
+                            <div class="flex flex-col gap-5 py-4">
+                                <div v-if="currentDestacados.length === 0" class="text-center py-8">
+                                    <p class="text-gray-600 mb-4">No hay destacados agregados</p>
                                 </div>
 
-                                <Transition enter-active-class="transition-all duration-300 ease-out"
-                                    leave-active-class="transition-all duration-300 ease-in"
-                                    enter-from-class="opacity-0 max-h-0" enter-to-class="opacity-100 max-h-screen"
-                                    leave-from-class="opacity-100 max-h-screen" leave-to-class="opacity-0 max-h-0">
-                                    <div v-if="destacado.isOpen"
-                                        class="border-b border-terciary pt-3 pb-6 overflow-hidden">
-                                        <div class="flex flex-col gap-4">
-                                            <FormFieldsContainer>
-                                                <FormTextField v-model="destacado.titulo"
-                                                    :id="`titulo-destacado-${index}`" label="Título"
-                                                    placeholder="Título del destacado" />
-                                                <FormImageField v-model="destacado.imagen"
-                                                    :id="`imagen-destacado-${index}`" label="Imagen"
-                                                    targetFolder="productos" size="290px x 180px" />
-                                            </FormFieldsContainer>
+                                <div v-for="(destacado, index) in currentDestacados" :key="destacado.id">
+                                    <div class="flex items-center justify-between">
+                                        <div @click="toggleDestacadoAccordion(index)"
+                                            class="w-full flex items-center gap-3 cursor-pointer flex-1">
+                                            <div class="w-full flex items-center">
+                                                <button @click.stop="eliminarDestacado(index)"
+                                                    aria-label="Eliminar destacado" type="button"
+                                                    class="w-8 h-8 flex justify-center items-center text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors duration-200">
+                                                    <Icon name="tabler:x" class="w-5 h-5" />
+                                                </button>
+                                                <div class="bg-gray-mid rounded-md p-1.5">
+                                                    <p class="text-lg text-dark">Destacado: <span class="font-bold">{{ index
+                                                        + 1
+                                                            }}</span></p>
+                                                </div>
+                                            </div>
+                                            <Icon :name="destacado.isOpen ? 'tabler:chevron-up' : 'tabler:chevron-down'"
+                                                class="w-6 h-6 text-primary transition-transform duration-300 ease-in-out" />
                                         </div>
-                                    </div>
-                                </Transition>
-                            </div>
 
-                            <div class="flex justify-start pb-4">
-                                <ButtonPrimary @click.prevent.stop="agregarDestacadoModal" type="button">
-                                    + Agregar Destacado
-                                </ButtonPrimary>
+                                    </div>
+
+                                    <Transition enter-active-class="transition-all duration-300 ease-out"
+                                        leave-active-class="transition-all duration-300 ease-in"
+                                        enter-from-class="opacity-0 max-h-0" enter-to-class="opacity-100 max-h-screen"
+                                        leave-from-class="opacity-100 max-h-screen" leave-to-class="opacity-0 max-h-0">
+                                        <div v-if="destacado.isOpen"
+                                            class="border-b border-terciary pt-3 pb-6 overflow-hidden">
+                                            <div class="flex flex-col gap-4">
+                                                <FormFieldsContainer>
+                                                    <FormTextField v-model="destacado.titulo"
+                                                        :id="`titulo-destacado-${index}`" label="Título"
+                                                        placeholder="Título del destacado" />
+                                                    <FormImageField v-model="destacado.imagen"
+                                                        :id="`imagen-destacado-${index}`" label="Imagen"
+                                                        targetFolder="productos" size="290px x 180px" />
+                                                </FormFieldsContainer>
+                                            </div>
+                                        </div>
+                                    </Transition>
+                                </div>
+
+                                <div class="flex justify-start pb-4">
+                                    <ButtonPrimary @click.prevent.stop="agregarDestacadoModal" type="button">
+                                        + Agregar Destacado
+                                    </ButtonPrimary>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="flex justify-center gap-5 mt-2">
+                        <div class="flex-shrink-0 flex justify-center gap-5 p-8 pt-4 border-t border-gray-200">
                             <ButtonPrimary @click.prevent="cancelDestacadosModal" type="button"
                                 class="!bg-gray-mid !text-dark">
                                 Cancelar
