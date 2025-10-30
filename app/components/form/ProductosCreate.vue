@@ -440,12 +440,13 @@ const displaySecciones = computed(() => {
 
     return secciones.map(seccion => ({
         ...seccion,
+        displayName: seccion.seccion || seccion.id,
         segmentos_excluidos: Array.isArray(seccion.segmentos_excluidos)
             ? (seccion.segmentos_excluidos.length > 0
                 ? seccion.segmentos_excluidos
                     .map(id => {
                         const found = segmentosOptions.value.find(s => String(s.value) === String(id))
-                        return found ? found.label : `ID: ${id}`
+                        return found ? found.label : `ID: ${seccion.nombre}`
                     })
                     .join(', ')
                 : 'Sin segmentos')
@@ -544,9 +545,7 @@ const saveSeccion = () => {
     }
 
     const seccionData = {
-        id: isEditingSeccion.value
-            ? formData.value.secciones[editingSeccionIndex.value].id
-            : Date.now(),
+        id: formData.value.secciones[editingSeccionIndex.value].id,
         pagina: modalSeccion.value.pagina,
         seccion: modalSeccion.value.seccion,
         seccion_id: seccionSeleccionada.id,
@@ -666,12 +665,10 @@ const handleRecachear = async () => {
             recacheSuccess.value = true
             success('Producto Newton recacheado correctamente')
 
-            // Ocultar el mensaje después de 3 segundos
             setTimeout(() => {
                 recacheSuccess.value = false
             }, 3000)
 
-            // Opcional: recargar los datos del producto para ver los cambios
             // await loadProductData()
         } else {
             throw new Error(response?.message || 'Error al recachear el producto')
@@ -902,7 +899,7 @@ const loadProductData = async () => {
         if (producto) {
             Object.keys(formData.value).forEach(key => {
                 if (producto.hasOwnProperty(key)) {
-                    if (key !== 'segmentos_excluidos' && key !== 'itinerario' && key !== 'secciones') { // Skip these as they're loaded separately
+                    if (key !== 'segmentos_excluidos' && key !== 'itinerario' && key !== 'secciones') {
                         if (key === 'estado') {
                             formData.value[key] = producto[key] == 1 || producto[key] === true
                         } else {
