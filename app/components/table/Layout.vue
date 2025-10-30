@@ -113,7 +113,9 @@ const openDeleteModal = (item, index) => {
     else if (item.name) itemName = item.name
     else if (item.h1) itemName = item.h1
     else if (item.nombreprod) itemName = item.nombreprod
+    else if (item.seccion) itemName = item.seccion
     else if (item.url) itemName = item.url
+    else if (item.displayName) itemName = item.displayName
     else if (item.id) itemName = `ID: ${item.id}`
 
     deleteModal.value = {
