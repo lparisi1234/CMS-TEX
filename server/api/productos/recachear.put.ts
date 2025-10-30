@@ -42,13 +42,24 @@ export default defineEventHandler(async (event) => {
     
     const response = await fetch(apiUrl);
     
-    if (!response.ok) {
-      await pool.query('ROLLBACK');
+       if (!response.ok) {
+      // Actualizar el estado a false en la tabla producto
+      await pool.query(
+        'UPDATE producto SET estado = false WHERE cod_newton = $1',
+        [codNewtonFinal]
+      );
+      await pool.query('COMMIT');
       return { 
         success: false, 
         message: `Error al obtener información del producto Newton: ${response.statusText}` 
       };
     }
+    
+    // Si la respuesta es exitosa, actualizar el estado a true
+    await pool.query(
+      'UPDATE producto SET estado = true WHERE cod_newton = $1',
+      [codNewtonFinal]
+    );
 
     const productoNewtonData = await response.json();
 
