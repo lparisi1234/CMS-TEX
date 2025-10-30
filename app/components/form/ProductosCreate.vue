@@ -544,18 +544,20 @@ const saveSeccion = () => {
         return
     }
 
+    if (!formData.value.secciones) {
+        formData.value.secciones = []
+    }
+
     const seccionData = {
-        id: formData.value.secciones[editingSeccionIndex.value].id,
+        id: isEditingSeccion.value
+            ? formData.value.secciones[editingSeccionIndex.value].id
+            : `seccion-${Date.now()}`,
         pagina: modalSeccion.value.pagina,
         seccion: modalSeccion.value.seccion,
         seccion_id: seccionSeleccionada.id,
         segmentos_excluidos: Array.isArray(modalSeccion.value.segmentos_excluidos)
             ? modalSeccion.value.segmentos_excluidos.map(v => v.toString())
             : []
-    }
-
-    if (!formData.value.secciones) {
-        formData.value.secciones = []
     }
 
     if (isEditingSeccion.value) {
@@ -888,56 +890,35 @@ const loadSegmentosExcluidos = async (productoId) => {
 }
 
 const loadProductData = async () => {
-    if (props.isEditing && props.productId) {
+    // Usar editingData como fuente primaria, luego caer a productId
+    const productDataSource = props.editingData || (props.isEditing && props.productId ?
+        productosData.value.find(p => String(p.id) === String(props.productId))
+        : null)
 
-        const producto = productosData.value.find(p =>
-            String(p.id) === String(props.productId)
-        )
+    const productId = props.editingData?.id || props.productId
 
-
-
-        if (producto) {
-            Object.keys(formData.value).forEach(key => {
-                if (producto.hasOwnProperty(key)) {
-                    if (key !== 'segmentos_excluidos' && key !== 'itinerario' && key !== 'secciones') {
-                        if (key === 'estado') {
-                            formData.value[key] = producto[key] == 1 || producto[key] === true
-                        } else {
-                            formData.value[key] = producto[key]
-                        }
-                    }
-                }
-            })
-
-            await Promise.all([
-                loadItinerarios(props.productId),
-                loadSecciones(props.productId),
-                loadSegmentosExcluidos(props.productId)
-            ])
-
-        } else {
-            console.warn('Product not found in productosData')
-        }
-    } else if (props.editingData) {
+    if (productDataSource) {
         Object.keys(formData.value).forEach(key => {
-            if (props.editingData.hasOwnProperty(key)) {
+            if (productDataSource.hasOwnProperty(key)) {
                 if (key !== 'segmentos_excluidos' && key !== 'itinerario' && key !== 'secciones') {
                     if (key === 'estado') {
-                        formData.value[key] = props.editingData[key] == 1 || props.editingData[key] === true
+                        formData.value[key] = productDataSource[key] == 1 || productDataSource[key] === true
                     } else {
-                        formData.value[key] = props.editingData[key]
+                        formData.value[key] = productDataSource[key]
                     }
                 }
             }
         })
 
-        if (props.editingData.id) {
+        if (productId) {
             await Promise.all([
-                loadItinerarios(props.editingData.id),
-                loadSecciones(props.editingData.id),
-                loadSegmentosExcluidos(props.editingData.id)
+                loadItinerarios(productId),
+                loadSecciones(productId),
+                loadSegmentosExcluidos(productId)
             ])
         }
+    } else if (props.isEditing) {
+        console.warn('No se encontraron datos del producto para editar')
     }
 }
 
