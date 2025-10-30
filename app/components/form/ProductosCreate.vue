@@ -67,8 +67,9 @@
                             placeholder="Escribe el iframe del podcast del tour" :error="errors.podcast" />
                     </FormFieldsContainer>
                     <FormFieldsContainer>
-                        <FormTextField v-model="formData.producto_anterior" id="producto_anterior" label="Producto Anterior"
-                            placeholder="Escribe el código del producto anterior" :error="errors.producto_anterior" />
+                        <FormTextField v-model="formData.producto_anterior" id="producto_anterior"
+                            label="Producto Anterior" placeholder="Escribe el código del producto anterior"
+                            :error="errors.producto_anterior" />
                     </FormFieldsContainer>
                 </div>
             </template>
@@ -168,7 +169,7 @@
                                                     <Icon name="tabler:plus" class="w-4 h-4" />
                                                 </button>
                                                 <span class="text-xl text-dark font-light">{{ dia.destacados.length
-                                                    }}</span>
+                                                }}</span>
                                             </div>
                                         </div>
                                     </FormFieldsContainer>
@@ -190,7 +191,8 @@
                 <div v-if="showDestacadosModal"
                     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
                     @click="handleDestacadosModalBackgroundClick">
-                    <div class="w-full max-w-[60rem] max-h-[90vh] flex flex-col bg-light rounded-[20px] overflow-hidden" @click.stop>
+                    <div class="w-full max-w-[60rem] max-h-[90vh] flex flex-col bg-light rounded-[20px] overflow-hidden"
+                        @click.stop>
                         <div class="flex-shrink-0 p-8 pb-4">
                             <HeadingH2 class="text-center">
                                 Destacados - Día del itinerario: {{ formData.itinerario[currentDiaIndex]?.dia ||
@@ -215,7 +217,8 @@
                                                     <Icon name="tabler:x" class="w-5 h-5" />
                                                 </button>
                                                 <div class="bg-gray-mid rounded-md p-1.5">
-                                                    <p class="text-lg text-dark">Destacado: <span class="font-bold">{{ index
+                                                    <p class="text-lg text-dark">Destacado: <span class="font-bold">{{
+                                                        index
                                                         + 1
                                                             }}</span></p>
                                                 </div>
@@ -268,7 +271,8 @@
             </template>
         </TabsLayout>
         <div class="w-full flex items-center gap-4">
-            <ButtonPrimary @click="handleRecachear" type="button" :disabled="isRecacheando || !props.isEditing" class="!bg-secondary">
+            <ButtonPrimary @click="handleRecachear" type="button" :disabled="isRecacheando || !props.isEditing"
+                class="!bg-secondary">
                 <span v-if="!isRecacheando">Recachear producto</span>
                 <span v-else class="flex items-center gap-2">
                     <Icon name="tabler:loader-2" class="animate-spin" />
@@ -463,8 +467,14 @@ const modalSeccion = ref({ ...seccionModalDefault })
 const showSeccionModal = ref(false)
 const isEditingSeccion = ref(false)
 const editingSeccionIndex = ref(-1)
+const isLoadingSeccionesFromEdit = ref(false)
 
 watch(() => modalSeccion.value.pagina, async (nuevaPagina) => {
+    if (isLoadingSeccionesFromEdit.value) {
+        isLoadingSeccionesFromEdit.value = false
+        return
+    }
+
     if (nuevaPagina) {
         const paginaSeleccionada = paginasData.value.find(p => p.texto === nuevaPagina)
         if (paginaSeleccionada) {
@@ -505,19 +515,38 @@ const handleDeleteSeccion = (seccion) => {
     deleteSeccion(seccion)
 }
 
-const editSeccion = (seccion) => {
+const editSeccion = async (seccion) => {
     const idx = formData.value.secciones.findIndex(s => s.id === seccion.id)
     if (idx !== -1) {
         isEditingSeccion.value = true
         editingSeccionIndex.value = idx
         const original = formData.value.secciones[idx]
-        modalSeccion.value = {
-            pagina: original.pagina || '',
-            seccion: original.seccion || '',
-            segmentos_excluidos: Array.isArray(original.segmentos_excluidos)
-                ? original.segmentos_excluidos.map(v => v.toString())
-                : []
+
+        isLoadingSeccionesFromEdit.value = true
+
+        modalSeccion.value.pagina = original.pagina || ''
+
+        if (original.pagina) {
+            const paginaSeleccionada = paginasData.value.find(p => p.texto === original.pagina)
+            if (paginaSeleccionada) {
+                try {
+                    const secciones = await $fetch(`/api/seccciones/${paginaSeleccionada.id}`)
+                    seccionesData.value = secciones || []
+
+                    await nextTick()
+
+                    modalSeccion.value.segmentos_excluidos = Array.isArray(original.segmentos_excluidos)
+                        ? original.segmentos_excluidos.map(v => v.toString())
+                        : []
+
+                    modalSeccion.value.seccion = original.seccion || ''
+                } catch (err) {
+                    console.error('Error cargando secciones:', err)
+                    seccionesData.value = []
+                }
+            }
         }
+
         showSeccionModal.value = true
     }
 }
@@ -890,7 +919,6 @@ const loadSegmentosExcluidos = async (productoId) => {
 }
 
 const loadProductData = async () => {
-    // Usar editingData como fuente primaria, luego caer a productId
     const productDataSource = props.editingData || (props.isEditing && props.productId ?
         productosData.value.find(p => String(p.id) === String(props.productId))
         : null)
