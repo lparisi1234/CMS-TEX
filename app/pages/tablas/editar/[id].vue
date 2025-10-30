@@ -10,7 +10,7 @@
             :is-submitting="isSubmitting" :boton-texto="botonTexto" :details-columns="tabla.columns"
             @submit="handleSubmit" @cancel="handleCancel" />
 
-        <FormProductosCreate v-else-if="tablaSlug === 'productos'" :is-editing="true" :editing-data="formData"
+        <FormProductosCreate v-else-if="tablaSlug === 'productos'" :is-editing="true" :editing-data="editingData"
             :product-id="itemId" @success="handleSuccess" @cancel="handleCancel" />
 
         <FormLayout @submit="handleSubmit" v-else-if="tabla" class="flex flex-col gap-5">
@@ -271,6 +271,8 @@ onMounted(async () => {
                 formData.value.id = parseInt(itemId)
             }
 
+            editingData.value = loadedData || { ...formData.value }
+        } else if (tablaSlug === 'productos') {
             editingData.value = loadedData || { ...formData.value }
         }
     }
