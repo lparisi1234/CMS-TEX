@@ -134,10 +134,10 @@ export default defineEventHandler(async (event) => {
     await pool.query(queryDeleteSecciones, [id]);
 
     const seccionesArray = Array.isArray(secciones) ? secciones : (secciones ? [secciones] : []);
-
+console.log('Secciones Array:', seccionesArray);  
     if (seccionesArray.length > 0) {
       for (const seccion of seccionesArray) {
-        if (seccion.seccion_id && seccion.segmentos_excluidos && Array.isArray(seccion.segmentos_excluidos) && seccion.segmentos_excluidos.length > 0) {
+       
           const segmentosArray = seccion.segmentos_excluidos.map((seg: any) => parseInt(seg));
 
           const querySeccionesProd = `
@@ -150,7 +150,7 @@ export default defineEventHandler(async (event) => {
             id,
             segmentosArray
           ]);
-        }
+        
       }
     }
     /*

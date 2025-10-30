@@ -94,8 +94,10 @@ export default defineEventHandler(async (event) => {
         start_city = $12,
         end_city = $13,
         departure_month = $14,
-        included = $15
-      WHERE tour_id = $16 AND operador = $17
+        included = $15,
+        not_included = $16,
+        observations = $17
+      WHERE tour_id = $18 AND operador = $19
       RETURNING *;
     `;
 
@@ -115,6 +117,8 @@ export default defineEventHandler(async (event) => {
       endCity,
       productoNewtonData.data.firstDeparture || null,
       productoNewtonData.data.included || '',
+      productoNewtonData.data.not_included || '',
+      productoNewtonData.data.observations || '',
       codNewtonFinal,
       operadorId
     ]);
