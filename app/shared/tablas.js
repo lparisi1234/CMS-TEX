@@ -1157,6 +1157,12 @@ const tablas = {
                     label: 'Código IATA',
                     type: 'text',
                 },
+                {
+                    key: 'nombres_alternativos_text',
+                    label: 'Nombres Alternativos',
+                    type: 'textarea',
+                    required: false
+                },
             ]
         }
     ]
