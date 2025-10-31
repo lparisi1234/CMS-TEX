@@ -689,24 +689,33 @@ const handleRecachear = async () => {
             method: 'PUT',
             body: {
                 cod_newton: formData.value.cod_newton
-            }
+            },
+            // IMPORTANTE: No lanzar error en respuestas HTTP 4xx/5xx
+            ignoreResponseError: true
         })
+
+        console.log('Respuesta del recacheo:', response)
+
+        // ACTUALIZAR EL SWITCH DEL ESTADO SIEMPRE
+        if (response && response.estado !== undefined) {
+            console.log('Actualizando estado a:', response.estado)
+            formData.value.estado = response.estado
+        }
 
         if (response && response.success) {
             recacheSuccess.value = true
-            success('Producto Newton recacheado correctamente')
+            success('Producto Newton recacheado correctamente. Estado actualizado a ACTIVO.')
 
             setTimeout(() => {
                 recacheSuccess.value = false
             }, 3000)
-
-            // await loadProductData()
         } else {
-            throw new Error(response?.message || 'Error al recachear el producto')
+            const errorMsg = response?.message || 'No se pudo encontrar el producto en la API de Newton'
+            error(errorMsg + ' - Estado actualizado a INACTIVO.')
         }
     } catch (err) {
         console.error('Error al recachear producto:', err)
-        error(err.message || 'Error al recachear el producto')
+        error('Error de conexión al recachear el producto')
     } finally {
         isRecacheando.value = false
     }
@@ -728,18 +737,18 @@ const handleSubmit = async () => {
             dataToSubmit.secciones = []
         }
 
-
-
         if (!props.isEditing) {
             const timestamp = Date.now()
             const lastDigits = timestamp.toString().slice(-6)
             dataToSubmit.id = `3/${lastDigits}`
         }
 
+        // Convertir estado a 1 o 0 SIEMPRE (para crear y editar)
+        dataToSubmit.estado = dataToSubmit.estado ? 1 : 0
+
         dataToSubmit.cantidad_estrellas = parseInt(dataToSubmit.cantidad_estrellas) || 5
         dataToSubmit.cantidadAport = parseInt(dataToSubmit.cantidadAport) || 0
         dataToSubmit.experto_id = dataToSubmit.experto_id ? parseInt(dataToSubmit.experto_id) : null
-        dataToSubmit.estado = dataToSubmit.estado ? 1 : 0
 
         let productId
 
@@ -769,7 +778,6 @@ const handleSubmit = async () => {
                 console.error('Respuesta del servidor:', result)
                 throw new Error('No se recibió el ID del producto creado')
             }
-
         }
 
         if (formData.value.itinerario && formData.value.itinerario.length > 0) {
