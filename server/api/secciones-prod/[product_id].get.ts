@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
   
   try {
     const { rows } = await pool.query(`
-      SELECT 
+      SELECT
         sp.seccion_id,
         sp.producto_id,
         sp.segmentos_id,
@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
       const segmentos_excluidos = Array.isArray(row.segmentos_id) 
         ? row.segmentos_id.map((id: number) => id.toString())
         : []
-
+console.log('Segmentos Excluidos:', row);
       return {
         id: Date.now() + Math.random(),
         seccion_id: row.seccion_id,

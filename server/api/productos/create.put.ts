@@ -90,8 +90,10 @@ export default defineEventHandler(async (event) => {
             start_city,
             end_city,
             departure_month,
-            included
-          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
+            included,
+            not_included,
+            observations
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
           RETURNING *;
         `;
         
@@ -137,6 +139,8 @@ export default defineEventHandler(async (event) => {
           endCity,
           productoNewtonData.data.firstDeparture || null,
           productoNewtonData.data.included || '',
+          productoNewtonData.data.not_included || '',
+          productoNewtonData.data.observations || ''
         ]);
 
         
