@@ -3,7 +3,7 @@ import getDbPool from "../../db"
 export default defineEventHandler(async (event) => {
   const pool = await getDbPool()
   const product_id = getRouterParam(event, 'product_id')
-  
+
   try {
     const { rows } = await pool.query(`
       SELECT
@@ -25,10 +25,9 @@ export default defineEventHandler(async (event) => {
     }
 
     const secciones = rows.map((row: any) => {
-      const segmentos_excluidos = Array.isArray(row.segmentos_id) 
+      const segmentos_excluidos = Array.isArray(row.segmentos_id)
         ? row.segmentos_id.map((id: number) => id.toString())
         : []
-console.log('Segmentos Excluidos:', row);
       return {
         id: Date.now() + Math.random(),
         seccion_id: row.seccion_id,

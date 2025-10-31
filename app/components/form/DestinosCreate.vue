@@ -41,7 +41,8 @@
 
                                 <FormTextareaField v-else-if="column.type === 'textarea'" :id="`field-${column.key}`"
                                     v-model="formData[column.key]" :label="column.label" :required="column.required"
-                                    :error="errors[column.key]" :placeholder="`Ingresa ${column.label.toLowerCase()}`"
+                                    :error="errors[column.key]"
+                                    :placeholder="column.placeholder || `Ingresa ${column.label.toLowerCase()}`"
                                     :rows="4" />
 
                                 <FormTextField v-else-if="column.type === 'number'" :id="`field-${column.key}`"
@@ -160,6 +161,11 @@
                         :rows="3" :required="false" :error="modalErrors.productos" />
                 </FormFieldsContainer>
 
+                <FormFieldsContainer>
+                    <FormCheckboxGroupField id="modal-segmentos" v-model="modalSubgrupo.segmentos_excluidos"
+                        :options="segmentosOptions" label="Segmentos Excluidos" />
+                </FormFieldsContainer>
+
                 <div class="flex justify-center gap-5 mt-2">
                     <ButtonPrimary @click.prevent="closeModal('cancel-button')" type="button"
                         class="!bg-gray-mid !text-dark">
@@ -266,15 +272,17 @@ const emit = defineEmits(['submit', 'success', 'cancel'])
 
 const destinosData = ref([])
 const expertosData = ref([])
+const segmentosData = ref([])
 const masVendidosData = ref([])
 const vueloIncluidoData = ref([])
 const recomendadosData = ref([])
 
 const loadData = async () => {
     try {
-        const [destinos, expertos, masVendidos, vueloIncluido, recomendados] = await Promise.all([
+        const [destinos, expertos, segmentos, masVendidos, vueloIncluido, recomendados] = await Promise.all([
             $fetch('/api/destinos/destinos'),
             $fetch('/api/expertos/expertos'),
+            $fetch('/api/segmentos/segmentos'),
             $fetch('/api/masVendidos/masVendidos').catch(() => []),
             $fetch('/api/vueloIncluido/vueloIncluido').catch(() => []),
             $fetch('/api/recomendados/recomendados').catch(() => [])
@@ -282,6 +290,7 @@ const loadData = async () => {
 
         destinosData.value = destinos || []
         expertosData.value = expertos || []
+        segmentosData.value = segmentos || []
         masVendidosData.value = masVendidos || []
         vueloIncluidoData.value = vueloIncluido || []
         recomendadosData.value = recomendados || []
@@ -325,7 +334,8 @@ const initFormData = () => {
         masVendidos: [],
         vueloIncluido: [],
         recomendados: [],
-        subgrupos: []
+        subgrupos: [],
+        segmentos_excluidos: []
     }
 
     if (props.tipo === 'pais') {
@@ -384,6 +394,13 @@ const expertosOptions = computed(() => {
     return expertosData.value.map(experto => ({
         value: experto.id,
         label: experto.nombre
+    }))
+})
+
+const segmentosOptions = computed(() => {
+    return segmentosData.value.map(segmento => ({
+        value: segmento.id,
+        label: segmento.descripcion
     }))
 })
 
@@ -507,13 +524,13 @@ const handleEditTablaEspecial = (tipo, item) => {
                 .filter(item => item.destino_id === props.editingData.id)
                 .map(item => item.ProductoId)
         }
-        
+
         if (!formData.value.vueloIncluido || formData.value.vueloIncluido.length === 0) {
             formData.value.vueloIncluido = vueloIncluidoData.value
                 .filter(item => item.destino_id === props.editingData.id)
                 .map(item => item.ProductoId)
         }
-        
+
         if (!formData.value.recomendados || formData.value.recomendados.length === 0) {
             formData.value.recomendados = recomendadosData.value
                 .filter(item => item.destino_id === props.editingData.id)
@@ -580,7 +597,8 @@ const editingSubgrupoId = ref(null)
 const modalSubgrupo = ref({
     nombre: '',
     nro_orden: 1,
-    productos_text: ''
+    productos_text: '',
+    segmentos_excluidos: []
 })
 const modalErrors = ref({
     nombre: '',
@@ -608,6 +626,12 @@ const subgruposColumns = [
         label: 'Productos',
         type: 'array-ids',
         required: false
+    },
+    {
+        key: 'segmentos_excluidos',
+        label: 'Segmentos Excluidos',
+        type: 'text',
+        required: false
     }
 ]
 
@@ -626,7 +650,17 @@ const displaySubgrupos = computed(() => {
             ? (subgrupo.productos_ids.length > 0
                 ? subgrupo.productos_ids.map(id => String(id)).join(' ')
                 : 'Sin productos')
-            : String(subgrupo.productos_ids || 'Sin productos')
+            : String(subgrupo.productos_ids || 'Sin productos'),
+        segmentos_excluidos: Array.isArray(subgrupo.segmentos_excluidos)
+            ? (subgrupo.segmentos_excluidos.length > 0
+                ? subgrupo.segmentos_excluidos
+                    .map(seg => {
+                        const segmento = segmentosData.value.find(s => s.id === seg)
+                        return segmento ? segmento.descripcion : String(seg)
+                    })
+                    .join(', ')
+                : 'Sin segmentos excluidos')
+            : 'Sin segmentos excluidos'
     }))
 })
 
