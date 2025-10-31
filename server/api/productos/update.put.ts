@@ -134,23 +134,22 @@ export default defineEventHandler(async (event) => {
     await pool.query(queryDeleteSecciones, [id]);
 
     const seccionesArray = Array.isArray(secciones) ? secciones : (secciones ? [secciones] : []);
-console.log('Secciones Array:', seccionesArray);  
     if (seccionesArray.length > 0) {
       for (const seccion of seccionesArray) {
-       
-          const segmentosArray = seccion.segmentos_excluidos.map((seg: any) => parseInt(seg));
 
-          const querySeccionesProd = `
+        const segmentosArray = seccion.segmentos_excluidos.map((seg: any) => parseInt(seg));
+
+        const querySeccionesProd = `
             INSERT INTO secciones_prod (seccion_id, producto_id, segmentos_id) 
             VALUES ($1, $2, $3);
           `;
 
-          await pool.query(querySeccionesProd, [
-            parseInt(seccion.seccion_id),
-            id,
-            segmentosArray
-          ]);
-        
+        await pool.query(querySeccionesProd, [
+          parseInt(seccion.seccion_id),
+          id,
+          segmentosArray
+        ]);
+
       }
     }
 

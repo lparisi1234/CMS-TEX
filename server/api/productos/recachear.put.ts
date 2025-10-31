@@ -216,9 +216,7 @@ export default defineEventHandler(async (event) => {
   } catch (error) {
     console.error('===== ERROR EN RECACHEO =====');
     console.error('Error:', error);
-    console.log('Ejecutando ROLLBACK...');
     await pool.query('ROLLBACK');
-    console.log('ROLLBACK ejecutado');
     return { success: false, message: 'Error recacheando producto Newton'};
   }
 });

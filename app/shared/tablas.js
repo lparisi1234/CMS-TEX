@@ -1157,6 +1157,14 @@ const tablas = {
                     label: 'Código IATA',
                     type: 'text',
                 },
+                {
+                    key: 'nombres_alternativos_text',
+                    label: 'Nombres Alternativos (separados por coma)',
+                    type: 'textarea',
+                    required: false,
+                    fullWidth: true,
+                    placeholder: 'Ej: París, City of Light, La Ciudad de la Luz'
+                },
             ]
         }
     ]
