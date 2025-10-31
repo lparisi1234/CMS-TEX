@@ -22,7 +22,6 @@ export default defineEventHandler(async (event) => {
     }
 
     await pool.query('BEGIN');
-
     // Verificar que el producto existe
     const checkProductoNewton = await pool.query(
       'SELECT * FROM producto_newton WHERE tour_id = $1 AND operador = $2',
@@ -39,19 +38,24 @@ export default defineEventHandler(async (event) => {
 
     // Obtener datos actualizados de la API
     const apiUrl = `https://preprod.vietur.com.ar/api/api-tour/${cod_newton}?token=6ff20176e662661d5f1577bc9b3e02fa&currency=USD&simplified=1`;
-    
+        
     const response = await fetch(apiUrl);
     
-       if (!response.ok) {
-      // Actualizar el estado a false en la tabla producto
-      await pool.query(
-        'UPDATE producto SET estado = false WHERE cod_newton = $1',
-        [codNewtonFinal]
+    if (!response.ok) {
+      
+      const updateResult = await pool.query(
+        'UPDATE productos SET estado = $1 WHERE cod_newton = $2',
+        [false, codNewtonFinal]
       );
+            
       await pool.query('COMMIT');
+      console.log('COMMIT ejecutado');
+      
       return { 
         success: false, 
-        message: `Error al obtener información del producto Newton: ${response.statusText}` 
+        message: `Error al obtener información del producto Newton: ${response.statusText}`,
+        estado: false,
+        rowsUpdated: updateResult.rowCount
       };
     }
     
@@ -62,7 +66,7 @@ export default defineEventHandler(async (event) => {
     );
 
     const productoNewtonData = await response.json();
-
+    
     // Procesar itinerario para obtener ciudades
     const itinerary = productoNewtonData.data.itinerary || [];
     let startCity = null;
@@ -193,18 +197,28 @@ export default defineEventHandler(async (event) => {
         }
       }
     }
-
+    
+    const updateResult = await pool.query(
+      'UPDATE productos SET estado = $1 WHERE cod_newton = $2 RETURNING *',
+      [true, codNewtonFinal]
+    );
+    
     await pool.query('COMMIT');
 
     return { 
       success: true, 
       message: 'Producto Newton recacheado correctamente',
-      cod_newton: codNewtonFinal
+      cod_newton: codNewtonFinal,
+      estado: true,
+      rowsUpdated: updateResult.rowCount
     };
 
   } catch (error) {
+    console.error('===== ERROR EN RECACHEO =====');
+    console.error('Error:', error);
+    console.log('Ejecutando ROLLBACK...');
     await pool.query('ROLLBACK');
-    console.error('Error recacheando producto Newton:', error);
-    return { success: false, message: 'Error recacheando producto Newton' };
+    console.log('ROLLBACK ejecutado');
+    return { success: false, message: 'Error recacheando producto Newton'};
   }
 });
