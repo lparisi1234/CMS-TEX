@@ -151,6 +151,12 @@ const tablas = {
                     required: true
                 },
                 {
+                    key: 'principal',
+                    label: 'Principal',
+                    type: 'boolean',
+                    required: true
+                },
+                {
                     key: 'segmentos_id',
                     label: 'Segmentos Excluidos',
                     type: 'checkbox-multiple',
