@@ -153,14 +153,14 @@ console.log('Secciones Array:', seccionesArray);
         
       }
     }
-    /*
-        // Eliminar itinerario existente y agregar el nuevo
-        const queryDeleteItinerario = `
-          DELETE FROM itinerario
-          WHERE producto_id = $1;
-        `;
-        await client.query(queryDeleteItinerario, [id]);
-    */
+
+    // Eliminar itinerario existente y agregar el nuevo
+    const queryDeleteItinerario = `
+      DELETE FROM itinerario
+      WHERE producto_id = $1;
+    `;
+    await pool.query(queryDeleteItinerario, [id]);
+
     if (itinerario && Array.isArray(itinerario) && itinerario.length > 0) {
       const queryInsertItinerario = `
         INSERT INTO itinerario (producto_id, nro_dia, titulo, texto) VALUES ($1, $2, $3, $4);
