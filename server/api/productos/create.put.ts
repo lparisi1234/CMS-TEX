@@ -290,7 +290,6 @@ export default defineEventHandler(async (event) => {
               );
               
               if (ciudadExiste.rows.length > 0) {
-                console.log('Insertando ciudad para tour:', codNewtonFinal, city.id);
                 await pool.query(insertCiudadTour, [codNewtonFinal, city.id]);
               } else {
                 console.log('Ciudad no encontrada en ciudades_newton, omitiendo:', city.id);

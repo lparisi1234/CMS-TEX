@@ -690,15 +690,11 @@ const handleRecachear = async () => {
             body: {
                 cod_newton: formData.value.cod_newton
             },
-            // IMPORTANTE: No lanzar error en respuestas HTTP 4xx/5xx
             ignoreResponseError: true
         })
 
-        console.log('Respuesta del recacheo:', response)
 
-        // ACTUALIZAR EL SWITCH DEL ESTADO SIEMPRE
         if (response && response.estado !== undefined) {
-            console.log('Actualizando estado a:', response.estado)
             formData.value.estado = response.estado
         }
 

@@ -93,6 +93,11 @@
                         :rows="3" :required="false" :error="modalErrors.productos" />
                 </FormFieldsContainer>
 
+                <FormFieldsContainer>
+                    <FormCheckboxGroupField id="modal-segmentos" v-model="modalSubgrupo.segmentos_excluidos"
+                        :options="segmentosOptions" label="Segmentos Excluidos" />
+                </FormFieldsContainer>
+
                 <div class="flex justify-center gap-5 mt-2">
                     <ButtonPrimary @click.prevent="closeModal('cancel-button')" type="button"
                         class="!bg-gray-mid !text-dark">
@@ -148,6 +153,8 @@ const emit = defineEmits(['submit', 'cancel', 'categoria-created'])
 
 const { success, error } = useNotification()
 
+const segmentosData = ref([])
+
 const tabs = [
     { id: 'detalle', label: 'Detalle' },
     { id: 'subgrupos', label: 'Subgrupos' }
@@ -160,7 +167,8 @@ const editingSubgrupoId = ref(null)
 const modalSubgrupo = ref({
     nombre: '',
     nro_orden: 1,
-    productos_text: ''
+    productos_text: '',
+    segmentos_excluidos: []
 })
 const modalErrors = ref({
     nombre: '',
@@ -198,8 +206,21 @@ const subgruposColumns = [
         label: 'Productos',
         type: 'array-ids',
         required: false
+    },
+    {
+        key: 'segmentos_excluidos',
+        label: 'Segmentos Excluidos',
+        type: 'text',
+        required: false
     }
 ]
+
+const segmentosOptions = computed(() => {
+    return segmentosData.value.map(segmento => ({
+        value: segmento.id,
+        label: segmento.descripcion
+    }))
+})
 
 const subgruposFromDb = ref([])
 
@@ -217,7 +238,17 @@ const displaySubgrupos = computed(() => {
             ? (subgrupo.productos_ids.length > 0
                 ? subgrupo.productos_ids.map(id => String(id)).join(' ')
                 : 'Sin productos')
-            : String(subgrupo.productos_ids || 'Sin productos')
+            : String(subgrupo.productos_ids || 'Sin productos'),
+        segmentos_excluidos: Array.isArray(subgrupo.segmentos_excluidos)
+            ? (subgrupo.segmentos_excluidos.length > 0
+                ? subgrupo.segmentos_excluidos
+                    .map(seg => {
+                        const segmento = segmentosData.value.find(s => s.id === seg)
+                        return segmento ? segmento.descripcion : String(seg)
+                    })
+                    .join(', ')
+                : 'Sin segmentos excluidos')
+            : 'Sin segmentos excluidos'
     }))
 })
 
@@ -510,6 +541,13 @@ defineExpose({
 })
 
 onMounted(async () => {
+    try {
+        const segmentos = await $fetch('/api/segmentos/segmentos')
+        segmentosData.value = segmentos || []
+    } catch (err) {
+        console.error('Error cargando segmentos:', err)
+        segmentosData.value = []
+    }
     await loadSubgrupos()
 })
 

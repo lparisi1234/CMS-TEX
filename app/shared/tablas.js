@@ -151,6 +151,12 @@ const tablas = {
                     required: true
                 },
                 {
+                    key: 'principal',
+                    label: 'Principal',
+                    type: 'boolean',
+                    required: true
+                },
+                {
                     key: 'segmentos_id',
                     label: 'Segmentos Excluidos',
                     type: 'checkbox-multiple',
@@ -507,7 +513,7 @@ const tablas = {
                     required: true
                 },
                 {
-                    key: 'codigo_newton',
+                    key: 'cod_newton',
                     label: 'Código Newton',
                     type: 'number',
                     required: true
@@ -1156,6 +1162,14 @@ const tablas = {
                     key: 'iata',
                     label: 'Código IATA',
                     type: 'text',
+                },
+                {
+                    key: 'nombres_alternativos_text',
+                    label: 'Nombres Alternativos (separados por coma)',
+                    type: 'textarea',
+                    required: false,
+                    fullWidth: true,
+                    placeholder: 'Ej: París, City of Light, La Ciudad de la Luz'
                 },
             ]
         }

@@ -49,7 +49,7 @@ export default defineEventHandler(async (event) => {
       );
             
       await pool.query('COMMIT');
-      console.log('COMMIT ejecutado');
+
       
       return { 
         success: false, 
@@ -61,7 +61,7 @@ export default defineEventHandler(async (event) => {
     
     // Si la respuesta es exitosa, actualizar el estado a true
     await pool.query(
-      'UPDATE producto SET estado = true WHERE cod_newton = $1',
+      'UPDATE productos SET estado = true WHERE cod_newton = $1',
       [codNewtonFinal]
     );
 
@@ -216,9 +216,7 @@ export default defineEventHandler(async (event) => {
   } catch (error) {
     console.error('===== ERROR EN RECACHEO =====');
     console.error('Error:', error);
-    console.log('Ejecutando ROLLBACK...');
     await pool.query('ROLLBACK');
-    console.log('ROLLBACK ejecutado');
     return { success: false, message: 'Error recacheando producto Newton'};
   }
 });
