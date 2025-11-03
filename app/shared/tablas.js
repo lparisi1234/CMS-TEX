@@ -513,7 +513,7 @@ const tablas = {
                     required: true
                 },
                 {
-                    key: 'codigo_newton',
+                    key: 'cod_newton',
                     label: 'Código Newton',
                     type: 'number',
                     required: true
