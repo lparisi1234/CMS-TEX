@@ -34,11 +34,12 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    await Promise.all([
+    // Ejecutar eliminación de imágenes sin esperar (fire and forget)
+    Promise.all([
       deleteImageFromS3(grupoOferta.img_desktop),
       deleteImageFromS3(grupoOferta.img_tablet),
       deleteImageFromS3(grupoOferta.img_mobile)
-    ])
+    ]).catch(err => console.warn('Error en eliminación de imágenes:', err))
 
     return { success: true, message: 'Grupo de oferta eliminado correctamente' }
   } catch (error) {
