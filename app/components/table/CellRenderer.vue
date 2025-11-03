@@ -1,7 +1,7 @@
 <template>
     <div v-if="column.type === 'image'" class="flex items-center justify-center">
         <div v-if="value && value.trim()" class="flex items-center justify-center">
-            <video v-if="isVideoFile(value)" :src="value" class="w-16 h-16 object-cover rounded-lg" controls />
+            <video v-if="isVideoFile(value)" :src="`${IMAGES_URL}${value}`" class="w-16 h-16 object-cover rounded-lg" controls />
             <img v-else :src="`${IMAGES_URL}${value}`" :alt="column.label" class="w-16 h-16 object-cover rounded-lg" />
         </div>
         <div v-else class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
