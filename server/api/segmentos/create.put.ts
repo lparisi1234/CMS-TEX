@@ -16,9 +16,7 @@ export default defineEventHandler(async (event) => {
 
     if (
       descripcion === undefined ||
-      txt_header === undefined ||
       txt_footer === undefined ||
-      vencimiento_header === undefined ||
       estado === undefined ||
       cod_newton === undefined ||
       moneda_id === undefined
