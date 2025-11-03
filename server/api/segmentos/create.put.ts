@@ -26,6 +26,9 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Faltan campos requeridos' }
     }
 
+    const vencimientoValue = vencimiento_header === '' || vencimiento_header === null ? null : vencimiento_header
+
+
     const query = `
       INSERT INTO segmentos (
         descripcion,
@@ -44,7 +47,7 @@ export default defineEventHandler(async (event) => {
       descripcion,
       txt_header,
       txt_footer,
-      vencimiento_header,
+      vencimientoValue,
       estado,
       cod_newton,
       moneda_id,
