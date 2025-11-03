@@ -34,7 +34,6 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Ejecutar eliminación de imágenes sin esperar (fire and forget)
     Promise.all([
       deleteImageFromS3(grupoOferta.img_desktop),
       deleteImageFromS3(grupoOferta.img_tablet),
