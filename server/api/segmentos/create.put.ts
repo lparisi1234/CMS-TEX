@@ -14,6 +14,19 @@ export default defineEventHandler(async (event) => {
       url
     } = await readBody(event)
 
+    console.log('Valor de vencimiento_header recibido:', vencimiento_header, typeof vencimiento_header);
+
+    // Procesar vencimiento_header
+    let fechaVencimiento = null;
+    if (vencimiento_header) {
+      try {
+        // Si es una fecha válida, la convertimos a formato ISO
+        fechaVencimiento = new Date(vencimiento_header).toISOString().split('T')[0];
+      } catch (e) {
+        console.error('Error procesando fecha:', e);
+      }
+    }
+
     if (
       descripcion === undefined ||
       txt_footer === undefined ||
@@ -42,7 +55,7 @@ export default defineEventHandler(async (event) => {
       descripcion,
       txt_header,
       txt_footer,
-      vencimiento_header,
+      fechaVencimiento,
       estado,
       cod_newton,
       moneda_id,
