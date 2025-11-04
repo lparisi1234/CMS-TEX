@@ -6,7 +6,6 @@ export default defineEventHandler(async (event) => {
     const {
       id,
       nombre,
-      nombre_alternativo,
       numero_telefono,
       img,
       pais_apertura,
@@ -34,18 +33,16 @@ export default defineEventHandler(async (event) => {
     const query = `
       UPDATE paises_operativos SET
         nombre = $1,
-        nombre_alternativo = $2,
-        numero_telefono = $3,
-        img = $4,
-        pais_apertura = $5,
-        segmentos_id = $6
-      WHERE id = $7
+        numero_telefono = $2,
+        img = $3,
+        pais_apertura = $4,
+        segmentos_id = $5
+      WHERE id = $6
       RETURNING *;
     `;
 
     const values = [
       nombre,
-      nombre_alternativo,
       numero_telefono,
       img,
       pais_apertura,
