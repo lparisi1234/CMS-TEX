@@ -375,7 +375,7 @@ const detailsColumns = [
     { key: 'precio_desde', label: 'Precio Desde', type: 'currency' },
     { key: 'experto_id', label: 'Experto', type: 'select' },
     { key: 'consejo_experto', label: 'Consejo del Experto', type: 'textarea', fullWidth: true },
-    { key: 'nombres_alternativos_text', label: 'Nombres Alternativos', type: 'textarea', fullWidth: true },
+    { key: 'nombre_alternativo', label: 'Nombres Alternativos', type: 'textarea', fullWidth: true },
 ]
 
 const detailsColumnChunks = computed(() => {
