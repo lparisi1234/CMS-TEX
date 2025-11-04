@@ -23,7 +23,6 @@ async function getSecret() {
     // Parsear el JSON del secret
     const secret = JSON.parse(response.SecretString);
 
-
     return secret;
   } catch (error) {
     console.error("Error obteniendo el secret:", error);
