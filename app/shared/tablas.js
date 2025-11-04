@@ -1169,7 +1169,6 @@ const tablas = {
                     type: 'textarea',
                     required: false,
                     fullWidth: true,
-                    placeholder: 'Ej: París, City of Light, La Ciudad de la Luz'
                 },
             ]
         }
