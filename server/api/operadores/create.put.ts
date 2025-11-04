@@ -13,6 +13,7 @@ export default defineEventHandler(async (event) => {
       txt_contacto,
       txt_cancelaciones,
       nomenclatura,
+      principales,
       segmentos_id // Cambiar de segmentos_excluidos a segmentos_id
     } = await readBody(event)
 
@@ -45,8 +46,9 @@ export default defineEventHandler(async (event) => {
           img,
           txt_contacto,
           txt_cancelaciones,
-          nomenclatura
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+          nomenclatura,
+          principales
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         RETURNING *;
       `;
 
@@ -59,7 +61,8 @@ export default defineEventHandler(async (event) => {
         img,
         txt_contacto,
         txt_cancelaciones,
-        nomenclatura
+        nomenclatura,
+        principales
       ];
 
       const result = await pool.query(query, values)

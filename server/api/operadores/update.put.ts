@@ -14,6 +14,7 @@ export default defineEventHandler(async (event) => {
       txt_contacto,
       txt_cancelaciones,
       nomenclatura,
+      principales,
       segmentos_id // Cambiar de segmentos_excluidos a segmentos_id
     } = await readBody(event)
 
@@ -54,8 +55,9 @@ export default defineEventHandler(async (event) => {
           img = $6,
           txt_contacto = $7,
           txt_cancelaciones = $8,
-          nomenclatura = $9
-        WHERE id = $10
+          nomenclatura = $9,
+          principales = $10
+        WHERE id = $11
         RETURNING *;
       `;
 
@@ -69,6 +71,7 @@ export default defineEventHandler(async (event) => {
         txt_contacto,
         txt_cancelaciones,
         nomenclatura,
+        principales,
         id
       ];
 

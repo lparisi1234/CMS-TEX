@@ -5,6 +5,7 @@ export default defineEventHandler(async (event) => {
     const pool = await getDbPool()
     const {
       nombre,
+      nombre_alternativo,
       numero_telefono,
       img,
       pais_apertura,
@@ -24,16 +25,18 @@ export default defineEventHandler(async (event) => {
     const query = `
       INSERT INTO paises_operativos (
         nombre,
+        nombre_alternativo,
         numero_telefono,
         img,
         pais_apertura,
         segmentos_id
-      ) VALUES ($1, $2, $3, $4, $5)
+      ) VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *;
     `;
 
     const values = [
       nombre,
+      nombre_alternativo,
       numero_telefono,
       img,
       pais_apertura,
