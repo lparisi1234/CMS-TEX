@@ -117,7 +117,6 @@ const tablas = {
                     label: 'Imagen',
                     type: 'image',
                     size: '140px x 60px',
-                    required: true
                 },
                 {
                     key: 'codigo',
