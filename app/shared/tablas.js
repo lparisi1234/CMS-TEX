@@ -151,7 +151,7 @@ const tablas = {
                     required: true
                 },
                 {
-                    key: 'principal',
+                    key: 'principales',
                     label: 'Principal',
                     type: 'boolean',
                     required: true
@@ -1164,7 +1164,7 @@ const tablas = {
                     type: 'text',
                 },
                 {
-                    key: 'nombres_alternativos_text',
+                    key: 'nombre_alternativo',
                     label: 'Nombres Alternativos (separados por coma)',
                     type: 'textarea',
                     required: false,

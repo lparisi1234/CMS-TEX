@@ -9,6 +9,7 @@ export default defineEventHandler(async (event) => {
       img,
       guia,
       nombre,
+      nombre_alternativo,
       estado,
       destino_id,
       iata
@@ -41,10 +42,11 @@ export default defineEventHandler(async (event) => {
         img = $2,
         guia = $3,
         nombre = $4,
-        estado = $5,
-        destino_id = $6,
-        iata = $7
-      WHERE id = $8
+        nombre_alternativo = $5,
+        estado = $6,
+        destino_id = $7,
+        iata = $8
+      WHERE id = $9
       RETURNING *;
     `;
 
@@ -53,6 +55,7 @@ export default defineEventHandler(async (event) => {
       img,
       guia,
       nombre,
+      nombre_alternativo,
       estado,
       destino_id,
       iata,
