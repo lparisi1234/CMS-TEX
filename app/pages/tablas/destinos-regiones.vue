@@ -143,6 +143,11 @@ const regionesColumns = [
         type: 'number'
     },
     {
+        key: 'nombre_alternativo',
+        label: 'Nombres Alternativos (separados por coma)',
+        type: 'textarea'
+    },
+    {
         key: 'subgrupos',
         label: 'Subgrupos',
         type: 'array'
