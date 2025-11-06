@@ -7,7 +7,8 @@ export default defineEventHandler(async (event) => {
       nombre,
       categoria_id,
       nro_orden,
-      productos_ids
+      productos_ids,
+      segmentos_excluidos
     } = await readBody(event)
 
     if (
@@ -23,19 +24,28 @@ export default defineEventHandler(async (event) => {
     try {
       await client.query('BEGIN')
 
+      // Convertir array de segmentos a integers
+      const segmentosArray = segmentos_excluidos && Array.isArray(segmentos_excluidos) 
+        ? segmentos_excluidos.map(seg => parseInt(seg)).filter(seg => !isNaN(seg))
+        : []
+
       const createSubgrupoQuery = `
         INSERT INTO subgrupos_cat (
           nombre,
           categoria_id,
-          nro_orden
+          nro_orden,
+          segmentos_id
         ) VALUES (
-          $1, $2, $3
+          $1, $2, $3, $4::integer[]
         ) RETURNING *;
       `
 
-      const subgrupoValues = [nombre, categoria_id, nro_orden]
+      const subgrupoValues = [nombre, categoria_id, nro_orden, segmentosArray]
       const subgrupoResult = await client.query(createSubgrupoQuery, subgrupoValues)
       const subgrupoCreado = subgrupoResult.rows[0]
+
+      const productosInsertados = []
+      const productosNoEncontrados = []
 
       if (productos_ids && productos_ids.length > 0) {
         const createRelacionQuery = `
@@ -48,8 +58,30 @@ export default defineEventHandler(async (event) => {
           );
         `
 
-        for (const producto_id of productos_ids) {
-          await client.query(createRelacionQuery, [producto_id, subgrupoCreado.id, null])
+        const findProductoQuery = `
+          SELECT p.id, CONCAT(pn.operador, '/', pn.tour_id) as codigo_completo
+          FROM productos p
+          JOIN producto_newton pn ON p.cod_newton = pn.tour_id
+          WHERE CONCAT(pn.operador, '/', pn.tour_id) = $1
+          LIMIT 1
+        `
+
+        for (const codigo_completo of productos_ids) {
+          const productoResult = await client.query(findProductoQuery, [String(codigo_completo)])
+          
+          if (productoResult.rows.length === 0) {
+            console.warn('⚠️ Producto no encontrado:', codigo_completo)
+            productosNoEncontrados.push(codigo_completo)
+            continue
+          }
+
+          const producto = productoResult.rows[0]
+          await client.query(createRelacionQuery, [producto.id, subgrupoCreado.id, null])
+          productosInsertados.push(producto.codigo_completo)
+        }
+
+        if (productosNoEncontrados.length > 0) {
+          console.warn(`⚠️ Productos no encontrados: ${productosNoEncontrados.join(', ')}`)
         }
       }
 
@@ -58,8 +90,12 @@ export default defineEventHandler(async (event) => {
       return { 
         success: true, 
         message: 'Subgrupo de categoría creado correctamente', 
-        subgrupo: subgrupoCreado,
-        productos_relacionados: productos_ids || []
+        subgrupo: {
+          ...subgrupoCreado,
+          productos_codigos: productosInsertados,
+          segmentos_excluidos: subgrupoCreado.segmentos_id || []
+        },
+        productos_no_encontrados: productosNoEncontrados
       }
 
     } catch (error) {

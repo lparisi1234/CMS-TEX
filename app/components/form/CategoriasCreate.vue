@@ -234,11 +234,11 @@ const displaySubgrupos = computed(() => {
 
     return subgrupos.map(subgrupo => ({
         ...subgrupo,
-        productos: Array.isArray(subgrupo.productos_ids)
-            ? (subgrupo.productos_ids.length > 0
-                ? subgrupo.productos_ids.map(id => String(id)).join(' ')
+        productos: Array.isArray(subgrupo.productos_codigos)
+            ? (subgrupo.productos_codigos.length > 0
+                ? subgrupo.productos_codigos.join(' ')
                 : 'Sin productos')
-            : String(subgrupo.productos_ids || 'Sin productos'),
+            : 'Sin productos',
         segmentos_excluidos: Array.isArray(subgrupo.segmentos_excluidos)
             ? (subgrupo.segmentos_excluidos.length > 0
                 ? subgrupo.segmentos_excluidos
@@ -324,18 +324,25 @@ const editSubgrupo = (subgrupo) => {
         }
 
         let productosText = ''
-        if (Array.isArray(originalSubgrupo.productos_ids)) {
-            productosText = originalSubgrupo.productos_ids.join(' ')
-        } else if (originalSubgrupo.productos_ids) {
-            productosText = String(originalSubgrupo.productos_ids)
+        if (Array.isArray(originalSubgrupo.productos_codigos)) {
+            productosText = originalSubgrupo.productos_codigos.join(' ')
+        } else if (originalSubgrupo.productos_codigos) {
+            productosText = String(originalSubgrupo.productos_codigos)
         }
+
+        // Asegurar que segmentos_excluidos sea un array de números
+        const segmentosExcluidos = Array.isArray(originalSubgrupo.segmentos_excluidos) 
+            ? originalSubgrupo.segmentos_excluidos.map(seg => parseInt(seg)).filter(seg => !isNaN(seg))
+            : (Array.isArray(originalSubgrupo.segmentos_id) 
+                ? originalSubgrupo.segmentos_id.map(seg => parseInt(seg)).filter(seg => !isNaN(seg))
+                : [])
 
         modalSubgrupo.value = {
             nombre: originalSubgrupo.nombre || '',
             nro_orden: nroOrden,
-            productos_text: productosText
+            productos_text: productosText,
+            segmentos_excluidos: segmentosExcluidos
         }
-
 
         modalErrors.value = {
             nombre: '',
@@ -407,6 +414,11 @@ const saveSubgrupo = async () => {
                 .filter(id => id.length > 0)
             : []
 
+        // Convertir segmentos_excluidos a array de números
+        const segmentos_excluidos = Array.isArray(modalSubgrupo.value.segmentos_excluidos)
+            ? modalSubgrupo.value.segmentos_excluidos.map(seg => parseInt(seg)).filter(seg => !isNaN(seg))
+            : []
+
         if (isEditingSubgrupo.value) {
             const originalSubgrupo = subgruposFromDb.value.find(s => s.id === editingSubgrupoId.value)
             const categoriaId = props.formData.id || originalSubgrupo?.categoria_id
@@ -416,9 +428,9 @@ const saveSubgrupo = async () => {
                 nombre: modalSubgrupo.value.nombre.trim(),
                 categoria_id: categoriaId,
                 nro_orden: parseInt(modalSubgrupo.value.nro_orden),
-                productos_ids: productos_ids
+                productos_ids: productos_ids,
+                segmentos_excluidos: segmentos_excluidos
             }
-
 
             if (!categoriaId) {
                 error('No se pudo obtener el ID de la categoría')
@@ -435,10 +447,8 @@ const saveSubgrupo = async () => {
                 body: subgrupoData
             })
 
-
             if (response.success) {
                 success('Subgrupo actualizado correctamente')
-                
                 await loadSubgrupos(true)
             } else {
                 error(response.message || 'Error actualizando subgrupo')
@@ -449,7 +459,8 @@ const saveSubgrupo = async () => {
                     nombre: modalSubgrupo.value.nombre.trim(),
                     categoria_id: props.formData.id,
                     nro_orden: parseInt(modalSubgrupo.value.nro_orden),
-                    productos_ids: productos_ids
+                    productos_ids: productos_ids,
+                    segmentos_excluidos: segmentos_excluidos
                 }
 
                 const response = await $fetch('/api/subgrupo-cat/create', {
@@ -459,17 +470,19 @@ const saveSubgrupo = async () => {
 
                 if (response.success) {
                     success('Subgrupo creado correctamente')
-
                     await loadSubgrupos(true)
                 } else {
                     error(response.message || 'Error creando subgrupo')
                 }
             } else {
+                // Cuando la categoría aún no está guardada
                 const subgrupoData = {
                     id: Date.now(),
                     nombre: modalSubgrupo.value.nombre.trim(),
                     nro_orden: parseInt(modalSubgrupo.value.nro_orden),
-                    productos_ids: productos_ids
+                    productos_ids: productos_ids,
+                    productos_codigos: productos_ids,
+                    segmentos_excluidos: segmentos_excluidos
                 }
 
                 if (!props.formData.subgrupos) {
@@ -478,7 +491,8 @@ const saveSubgrupo = async () => {
 
                 props.formData.subgrupos.push(subgrupoData)
                 
-                await loadSubgrupos()
+                // Actualizar directamente subgruposFromDb sin recargar
+                subgruposFromDb.value = [...props.formData.subgrupos]
             }
         }
 
