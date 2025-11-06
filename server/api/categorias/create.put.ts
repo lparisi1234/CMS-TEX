@@ -135,17 +135,37 @@ export default defineEventHandler(async (event) => {
           const subgrupoResult = await client.query(createSubgrupoQuery, subgrupoValues)
           const subgrupoCreado = subgrupoResult.rows[0]
           
+          // Aquí está el cambio: buscar el ID del producto usando el código
           if (subgrupo.productos_ids && Array.isArray(subgrupo.productos_ids) && subgrupo.productos_ids.length > 0) {
-            for (const producto_id of subgrupo.productos_ids) {
-              await client.query(`
-                INSERT INTO subgrupos_prod (
-                  producto_id,
-                  subgrupo_cat_id,
-                  subgrupo_dst_id
-                ) VALUES (
-                  $1, $2, $3
-                );
-              `, [producto_id, subgrupoCreado.id, null])
+            
+            const findProductoQuery = `
+              SELECT p.id, CONCAT(pn.operador, '/', pn.tour_id) as codigo_completo
+              FROM productos p
+              JOIN producto_newton pn ON p.cod_newton = pn.tour_id
+              WHERE CONCAT(pn.operador, '/', pn.tour_id) = $1
+              LIMIT 1
+            `
+
+            const insertRelacionQuery = `
+              INSERT INTO subgrupos_prod (
+                producto_id,
+                subgrupo_cat_id,
+                subgrupo_dst_id
+              ) VALUES (
+                $1, $2, $3
+              );
+            `
+
+            for (const codigo_completo of subgrupo.productos_ids) {
+              // Buscar el ID del producto usando el código "3/2500021"
+              const productoResult = await client.query(findProductoQuery, [String(codigo_completo)])
+
+              if (productoResult.rows.length === 0) {
+                continue
+              }
+
+              const producto = productoResult.rows[0]
+              await client.query(insertRelacionQuery, [producto.id, subgrupoCreado.id, null])
             }
           }
         }
