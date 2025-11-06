@@ -7,6 +7,7 @@ export default defineEventHandler(async (event) => {
       cod_newton,
       url,
       nombre,
+      nombre_alternativo,
       h1,
       h2,
       video_mobile,
@@ -41,6 +42,7 @@ export default defineEventHandler(async (event) => {
         cod_newton,
         url,
         nombre,
+        nombre_alternativo,
         h1,
         h2,
         video_mobile,
@@ -57,7 +59,7 @@ export default defineEventHandler(async (event) => {
         precio_desde,
         region_id
       ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19
       ) RETURNING *;
     `
 
@@ -65,6 +67,7 @@ export default defineEventHandler(async (event) => {
       cod_newton,
       url,
       nombre,
+      nombre_alternativo,
       h1,
       h2,
       video_mobile,
