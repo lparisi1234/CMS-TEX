@@ -809,7 +809,6 @@ const tablas = {
                     key: 'tour',
                     label: 'Tour',
                     type: 'text',
-                    required: true
                 },
                 {
                     key: 'img',
