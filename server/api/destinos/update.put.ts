@@ -96,23 +96,38 @@ export default defineEventHandler(async (event) => {
 
       const result = await client.query(query, values)
 
-      const updateRelatedProducts = async (tableName: string, products: string[]) => {
+      const updateRelatedProducts = async (tableName: string, productosCodigos: string[]) => {
+        // Eliminar productos existentes
         await client.query(`
           DELETE FROM ${tableName}
           WHERE destino_id = $1
         `, [id])
 
-        if (Array.isArray(products) && products.length > 0) {
-          const insertValues = products.map((productoId, index) => {
-            return `($1, $${index + 2})`
-          }).join(', ')
-
-          const insertQuery = `
-            INSERT INTO ${tableName} (destino_id, producto_id)
-            VALUES ${insertValues}
+        // Insertar nuevos productos
+        if (Array.isArray(productosCodigos) && productosCodigos.length > 0) {
+          const findProductoQuery = `
+            SELECT p.id, CONCAT(pn.operador, '/', pn.tour_id) as codigo_completo
+            FROM productos p
+            JOIN producto_newton pn ON p.cod_newton = pn.tour_id
+            WHERE CONCAT(pn.operador, '/', pn.tour_id) = $1
+            LIMIT 1
           `
 
-          await client.query(insertQuery, [id, ...products])
+          for (const codigo_completo of productosCodigos) {
+            const productoResult = await client.query(findProductoQuery, [String(codigo_completo)])
+            
+            if (productoResult.rows.length === 0) {
+              console.warn(`⚠️ Producto no encontrado en ${tableName}:`, codigo_completo)
+              continue
+            }
+
+            const producto = productoResult.rows[0]
+            
+            await client.query(`
+              INSERT INTO ${tableName} (destino_id, producto_id)
+              VALUES ($1, $2)
+            `, [id, producto.id])
+          }
         }
       }
 
