@@ -462,7 +462,8 @@ const getTablaEspecialData = (tipo, destinoId) => {
     if (!Array.isArray(sourceData)) return []
     return sourceData
         .filter(item => item.destino_id === destinoId)
-        .map(item => item.ProductoId)
+        .map(item => item.producto_codigo)
+        .filter(codigo => codigo)
 }
 
 const masVendidosDisplay = computed(() => {
@@ -518,26 +519,21 @@ const handleEditTablaEspecial = (tipo, item) => {
     currentTablaEspecial.value = tipo
     currentTablaEspecialName.value = item.nombre
 
+    // Forzar la carga de productos si están vacíos
     if (props.isEditing && props.editingData?.id) {
-        if (!formData.value.masVendidos || formData.value.masVendidos.length === 0) {
-            formData.value.masVendidos = masVendidosData.value
-                .filter(item => item.destino_id === props.editingData.id)
-                .map(item => item.ProductoId)
-        }
-
-        if (!formData.value.vueloIncluido || formData.value.vueloIncluido.length === 0) {
-            formData.value.vueloIncluido = vueloIncluidoData.value
-                .filter(item => item.destino_id === props.editingData.id)
-                .map(item => item.ProductoId)
-        }
-
-        if (!formData.value.recomendados || formData.value.recomendados.length === 0) {
-            formData.value.recomendados = recomendadosData.value
-                .filter(item => item.destino_id === props.editingData.id)
-                .map(item => item.ProductoId)
+        const productos = getTablaEspecialData(tipo, props.editingData.id)
+        
+        // Actualizar formData directamente
+        if (tipo === 'masVendidos' && productos.length > 0) {
+            formData.value.masVendidos = productos
+        } else if (tipo === 'vueloIncluido' && productos.length > 0) {
+            formData.value.vueloIncluido = productos
+        } else if (tipo === 'recomendados' && productos.length > 0) {
+            formData.value.recomendados = productos
         }
     }
 
+    // Cargar el texto del modal desde formData actualizado
     modalTablaEspecial.value.productos_text = formData.value[tipo]?.join(' ') || ''
     showTablaEspecialModal.value = true
 }
@@ -1073,7 +1069,7 @@ onMounted(async () => {
     await loadSubgrupos()
 })
 
-watch(() => props.editingData, (newData) => {
+watch(() => props.editingData, async (newData) => {
     if (newData && props.isEditing) {
         Object.keys(formData.value).forEach(key => {
             if (newData.hasOwnProperty(key)) {
@@ -1091,6 +1087,15 @@ watch(() => props.editingData, (newData) => {
 
         if (newData.id) {
             formData.value.id = newData.id
+            
+            // Cargar datos de las tablas especiales desde la base de datos
+            await nextTick()
+            await loadData() // Recargar masVendidosData, vueloIncluidoData, recomendadosData
+            
+            // Cargar los productos específicos de este destino
+            formData.value.masVendidos = getTablaEspecialData('masVendidos', newData.id)
+            formData.value.vueloIncluido = getTablaEspecialData('vueloIncluido', newData.id)
+            formData.value.recomendados = getTablaEspecialData('recomendados', newData.id)
         }
 
         if (newData.subgrupos) {
@@ -1100,9 +1105,11 @@ watch(() => props.editingData, (newData) => {
     }
 }, { immediate: true })
 
-watch(() => formData.value.subgrupos, async (newSubgrupos) => {
-    if (newSubgrupos && Array.isArray(newSubgrupos)) {
-        await loadSubgrupos()
-    }
-}, { immediate: true, deep: true })
+// REMOVER ESTE WATCH - está causando el loop infinito
+// watch(() => formData.value.subgrupos, async (newSubgrupos) => {
+//     if (newSubgrupos && Array.isArray(newSubgrupos)) {
+//         await loadSubgrupos()
+//     }
+// }, { immediate: true, deep: true })
+
 </script>

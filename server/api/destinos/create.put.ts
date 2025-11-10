@@ -99,22 +99,29 @@ export default defineEventHandler(async (event) => {
             INSERT INTO subgrupos_dst (
               nombre,
               destino_id,
-              nro_orden
+              nro_orden,
+              segmentos_id
             ) VALUES (
-              $1, $2, $3
+              $1, $2, $3, $4::integer[]
             ) RETURNING *;
           `
+          
+          // Convertir array de segmentos a integers
+          const segmentosArray = subgrupo.segmentos_excluidos && Array.isArray(subgrupo.segmentos_excluidos) 
+            ? subgrupo.segmentos_excluidos.map((seg: string) => parseInt(seg)).filter((seg: number) => !isNaN(seg))
+            : []
           
           const subgrupoValues = [
             subgrupo.nombre,
             destinoCreado.id,
-            subgrupo.nro_orden
+            subgrupo.nro_orden,
+            segmentosArray
           ]
           
           const subgrupoResult = await client.query(createSubgrupoQuery, subgrupoValues)
           const subgrupoCreado = subgrupoResult.rows[0]
           
-          // Aquí está el cambio: buscar el ID del producto usando el código
+          // Buscar el ID del producto usando el código
           if (subgrupo.productos_ids && Array.isArray(subgrupo.productos_ids) && subgrupo.productos_ids.length > 0) {
             
             const findProductoQuery = `
@@ -151,21 +158,39 @@ export default defineEventHandler(async (event) => {
         }
       }
 
-      const insertListItems = async (tableName: string, productos: any[] | undefined) => {
-        if (!productos || !Array.isArray(productos)) return
-        for (const productoId of productos) {
+      // NUEVA FUNCIÓN: Buscar producto por código antes de insertar
+      const insertRelatedProducts = async (tableName: string, productosCodigos: string[] | undefined) => {
+        if (!productosCodigos || !Array.isArray(productosCodigos) || productosCodigos.length === 0) return
+        
+        const findProductoQuery = `
+          SELECT p.id, CONCAT(pn.operador, '/', pn.tour_id) as codigo_completo
+          FROM productos p
+          JOIN producto_newton pn ON p.cod_newton = pn.tour_id
+          WHERE CONCAT(pn.operador, '/', pn.tour_id) = $1
+          LIMIT 1
+        `
+        
+        for (const codigo_completo of productosCodigos) {
+          const productoResult = await client.query(findProductoQuery, [String(codigo_completo)])
+          
+          if (productoResult.rows.length === 0) {
+            console.warn(`⚠️ Producto no encontrado en ${tableName}:`, codigo_completo)
+            continue
+          }
+
+          const producto = productoResult.rows[0]
+          
           await client.query(`
-            INSERT INTO "${tableName}" (
-              "ProductoId",
-              destino_id
-            ) VALUES ($1, $2);
-          `, [productoId, destinoCreado.id])
+            INSERT INTO ${tableName} (destino_id, producto_id)
+            VALUES ($1, $2)
+          `, [destinoCreado.id, producto.id])
         }
       }
 
-      await insertListItems('MasVendidos_dst', masVendidos)
-      await insertListItems('VuelosIncluidos_dst', vueloIncluido)
-      await insertListItems('Recomendados_dst', recomendados)
+      // Insertar productos en las tablas especiales
+      await insertRelatedProducts('mas_vendidos_dst', masVendidos)
+      await insertRelatedProducts('vuelos_incluidos_dst', vueloIncluido)
+      await insertRelatedProducts('recomendados_dst', recomendados)
       
       await client.query('COMMIT')
       return { success: true, message: 'Destino creado correctamente', destino: destinoCreado }
