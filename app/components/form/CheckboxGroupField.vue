@@ -69,20 +69,48 @@ const selectedValues = computed(() => {
     return []
 })
 
+// Comparar valores de forma flexible (número vs string)
 const isOptionSelected = (value) => {
-    return selectedValues.value.includes(value.toString())
+    return selectedValues.value.some(v => {
+        // Comparar como números si ambos son convertibles a número
+        const vNum = Number(v)
+        const valueNum = Number(value)
+        if (!isNaN(vNum) && !isNaN(valueNum)) {
+            return vNum === valueNum
+        }
+        // Si no, comparar como strings
+        return String(v) === String(value)
+    })
 }
 
 const handleOptionChange = (value, checked) => {
     let newValues = [...selectedValues.value]
-    const valueStr = value.toString()
-
+    
     if (checked) {
-        if (!newValues.includes(valueStr)) {
-            newValues.push(valueStr)
+        // Agregar si no existe (comparando de forma flexible)
+        const exists = newValues.some(v => {
+            const vNum = Number(v)
+            const valueNum = Number(value)
+            if (!isNaN(vNum) && !isNaN(valueNum)) {
+                return vNum === valueNum
+            }
+            return String(v) === String(value)
+        })
+        
+        if (!exists) {
+            // Mantener el tipo del valor original (número si es número)
+            newValues.push(typeof value === 'number' ? value : Number(value))
         }
     } else {
-        newValues = newValues.filter(v => v !== valueStr)
+        // Quitar (comparando de forma flexible)
+        newValues = newValues.filter(v => {
+            const vNum = Number(v)
+            const valueNum = Number(value)
+            if (!isNaN(vNum) && !isNaN(valueNum)) {
+                return vNum !== valueNum
+            }
+            return String(v) !== String(value)
+        })
     }
 
     emit('update:modelValue', newValues)
