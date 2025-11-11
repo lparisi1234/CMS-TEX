@@ -1,5 +1,45 @@
 import getDbPool from "../../db"
 
+/**
+ * Convierte un texto en un slug URL-friendly
+ * Ejemplo: "Europa Turista 3" -> "europa-turista-3"
+ */
+function generateSlug(text: string): string {
+  if (!text) return '';
+  
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    // Reemplazar caracteres especiales y acentos
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    // Reemplazar espacios y caracteres no alfanuméricos con guiones
+    .replace(/[^a-z0-9]+/g, '-')
+    // Eliminar guiones múltiples
+    .replace(/-+/g, '-')
+    // Eliminar guiones al inicio y final
+    .replace(/^-+|-+$/g, '');
+}
+
+/**
+ * Genera las URLs para un tour
+ * @param {string} tourName - Nombre del tour
+ * @param {string} gdsProviderId - ID del proveedor GDS
+ * @param {string} tourId - ID del tour
+ * @returns {object} { urlSeo, urlById, uniqueId }
+ */
+function generateTourUrls(tourName: string, gdsProviderId: number, tourId: string) {
+  const slug = generateSlug(tourName);
+  const uniqueId = `${gdsProviderId}/${tourId}`;  // ID único compuesto
+  
+  return {
+    urlSeo: `${slug}-${uniqueId}`,           // URL visible: europa-turista-3-123-1234
+    urlById: `${uniqueId}`,                   // URL alternativa: 123-1234
+    uniqueId: uniqueId                        // Para referencia
+  };
+}
+
 export default defineEventHandler(async (event) => {
   const pool = await getDbPool();
   
@@ -92,7 +132,17 @@ export default defineEventHandler(async (event) => {
       randomImageUrl = allImages[randomIndex].url;
     }
 
-    // Actualizar producto_newton
+    // ========================================
+    // GENERAR URLs SEO CON ID ÚNICO COMPUESTO
+    // ========================================
+    const { urlSeo, urlById, uniqueId } = generateTourUrls(
+      productoNewtonData.data.name, 
+      operadorId!, 
+      codNewtonFinal
+    );
+    console.log(`URLs generadas - Unique ID: ${uniqueId} | SEO: ${urlSeo} | Por ID: ${urlById}`);
+
+    // Actualizar producto_newton (sin actualizar main_image)
     const updateProductoNewton = `
       UPDATE producto_newton SET
         name = $1,
@@ -105,14 +155,13 @@ export default defineEventHandler(async (event) => {
         moneda = $8,
         featured = $9,
         recomended = $10,
-        main_image = $11,
-        start_city = $12,
-        end_city = $13,
-        departure_month = $14,
-        included = $15,
-        not_included = $16,
-        observations = $17
-      WHERE tour_id = $18 AND operador = $19
+        start_city = $11,
+        end_city = $12,
+        departure_month = $13,
+        included = $14,
+        not_included = $15,
+        observations = $16
+      WHERE tour_id = $17 AND operador = $18
       RETURNING *;
     `;
 
@@ -127,7 +176,6 @@ export default defineEventHandler(async (event) => {
       productoNewtonData.data.currency.code || null,
       productoNewtonData.data.featured || false,
       productoNewtonData.data.recommended || false,
-      randomImageUrl,
       startCity,
       endCity,
       productoNewtonData.data.firstDeparture || null,
@@ -198,10 +246,27 @@ export default defineEventHandler(async (event) => {
       }
     }
     
-    const updateResult = await pool.query(
-      'UPDATE productos SET estado = $1 WHERE cod_newton = $2 RETURNING *',
-      [true, codNewtonFinal]
-    );
+    // ========================================
+    // INSERTAR/ACTUALIZAR PRODUCTOS CON URLs (sin actualizar imagen_mobile en UPDATE)
+    // ========================================
+    const upsertProducto = `
+      INSERT INTO productos (cod_newton, nombreprod, url, url_alternativa, imagen_mobile, estado)
+      VALUES ($1, $2, $3, $4, $5, true)
+      ON CONFLICT (cod_newton) DO UPDATE SET
+        nombreprod = EXCLUDED.nombreprod,
+        url = EXCLUDED.url,
+        url_alternativa = EXCLUDED.url_alternativa,
+        estado = true
+      RETURNING *;
+    `;
+
+    const updateResult = await pool.query(upsertProducto, [
+      codNewtonFinal,
+      productoNewtonData.data.name || '',
+      urlSeo,
+      urlById,
+      randomImageUrl  // Solo se usa en INSERT, no en UPDATE
+    ]);
     
     await pool.query('COMMIT');
 
@@ -210,6 +275,8 @@ export default defineEventHandler(async (event) => {
       message: 'Producto Newton recacheado correctamente',
       cod_newton: codNewtonFinal,
       estado: true,
+      url: urlSeo,
+      url_alternativa: urlById,
       rowsUpdated: updateResult.rowCount
     };
 
