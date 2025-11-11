@@ -250,7 +250,7 @@ export default defineEventHandler(async (event) => {
     // INSERTAR/ACTUALIZAR PRODUCTOS CON URLs (sin actualizar imagen_mobile en UPDATE)
     // ========================================
     const upsertProducto = `
-      INSERT INTO productos (cod_newton, nombreprod, url, url_alternativa, imagen_mobile, estado)
+      INSERT INTO productos (cod_newton, nombreprod, url, url_alternativa, estado)
       VALUES ($1, $2, $3, $4, $5, true)
       ON CONFLICT (cod_newton) DO UPDATE SET
         nombreprod = EXCLUDED.nombreprod,
@@ -264,8 +264,7 @@ export default defineEventHandler(async (event) => {
       codNewtonFinal,
       productoNewtonData.data.name || '',
       urlSeo,
-      urlById,
-      randomImageUrl  // Solo se usa en INSERT, no en UPDATE
+      urlById
     ]);
     
     await pool.query('COMMIT');
