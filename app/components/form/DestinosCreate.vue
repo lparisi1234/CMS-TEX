@@ -399,7 +399,7 @@ const expertosOptions = computed(() => {
 
 const segmentosOptions = computed(() => {
     return segmentosData.value.map(segmento => ({
-        value: segmento.id,
+        value: parseInt(segmento.id), // ← Asegurar que sea número
         label: segmento.descripcion
     }))
 })
@@ -649,7 +649,7 @@ const displaySubgrupos = computed(() => {
             : 'Sin productos',
         segmentos_excluidos: Array.isArray(subgrupo.segmentos_excluidos)
             ? (subgrupo.segmentos_excluidos.length > 0
-                ? subgrupo.segmentos_excluidos
+                ? [...new Set(subgrupo.segmentos_excluidos)] // ← Eliminar duplicados
                     .map(seg => {
                         const segmento = segmentosData.value.find(s => s.id === seg)
                         return segmento ? segmento.descripcion : String(seg)
@@ -745,6 +745,13 @@ const editSubgrupo = (subgrupo) => {
             ? originalSubgrupo.segmentos_id.map(seg => parseInt(seg)).filter(seg => !isNaN(seg))
             : [])
 
+    console.log('🔍 Editando subgrupo:', {
+        nombre: originalSubgrupo.nombre,
+        segmentos_excluidos: segmentosExcluidos,
+        segmentos_id: originalSubgrupo.segmentos_id,
+        segmentosOptions: segmentosOptions.value
+    })
+
     modalSubgrupo.value = {
         nombre: originalSubgrupo.nombre || '',
         nro_orden: nroOrden,
@@ -759,6 +766,11 @@ const editSubgrupo = (subgrupo) => {
     }
 
     showModal.value = true
+    
+    // Forzar re-render después de un tick
+    nextTick(() => {
+        console.log('✅ Modal abierto con valores:', modalSubgrupo.value)
+    })
 }
 
 const closeModal = () => {
@@ -1105,11 +1117,10 @@ watch(() => props.editingData, async (newData) => {
     }
 }, { immediate: true })
 
-// REMOVER ESTE WATCH - está causando el loop infinito
+
 // watch(() => formData.value.subgrupos, async (newSubgrupos) => {
 //     if (newSubgrupos && Array.isArray(newSubgrupos)) {
 //         await loadSubgrupos()
 //     }
 // }, { immediate: true, deep: true })
-
 </script>
