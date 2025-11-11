@@ -32,6 +32,7 @@ async function getSecret() {
 
 let pool;
 
+
 // Función para crear el pool de conexiones
 async function getDbPool() {
   if (!pool) {
