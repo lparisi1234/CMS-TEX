@@ -53,6 +53,7 @@ export default defineEventHandler(async (event) => {
     let codNewtonFinal = cod_newton;
     let operadorId: number | null = null;
 
+    // Extraer operador y código del formato "operador/tourId"
     if (typeof cod_newton === 'string' && cod_newton.includes('/')) {
       const [operador, codigo] = cod_newton.split('/');
       if (operador && codigo) {
@@ -61,8 +62,11 @@ export default defineEventHandler(async (event) => {
       }
     }
 
+    console.log(`Buscando producto: tour_id=${codNewtonFinal}, operador=${operadorId}`);
+
     await pool.query('BEGIN');
-    // Verificar que el producto existe
+    
+    // Verificar que el producto existe en producto_newton
     const checkProductoNewton = await pool.query(
       'SELECT * FROM producto_newton WHERE tour_id = $1 AND operador = $2',
       [codNewtonFinal, operadorId]
@@ -72,16 +76,19 @@ export default defineEventHandler(async (event) => {
       await pool.query('ROLLBACK');
       return { 
         success: false, 
-        message: 'Producto Newton no encontrado en la base de datos' 
+        message: `Producto Newton no encontrado en la base de datos (tour_id: ${codNewtonFinal}, operador: ${operadorId})` 
       };
     }
 
-    // Obtener datos actualizados de la API
+    // Obtener datos actualizados de la API usando el cod_newton completo
     const apiUrl = `https://preprod.vietur.com.ar/api/api-tour/${cod_newton}?token=6ff20176e662661d5f1577bc9b3e02fa&currency=USD&simplified=1`;
-        
+    
+    console.log(`Consultando API: ${apiUrl}`);
+    
     const response = await fetch(apiUrl);
     
     if (!response.ok) {
+      console.error(`Error API: ${response.status} ${response.statusText}`);
       
       const updateResult = await pool.query(
         'UPDATE productos SET estado = $1 WHERE cod_newton = $2',
@@ -89,7 +96,6 @@ export default defineEventHandler(async (event) => {
       );
             
       await pool.query('COMMIT');
-
       
       return { 
         success: false, 
@@ -98,12 +104,6 @@ export default defineEventHandler(async (event) => {
         rowsUpdated: updateResult.rowCount
       };
     }
-    
-    // Si la respuesta es exitosa, actualizar el estado a true
-    await pool.query(
-      'UPDATE productos SET estado = true WHERE cod_newton = $1',
-      [codNewtonFinal]
-    );
 
     const productoNewtonData = await response.json();
     
@@ -247,11 +247,11 @@ export default defineEventHandler(async (event) => {
     }
     
     // ========================================
-    // INSERTAR/ACTUALIZAR PRODUCTOS CON URLs (sin actualizar imagen_mobile en UPDATE)
+    // INSERTAR/ACTUALIZAR PRODUCTOS CON URLs
     // ========================================
     const upsertProducto = `
       INSERT INTO productos (cod_newton, nombreprod, url, url_alternativa, estado)
-      VALUES ($1, $2, $3, $4, $5, true)
+      VALUES ($1, $2, $3, $4, true)
       ON CONFLICT (cod_newton) DO UPDATE SET
         nombreprod = EXCLUDED.nombreprod,
         url = EXCLUDED.url,
