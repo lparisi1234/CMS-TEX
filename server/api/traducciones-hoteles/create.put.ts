@@ -8,7 +8,8 @@ export default defineEventHandler(async (event) => {
       nombre_original,
       traduccion,
       operador_id,
-      estado
+      estado,
+      turismocity
     } = await readBody(event)
 
     if (
@@ -25,8 +26,9 @@ export default defineEventHandler(async (event) => {
         nombre_original,
         traduccion,
         operador_id,
-        estado
-      ) VALUES ($1, $2, $3, $4)
+        estado,
+        turismocity
+      ) VALUES ($1, $2, $3, $4, $5)
       RETURNING *;
     `;
 
@@ -34,7 +36,8 @@ export default defineEventHandler(async (event) => {
       nombre_original,
       traduccion,
       operador_id,
-      estado
+      estado,
+      turismocity
     ];
 
     const result = await pool.query(query, values)

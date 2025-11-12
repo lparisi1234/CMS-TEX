@@ -8,7 +8,8 @@ export default defineEventHandler(async (event) => {
       nombre_original,
       traduccion,
       operador_id,
-      estado
+      estado,
+      turismocity
     } = await readBody(event)
 
     if (
@@ -26,8 +27,9 @@ export default defineEventHandler(async (event) => {
         nombre_original = $1,
         traduccion = $2,
         operador_id = $3,
-        estado = $4
-      WHERE id = $5 
+        estado = $4,
+        turismocity = $5
+      WHERE id = $6 
       RETURNING *;
     `;
 
@@ -36,6 +38,7 @@ export default defineEventHandler(async (event) => {
       traduccion,
       operador_id,
       estado,
+      turismocity,
       id
     ];
 
