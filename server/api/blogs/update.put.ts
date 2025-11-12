@@ -36,8 +36,6 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: 'Blog no encontrado' }
     }
 
-
-
     const query = `
       UPDATE nota_blog SET
         autor = $1,
@@ -61,9 +59,9 @@ export default defineEventHandler(async (event) => {
       estado,
       titulo,
       destacado_home,
-      categoria_id,
-      destino_id,
-      nro_orden,
+      categoria_id === '' || categoria_id === undefined ? null : categoria_id,
+      destino_id === '' || destino_id === undefined ? null : destino_id,
+      nro_orden === '' || nro_orden === undefined ? null : nro_orden,
       url,
       id
     ];
