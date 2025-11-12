@@ -1105,6 +1105,11 @@ const tablas = {
                     required: true
                 },
                 {
+                    key: 'turismocity',
+                    label: 'Turismocity',
+                    type: 'text',
+                },
+                {
                     key: 'estado',
                     label: 'Estado',
                     type: 'boolean',
