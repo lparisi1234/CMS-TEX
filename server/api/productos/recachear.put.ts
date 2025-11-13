@@ -22,13 +22,7 @@ function generateSlug(text: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
-/**
- * Genera las URLs para un tour
- * @param {string} tourName - Nombre del tour
- * @param {string} gdsProviderId - ID del proveedor GDS
- * @param {string} tourId - ID del tour
- * @returns {object} { urlSeo, urlById, uniqueId }
- */
+
 function generateTourUrls(tourName: string, gdsProviderId: number, tourId: string) {
   const slug = generateSlug(tourName);
   const uniqueId = `${gdsProviderId}/${tourId}`;  // ID único compuesto
@@ -107,6 +101,7 @@ export default defineEventHandler(async (event) => {
 
     const productoNewtonData = await response.json();
     
+   
     // Procesar itinerario para obtener ciudades
     const itinerary = productoNewtonData.data.itinerary || [];
     let startCity = null;
@@ -249,22 +244,27 @@ export default defineEventHandler(async (event) => {
     // ========================================
     // INSERTAR/ACTUALIZAR PRODUCTOS CON URLs
     // ========================================
+    // Validar si hay departures disponibles
+    const departures = productoNewtonData.data.departures || [];
+    const tieneSalidas = departures.length > 0;
+    
     const upsertProducto = `
       INSERT INTO productos (cod_newton, nombreprod, url, url_alternativa, estado)
-      VALUES ($1, $2, $3, $4, true)
+      VALUES ($1, $2, $3, $4, $5)
       ON CONFLICT (cod_newton) DO UPDATE SET
         nombreprod = EXCLUDED.nombreprod,
         url = EXCLUDED.url,
         url_alternativa = EXCLUDED.url_alternativa,
-        estado = true
+        estado = EXCLUDED.estado
       RETURNING *;
     `;
-
+    
     const updateResult = await pool.query(upsertProducto, [
       codNewtonFinal,
       productoNewtonData.data.name || '',
       urlSeo,
-      urlById
+      urlById,
+      tieneSalidas
     ]);
     
     await pool.query('COMMIT');
