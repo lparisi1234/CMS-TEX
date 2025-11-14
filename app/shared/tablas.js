@@ -789,6 +789,19 @@ const tablas = {
                     size: '30px x 30px',
                     required: true
                 },
+                {
+                    key: 'region_id',
+                    label: 'Región',
+                    type: 'select',
+                    relatedTable: 'destinos'
+                },
+                {
+                    key: 'destinos_id',
+                    label: 'Destinos',
+                    type: 'checkbox-multiple',
+                    relatedTable: 'destinos',
+                    dependsOn: 'region_id'
+                },
             ]
         },
         {
