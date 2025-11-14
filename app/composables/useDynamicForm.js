@@ -136,7 +136,46 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
                 try {
                     const valueField = column.valueField || 'id'
                     const displayField = column.displayField || null
-                    const options = await getRelatedTableData(column.relatedTable, valueField, displayField)
+                    let options = await getRelatedTableData(column.relatedTable, valueField, displayField)
+
+                    // Filtro especial para regiones (destinos sin region_id)
+                    if (column.key === 'region_id' && column.relatedTable === 'destinos') {
+                        try {
+                            const response = await $fetch(`/api/destinos/destinos`)
+                            let allDestinos = response || []
+
+                            // Si el endpoint devolvió datos vacíos, usar fallback
+                            if (allDestinos.length === 0) {
+                                try {
+                                    const { default: destinosLocales } = await import('~/shared/destinos/destinos.js')
+                                    allDestinos = destinosLocales || []
+                                } catch (e) {
+                                    console.warn('No se pudo cargar fallback de destinos:', e)
+                                }
+                            }
+
+                            const regionesOnly = allDestinos.filter(d => !d.region_id)
+                            options = regionesOnly.map(item => ({
+                                value: String(item.id),
+                                label: getDisplayLabel(item, tabla, displayField)
+                            }))
+                        } catch (err) {
+                            console.error('Error cargando regiones:', err)
+                            // Fallback: usar datos locales
+                            try {
+                                const { default: destinosLocales } = await import('~/shared/destinos/destinos.js')
+                                const regionesOnly = (destinosLocales || []).filter(d => !d.region_id)
+                                options = regionesOnly.map(item => ({
+                                    value: String(item.id),
+                                    label: getDisplayLabel(item, tabla, displayField)
+                                }))
+                            } catch (e) {
+                                console.error('No se pudo usar fallback:', e)
+                                options = []
+                            }
+                        }
+                    }
+
                     selectOptions.value[column.key] = options
                 } catch (error) {
                     console.error(`Error cargando opciones para ${column.key}:`, error)
@@ -145,6 +184,66 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
                     loadingOptions.value[column.key] = false
                 }
             }
+        }
+    }
+
+    const filterOptionsByParent = (column, allData) => {
+        if (!column.dependsOn) return allData
+
+        const parentValue = formData.value[column.dependsOn]
+        if (!parentValue) return []
+
+        // Filtrar datos que tengan el region_id igual al valor seleccionado
+        return allData.filter(item => item.region_id == parentValue || item.parent_id == parentValue)
+    }
+
+    const loadSelectOptionsForColumn = async (column) => {
+        if (!column.relatedTable) return
+
+        loadingOptions.value[column.key] = true
+
+        try {
+            const tabla = findTableBySlug(column.relatedTable)
+            if (!tabla) {
+                console.warn(`No se encontró configuración para la tabla: ${column.relatedTable}`)
+                loadingOptions.value[column.key] = false
+                return
+            }
+
+            let allData = []
+
+            // Intentar con el endpoint
+            try {
+                const response = await $fetch(`/api/${tabla.endpoint}`)
+                allData = response || []
+            } catch (err) {
+                console.warn(`Error en endpoint ${tabla.endpoint}`)
+            }
+
+            // Si el endpoint devolvió datos vacíos, usar fallback
+            if (allData.length === 0 && column.relatedTable === 'destinos') {
+                try {
+                    const { default: destinosLocales } = await import('~/shared/destinos/destinos.js')
+                    allData = destinosLocales || []
+                } catch (e) {
+                    console.error('Error cargando fallback:', e)
+                }
+            }
+
+            // Si el campo tiene dependencia, filtrar los datos
+            const filteredData = filterOptionsByParent(column, allData)
+
+            const options = filteredData.map(item => ({
+                value: String(item.id),
+                label: getDisplayLabel(item, tabla, column.displayField)
+            }))
+
+            selectOptions.value[column.key] = options
+        } catch (error) {
+            console.error(`Error cargando opciones para ${column.key}:`, error)
+            selectOptions.value[column.key] = []
+        } finally {
+            loadingOptions.value[column.key] = false
         }
     }
 
@@ -285,7 +384,7 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
         try {
             const dataToSubmit = prepareDataForSubmit()
             const endpointBase = tabla.endpoint.split('/')[0]
-            
+
             await $fetch(`/api/${endpointBase}/update`, {
                 method: 'PUT',
                 body: { ...dataToSubmit, id: itemId }
@@ -302,6 +401,34 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
         }
     }
 
+    // Watchers para campos dependientes
+    const setupDependentFieldWatchers = () => {
+        if (!tabla?.columns) return
+
+        tabla.columns.forEach(column => {
+            if (column.dependsOn) {
+                watch(
+                    () => formData.value[column.dependsOn],
+                    async (newValue) => {
+                        if (newValue) {
+                            // Limpiar selección anterior cuando cambia el padre
+                            formData.value[column.key] = []
+                            // Recargar opciones filtradas
+                            await loadSelectOptionsForColumn(column)
+                        } else {
+                            selectOptions.value[column.key] = []
+                        }
+                    }
+                )
+            }
+        })
+    }
+
+    // Usar onMounted para configurar los watchers después de cargar las opciones
+    onMounted(() => {
+        setupDependentFieldWatchers()
+    })
+
     return {
         formData,
         errors,
@@ -316,6 +443,7 @@ export const useDynamicForm = (tablaSlug, itemId = null) => {
 
         initializeFormData,
         loadSelectOptions,
+        loadSelectOptionsForColumn,
         loadExistingData,
         validateForm,
         prepareDataForSubmit,
