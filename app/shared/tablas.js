@@ -30,6 +30,11 @@ const tablas = {
                     type: 'date'
                 },
                 {
+                    key: 'link_header',
+                    label: 'Link Header',
+                    type: 'text',
+                },
+                {
                     key: 'txt_footer',
                     label: 'Texto Footer',
                     type: 'text',
