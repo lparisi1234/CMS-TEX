@@ -430,14 +430,12 @@ const seccionOptions = computed(() => {
     if (!paginaSeleccionada) return []
 
     if (paginaSeleccionada.id === 2) {
-        // Grupos de ofertas
         return seccionesData.value.map(grupo => ({
             value: grupo.titulo,
             label: grupo.titulo,
             id: grupo.id
         }))
     }
-    // Secciones normales
     return seccionesData.value
         .filter(s => s.pagina_id === paginaSeleccionada.id)
         .map(s => ({
@@ -576,7 +574,6 @@ const handleSeccionModalBackgroundClick = (event) => {
 const saveSeccion = () => {
     if (!modalSeccion.value.pagina || !modalSeccion.value.seccion) return
 
-    // Buscar por ambos campos
     const seccionSeleccionada = seccionesData.value.find(s =>
         s.texto === modalSeccion.value.seccion || s.titulo === modalSeccion.value.seccion
     )
@@ -752,7 +749,6 @@ const handleSubmit = async () => {
             dataToSubmit.id = `3/${lastDigits}`
         }
 
-        // Convertir estado a 1 o 0 SIEMPRE (para crear y editar)
         dataToSubmit.estado = dataToSubmit.estado ? 1 : 0
 
         dataToSubmit.cantidad_estrellas = parseInt(dataToSubmit.cantidad_estrellas) || 5

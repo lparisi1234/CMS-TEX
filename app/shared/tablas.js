@@ -53,6 +53,32 @@ const tablas = {
                     label: 'URL',
                     type: 'text'
                 },
+                {
+                    key: 'h1_catalogo',
+                    label: 'H1 Catálogo',
+                    type: 'text',
+                    required: true
+                },
+                {
+                    key: 'title_catalogo',
+                    label: 'Title Catálogo',
+                    type: 'text',
+                    required: true
+                },
+                {
+                    key: 'descripcion_catalogo',
+                    label: 'Descripción Catálogo',
+                    type: 'textarea',
+                    required: true,
+                    fullWidth: true
+                },
+                {
+                    key: 'meta_descripcion_catalogo',
+                    label: 'Meta Descripción Catálogo',
+                    type: 'textarea',
+                    required: true,
+                    fullWidth: true
+                },
             ]
         },
         {
@@ -711,6 +737,61 @@ const tablas = {
             ]
         },
         {
+            name: 'Landings Campañas',
+            slug: 'landings-campanas',
+            icon: 'speakerphone',
+            endpoint: 'landings-campanas/landings-campanas',
+            botonTexto: 'Crear nueva landing campaña',
+            columns: [
+                {
+                    key: 'titulo',
+                    label: 'Título',
+                    type: 'text',
+                    required: true
+                },
+                {
+                    key: 'url',
+                    label: 'URL',
+                    type: 'text',
+                    required: true
+                },
+                {
+                    key: 'descripcion',
+                    label: 'Descripción',
+                    type: 'textarea',
+                    required: true,
+                    fullWidth: true
+                },
+                {
+                    key: 'url-redireccion',
+                    label: 'URL Redireccion',
+                    type: 'text',
+                    required: true
+                },
+                {
+                    key: 'img_desktop',
+                    label: 'Imagen Desktop',
+                    type: 'image',
+                    size: '30px x 30px',
+                    required: true
+                },
+                {
+                    key: 'img_tablet',
+                    label: 'Imagen Tablet',
+                    type: 'image',
+                    size: '30px x 30px',
+                    required: true
+                },
+                {
+                    key: 'img_mobile',
+                    label: 'Imagen Mobile',
+                    type: 'image',
+                    size: '30px x 30px',
+                    required: true
+                },
+            ]
+        },
+        {
             name: 'Qué esperar Categorías',
             slug: 'que-esperar-categorias',
             icon: 'star',
@@ -789,7 +870,12 @@ const tablas = {
                     label: 'Precio Desde',
                     type: 'currency',
                     required: true
-                }
+                },
+                {
+                    key: 'estado',
+                    label: 'Estado',
+                    type: 'boolean',
+                },
             ]
         },
         {
@@ -899,7 +985,13 @@ const tablas = {
                     relatedTable: 'operadores',
                     displayField: 'nombre',
                     valueField: 'codigo'
-                }
+                },
+                {
+                    key: 'campana_id',
+                    label: 'Campaña',
+                    type: 'select',
+                    relatedTable: 'landings-campanas',
+                },
             ]
         },
         {
