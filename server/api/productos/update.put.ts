@@ -127,29 +127,53 @@ export default defineEventHandler(async (event) => {
       }
     }
 
+    // Eliminar secciones y grupos de ofertas anteriores
     const queryDeleteSecciones = `
       DELETE FROM secciones_prod
       WHERE producto_id = $1;
     `;
     await pool.query(queryDeleteSecciones, [id]);
 
+    const queryDeleteGruposOfertas = `
+      DELETE FROM grupos_de_ofertas_productos
+      WHERE producto_id = $1;
+    `;
+    await pool.query(queryDeleteGruposOfertas, [id]);
+
     const seccionesArray = Array.isArray(secciones) ? secciones : (secciones ? [secciones] : []);
     if (seccionesArray.length > 0) {
       for (const seccion of seccionesArray) {
+        // Consultar el id de la página
+        const { rows: paginaRows } = await pool.query(
+          'SELECT id FROM paginas WHERE texto = $1',
+          [seccion.pagina]
+        );
 
-        const segmentosArray = seccion.segmentos_excluidos.map((seg: any) => parseInt(seg));
-
-        const querySeccionesProd = `
+        if (paginaRows.length > 0 && paginaRows[0].id === 2) {
+          // Es grupo de ofertas, guardar en grupos_de_ofertas_productos
+          const queryGrupoOfertas = `
+            INSERT INTO grupos_de_ofertas_productos (grupo_de_oferta_id, producto_id)
+            VALUES ($1, $2);
+          `;
+          await pool.query(queryGrupoOfertas, [
+            parseInt(seccion.seccion_id),
+            id
+          ]);
+        } else {
+          // Es sección normal, guardar en secciones_prod
+          const segmentosArray = Array.isArray(seccion.segmentos_excluidos)
+            ? seccion.segmentos_excluidos.map((seg: any) => parseInt(seg))
+            : [];
+          const querySeccionesProd = `
             INSERT INTO secciones_prod (seccion_id, producto_id, segmentos_id) 
             VALUES ($1, $2, $3);
           `;
-
-        await pool.query(querySeccionesProd, [
-          parseInt(seccion.seccion_id),
-          id,
-          segmentosArray
-        ]);
-
+          await pool.query(querySeccionesProd, [
+            parseInt(seccion.seccion_id),
+            id,
+            segmentosArray
+          ]);
+        }
       }
     }
 
