@@ -426,15 +426,24 @@ const paginaOptions = computed(() =>
 
 const seccionOptions = computed(() => {
     if (!modalSeccion.value.pagina) return []
-
     const paginaSeleccionada = paginasData.value.find(p => p.texto === modalSeccion.value.pagina)
     if (!paginaSeleccionada) return []
 
+    if (paginaSeleccionada.id === 2) {
+        // Grupos de ofertas
+        return seccionesData.value.map(grupo => ({
+            value: grupo.titulo,
+            label: grupo.titulo,
+            id: grupo.id
+        }))
+    }
+    // Secciones normales
     return seccionesData.value
         .filter(s => s.pagina_id === paginaSeleccionada.id)
         .map(s => ({
             value: s.texto,
-            label: s.texto
+            label: s.texto,
+            id: s.id
         }))
 })
 
@@ -479,7 +488,7 @@ watch(() => modalSeccion.value.pagina, async (nuevaPagina) => {
         const paginaSeleccionada = paginasData.value.find(p => p.texto === nuevaPagina)
         if (paginaSeleccionada) {
             try {
-                const secciones = await $fetch(`/api/seccciones/${paginaSeleccionada.id}`)
+                const secciones = await $fetch(`/api/secciones/${paginaSeleccionada.id}`)
                 seccionesData.value = secciones || []
             } catch (err) {
                 console.error('Error cargando secciones:', err)
@@ -530,7 +539,7 @@ const editSeccion = async (seccion) => {
             const paginaSeleccionada = paginasData.value.find(p => p.texto === original.pagina)
             if (paginaSeleccionada) {
                 try {
-                    const secciones = await $fetch(`/api/seccciones/${paginaSeleccionada.id}`)
+                    const secciones = await $fetch(`/api/secciones/${paginaSeleccionada.id}`)
                     seccionesData.value = secciones || []
 
                     await nextTick()
@@ -567,7 +576,11 @@ const handleSeccionModalBackgroundClick = (event) => {
 const saveSeccion = () => {
     if (!modalSeccion.value.pagina || !modalSeccion.value.seccion) return
 
-    const seccionSeleccionada = seccionesData.value.find(s => s.texto === modalSeccion.value.seccion)
+    // Buscar por ambos campos
+    const seccionSeleccionada = seccionesData.value.find(s =>
+        s.texto === modalSeccion.value.seccion || s.titulo === modalSeccion.value.seccion
+    )
+
     if (!seccionSeleccionada) {
         error('No se encontró la sección seleccionada')
         return

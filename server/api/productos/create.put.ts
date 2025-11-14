@@ -219,20 +219,39 @@ export default defineEventHandler(async (event) => {
     const seccionesArray = Array.isArray(secciones) ? secciones : (secciones ? [secciones] : []);
     
     if (seccionesArray.length > 0) {
-      const querySeccionesProd = `
-        INSERT INTO secciones_prod (seccion_id, producto_id, segmentos_id) 
-        VALUES ($1, $2, $3);
-      `;
-      
       for (const seccion of seccionesArray) {
-        if (seccion.seccion_id && seccion.segmentos_excluidos && Array.isArray(seccion.segmentos_excluidos) && seccion.segmentos_excluidos.length > 0) {
-          const segmentosArray = seccion.segmentos_excluidos.map((seg: any) => parseInt(seg));
-          
-          await pool.query(querySeccionesProd, [
+        // Consultar el id de la página
+        const { rows: paginaRows } = await pool.query(
+          'SELECT id FROM paginas WHERE texto = $1',
+          [seccion.pagina]
+        );
+
+        if (paginaRows.length > 0 && paginaRows[0].id === 2) {
+          // Es grupo de ofertas, guardar en grupo_de_ofertas_productos
+          const queryGrupoOfertas = `
+            INSERT INTO grupo_de_ofertas_productos (grupo_oferta_id, producto_id)
+            VALUES ($1, $2);
+          `;
+          await pool.query(queryGrupoOfertas, [
             parseInt(seccion.seccion_id),
-            productoId,
-            segmentosArray
+            productoId
           ]);
+        } else {
+          // Es sección normal, guardar en secciones_prod
+          if (seccion.seccion_id && seccion.segmentos_excluidos && Array.isArray(seccion.segmentos_excluidos) && seccion.segmentos_excluidos.length > 0) {
+            const segmentosArray = seccion.segmentos_excluidos.map((seg: any) => parseInt(seg));
+            
+            const querySeccionesProd = `
+              INSERT INTO secciones_prod (seccion_id, producto_id, segmentos_id) 
+              VALUES ($1, $2, $3);
+            `;
+            
+            await pool.query(querySeccionesProd, [
+              parseInt(seccion.seccion_id),
+              productoId,
+              segmentosArray
+            ]);
+          }
         }
       }
     }
